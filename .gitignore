@@ -15,3 +15,6 @@ exports/
 __pycache__/
 .pytest_cache/
 *.pyc
+__pycache__/
+*.pyc
+.pytest_cache/

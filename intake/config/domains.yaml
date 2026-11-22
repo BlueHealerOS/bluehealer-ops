@@ -2,10 +2,11 @@
 version: 1
 timezone: America/New_York
 
-# Sender allowlist, by address only. Jay's address is a placeholder to confirm.
+# Sender allowlist, by address only. These are placeholders: this repository is public, so the real founder
+# addresses live in a private copy of this file kept outside the repository and passed to config.load(path).
 allowlist:
-  - santiago@bluehealer.co
-  - jay@bluehealer.co
+  - founder-a@example.test
+  - founder-b@example.test
 
 # Subject tag to domain. AUTO (or no tag) means the routine infers the domain and says so.
 subject_tags:

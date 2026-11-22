@@ -2,7 +2,7 @@
   "email": {
     "attachments": [],
     "body": "URL: https://www.youtube.com/watch?v=ZzYyXxWwVvU&feature=share\nTEXT: \nNOTE: \nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
-    "from": "santiago@bluehealer.co",
+    "from": "founder-a@example.test",
     "message_id": "<m05@x>",
     "received_at": "2026-11-21T09:20:00-05:00",
     "subject": "[INTAKE][BH] Claude Code subagents walkthrough"
