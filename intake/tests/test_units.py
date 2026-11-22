@@ -31,11 +31,11 @@ def test_source_type():
 
 
 def test_parse_share_sheet_and_plain_forward():
-    m = {"message_id": "1", "received_at": "2026-11-21T10:00:00-05:00", "from": "Santiago@BlueHealer.co", "subject": "[INTAKE][VC] Title here",
+    m = {"message_id": "1", "received_at": "2026-11-21T10:00:00-05:00", "from": "Founder-A@Example.test", "subject": "[INTAKE][VC] Title here",
          "body": "URL: https://youtu.be/abc12345\nTEXT: line1\nmore\nNOTE: hi\nDOMAIN: VC\nSUBMITTER: santiago\n"}
     p = parse(m)
-    assert p["tag"] == "VC" and p["title"] == "Title here" and p["shared_text"] == "line1\nmore" and p["channel"] == "share-sheet" and p["sender"] == "santiago@bluehealer.co"
-    f = parse({"message_id": "2", "received_at": "x", "from": "jay@bluehealer.co", "subject": "Fwd: Look at this", "body": "see https://example.com/a?utm_source=z now"})
+    assert p["tag"] == "VC" and p["title"] == "Title here" and p["shared_text"] == "line1\nmore" and p["channel"] == "share-sheet" and p["sender"] == "founder-a@example.test"
+    f = parse({"message_id": "2", "received_at": "x", "from": "founder-b@example.test", "subject": "Fwd: Look at this", "body": "see https://example.com/a?utm_source=z now"})
     assert f["tag"] is None and f["title"] == "Look at this" and f["channel"] == "email-forward" and f["canonical_url"] == "https://example.com/a"
 
 

@@ -3,12 +3,12 @@
 Status: provisional, 2026-11-22. Built from `intake-pipeline-plan-2026-11-21.md` plus read-only checks in this session. Decisions taken in this session: code split by type, records in santiago-hq plus SharePoint, file-queue sink only, shared mailbox with ledger only.
 
 ## Context
-Both founders send Instagram, YouTube, LinkedIn and web finds to their own WhatsApp, where they are lost. The pipeline turns each find (shared by iPhone/Mac Shortcut or email forward to `intake@bluehealer.co`) into a validated Intake Record, proposed knowledge updates and proposed action items, triaged daily at 18:00 ET and reviewed by a founder. Nothing is filed, sent or written outside the reports branch without a founder's yes.
+Both founders send Instagram, YouTube, LinkedIn and web finds to their own WhatsApp, where they are lost. The pipeline turns each find (shared by iPhone/Mac Shortcut or email forward to `intake@<tenant-domain>`) into a validated Intake Record, proposed knowledge updates and proposed action items, triaged daily at 18:00 ET and reviewed by a founder. Nothing is filed, sent or written outside the reports branch without a founder's yes.
 
 ## 1. Verification table (Phase A, step 1)
 | # | Question | Result | Evidence |
 |---|---|---|---|
-| a1 | M365 connector in Claude Code sessions | Verified | `get_me` returned santiago@bluehealer.co |
+| a1 | M365 connector in Claude Code sessions | Verified | `get_me` returned founder-a@example.test |
 | a2 | Can it read a shared mailbox | Verified at permission and tool level; live read not testable (mailbox does not exist yet) | Granted scopes include `Mail.Read.Shared`, `Mail.ReadWrite`; `outlook_email_search` has `mailboxOwnerEmail`; `read_resource` accepts `mail:///messages/{id}?owner=` |
 | a3 | M365 connector in cloud scheduled tasks | Not testable here; likely | `create_trigger` takes a `connectors` list; existing routines already use M365 unattended (`scheduled/Cloud Task Prompts.md`) |
 | b | Categorize or move messages | Own mailbox only (provisional) | `outlook_modify_labels` and `outlook_create_label` take no mailbox owner. Shared mailbox therefore read only; ledger is the processed marker (decided) |
@@ -38,7 +38,7 @@ Other findings (flag to Santiago):
 - Knowledge updates: week 1 listed as proposals; from week 2, one hub branch and PR per day (`intake/YYYY-MM-DD`), new notes or additions only, per hub "Scheduled and unattended agent runs".
 - Task sink: `file` adapter live (queue section in the daily report). `trello` and `github-issues` adapters written, disabled in config, raising if enabled without a flag. Work app endpoint later, same Action Item schema.
 - Fetching: no direct HTTP. Adapters call Firecrawl: YouTube via `youtube-com` video_details plus video_transcript; Instagram via scrape or `oriane` post-lookup, falling back to note plus screenshot; LinkedIn note plus screenshot (partial); web via scrape; PDFs via scrape with pdf parser. One hop, content untrusted.
-- Mailbox: shared `intake@bluehealer.co`, internal senders only, read only by the routine; search with `mailboxOwnerEmail` and `afterDateTime` from the last ledger date minus 2 days, dedupe against ledger.
+- Mailbox: shared `intake@<tenant-domain>`, internal senders only, read only by the routine; search with `mailboxOwnerEmail` and `afterDateTime` from the last ledger date minus 2 days, dedupe against ledger.
 
 ## 3. Implementation plan (Phase B, for a Sonnet session)
 
@@ -46,7 +46,7 @@ Repo A = bluehealer-ops, Repo B = santiago-hq.
 
 1. Repo A `intake/PLAN.md`: this plan. Accept: file present on branch.
 2. Repo A `intake/schemas/intake-record.schema.json`, `action-item.schema.json`, `knowledge-update.schema.json` (JSON Schema 2020-12, enums from the source plan; add `sources`, `run_id`). Accept: `validate.py` passes on a hand-written valid sample and fails on each missing required field.
-3. Repo A `intake/config/domains.yaml`: subject tags `[INTAKE][BH|VC|JHU|ME|AUTO]` mapped to domains; routing destinations per domain and sensitivity; category rules; sender allowlist by address (santiago@bluehealer.co, Jay's address to confirm); `sink: file`; adapter toggles. Accept: loader test validates the YAML against a small config schema.
+3. Repo A `intake/config/domains.yaml`: subject tags `[INTAKE][BH|VC|JHU|ME|AUTO]` mapped to domains; routing destinations per domain and sensitivity; category rules; sender allowlist by address (founder-a@example.test, Jay's address to confirm); `sink: file`; adapter toggles. Accept: loader test validates the YAML against a small config schema.
 4. Repo A `intake/scripts/`: `parse_email.py` (subject tag and fixed body block to a draft record; tolerant of plain forwards), `canonicalize_url.py` (strip tracking params, igsh, si, utm, normalize youtu.be, shorts, m. and www hosts, LinkedIn `/posts/` slugs), `ledger.py` (load union of ledger files, `seen(message_id)`, `duplicate_of(canonical_url)`, `append(path, entries)` new-file only), `validate.py`, `route.py` (domain, sensitivity and category to destinations and proposals per config), `render_report.py` (daily report markdown from records, matching the ROUTINE-RULES report format and approval queue). Accept: pytest unit tests per script.
 5. Repo A `intake/sinks/`: `base.py` interface (`propose`, `flush(accepted)`), `file_sink.py`, `trello_sink.py` and `github_issues_sink.py` as disabled stubs. Accept: tests that the file sink renders the queue and stubs refuse when disabled.
 6. Repo A `intake/tests/fixtures/`: 14 `.eml` or JSON emails (3 Instagram, 3 YouTube, 3 LinkedIn, 1 web article, 1 PDF link, 1 non-allowlisted sender, 1 prompt injection in body, 1 duplicate of an earlier URL) each with `expected/*.json` (domain, category, retrieval_status, sink, rejected flag). Enrichment is stubbed with recorded responses in `fixtures/enrich/`.
@@ -59,7 +59,7 @@ Repo A = bluehealer-ops, Repo B = santiago-hq.
 13. Commit and push Repo A to `claude/keen-noether-kg1o7z`, Repo B to `feat/intake-pipeline`; open two PRs (Repo B PR to main, never to reports), each listing what could not be tested and Santiago's next steps.
 
 ## 4. Santiago actions
-1. Create shared mailbox `intake@bluehealer.co`, internal senders only, Full Access for both founders.
+1. Create shared mailbox `intake@<tenant-domain>`, internal senders only, Full Access for both founders.
 2. Confirm Jay's sender address for the allowlist.
 3. Build and test the Shortcut on iPhone and Mac; share the link with Jay in week 3.
 4. Create the 18:00 scheduled task with connectors Microsoft 365 and Firecrawl, after the fixture dry run passes and one live test on real emails.

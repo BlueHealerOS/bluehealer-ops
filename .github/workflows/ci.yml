@@ -1,0 +1,41 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - name: Repository hygiene (no data, no PII, no secrets)
+        run: npm run check:fixtures
+      - name: Secret scan (gitleaks)
+        run: |
+          VERSION=8.21.2
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" | tar -xz gitleaks
+          ./gitleaks detect --no-banner --redact --source .
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+      - name: Production bundle must not contain the test auth adapter
+        run: |
+          npm run build
+          ! grep -rl "e2e-token" dist
+  intake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install pytest pyyaml jsonschema
+      - run: python -m pytest intake/tests -q

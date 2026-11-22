@@ -2,7 +2,7 @@
   "email": {
     "attachments": [],
     "body": "URL: https://www.example-news.com/cms-wound-care-payment?utm_source=nl\nTEXT: \nNOTE: \nDOMAIN: AUTO\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
-    "from": "santiago@bluehealer.co",
+    "from": "founder-a@example.test",
     "message_id": "<m10@x>",
     "received_at": "2026-11-21T09:45:00-05:00",
     "subject": "[INTAKE][AUTO] CMS proposed rule on outpatient wound care payment"

@@ -2,7 +2,7 @@
   "email": {
     "attachments": [],
     "body": "URL: https://youtu.be/AbCdEfGhIjK?si=tracker\nTEXT: \nNOTE: Patient and outcome data, worth checking\nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
-    "from": "santiago@bluehealer.co",
+    "from": "founder-a@example.test",
     "message_id": "<m04@x>",
     "received_at": "2026-11-21T09:15:00-05:00",
     "subject": "[INTAKE][BH] TTT wound healing outcomes talk"

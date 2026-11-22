@@ -2,7 +2,7 @@
   "email": {
     "attachments": [],
     "body": "URL: https://www.instagram.com/reel/C1aBcDeF/?igsh=abc123\nTEXT: \nNOTE: Reel about a Claude skill that drafts regulatory summaries\nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
-    "from": "santiago@bluehealer.co",
+    "from": "founder-a@example.test",
     "message_id": "<m01@x>",
     "received_at": "2026-11-21T09:01:00-05:00",
     "subject": "[INTAKE][BH] AI skill reel for drafting 510(k) summaries"
