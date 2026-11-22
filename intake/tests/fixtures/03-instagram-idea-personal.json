@@ -1,0 +1,28 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://www.instagram.com/reel/CyIdea123/\nTEXT: \nNOTE: Try this for focus blocks\nDOMAIN: ME\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m03@x>",
+    "received_at": "2026-11-21T09:10:00-05:00",
+    "subject": "[INTAKE][ME] Reel on a morning routine idea"
+  },
+  "enrich": {
+    "category": "idea",
+    "confidence": "low",
+    "retrieval_status": "partial",
+    "summary": "Reel on structuring focus blocks."
+  },
+  "expected": {
+    "actions": 0,
+    "category": "idea",
+    "domain": "personal",
+    "domain_source": "tag",
+    "knowledge": 0,
+    "rejected": false,
+    "retrieval_status": "partial",
+    "sensitivity": "open",
+    "source_type": "instagram",
+    "status": "new"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://www.linkedin.com/posts/nih-sbir_call-777/\nTEXT: Phase I call for wound devices\nNOTE: Check eligibility\nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m09@x>",
+    "received_at": "2026-11-21T09:40:00-05:00",
+    "subject": "[INTAKE][BH] SBIR topic call, deadline 15 December"
+  },
+  "enrich": {
+    "category": "funding-application",
+    "confidence": "medium",
+    "deadline": "2026-12-15",
+    "retrieval_status": "partial",
+    "summary": "Funding call for wound-care devices; deadline stated as 15 December 2026."
+  },
+  "expected": {
+    "actions": 1,
+    "category": "funding-application",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "due": "2026-12-15",
+    "knowledge": 1,
+    "owner": "santiago",
+    "rejected": false,
+    "retrieval_status": "partial",
+    "sensitivity": "open",
+    "source_type": "linkedin",
+    "status": "proposed"
+  }
+}

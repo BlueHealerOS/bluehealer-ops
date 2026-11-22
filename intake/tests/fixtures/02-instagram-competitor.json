@@ -1,0 +1,34 @@
+{
+  "email": {
+    "attachments": [
+      {
+        "content_type": "image/png",
+        "name": "screenshot.png"
+      }
+    ],
+    "body": "URL: https://instagram.com/p/Cx9QzTTT1/\nTEXT: \nNOTE: Surgeon showing a competitor nail, screenshot attached\nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m02@x>",
+    "received_at": "2026-11-21T09:05:00-05:00",
+    "subject": "[INTAKE][BH] Surgeon post on a new tibial nail"
+  },
+  "enrich": {
+    "category": "competitor",
+    "confidence": "low",
+    "retrieval_status": "blocked",
+    "summary": "Screenshot text suggests a surgeon demonstrating a competitor intramedullary nail. Page blocked.",
+    "why_it_matters": "Competitor surgeon mindshare."
+  },
+  "expected": {
+    "actions": 1,
+    "category": "competitor",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "knowledge": 1,
+    "rejected": false,
+    "retrieval_status": "blocked",
+    "sensitivity": "open",
+    "source_type": "instagram",
+    "status": "proposed"
+  }
+}
