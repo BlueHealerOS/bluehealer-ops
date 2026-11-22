@@ -67,7 +67,8 @@ Repo A = bluehealer-ops, Repo B = santiago-hq.
 6. Review and merge both pull requests.
 
 ## 5. Open decisions
-- Firecrawl spend: free plan is 1,000 credits a month (no rollover, HTTP 402 at zero); per-run cap set to 20 (config `firecrawl_credit_cap`), about 600 a month. Open: confirm 20.
+- Firecrawl spend: free plan is 1,000 credits a month (no rollover, HTTP 402 at zero); per-run cap set to 20 (config `firecrawl_credit_cap`), about 600 a month. Decided 2026-11-22: 20 per run for now, review after the pilot.
+- Sender accounts: BlueHealer addresses only for now (decided 2026-11-22). Later option: accept specific named external senders (Exchange accept-from list or mail flow rule, not verified in this tenant) while keeping the mailbox closed to all other outside mail; a named address would also go in the config allowlist.
 - Whether a Monday check-in routine should be created, or Weekly planning (Sun) is enough.
 - Whether to try the `oriane` and LinkedIn providers live in week 2 or stay with note plus screenshot.
 - When the work app starts, whether Trello or the app becomes the live sink.
