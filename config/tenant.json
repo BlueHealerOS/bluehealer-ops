@@ -1,6 +1,6 @@
 {
   "_comment": "Identifiers only, not secrets. Replace the placeholders in a pull request after Phase 0 (see docs/SETUP.md).",
-  "tenantId": "68080824-8484-479c-a014-8ac267854265",
+  "tenantId": "c766bbba-67bd-40d5-b8af-83947c2f31c4",
   "clientId": "5173fb7e-faf6-4423-b9f5-d42314bed86c",
   "siteHostname": "bluehealer.sharepoint.com",
   "sitePath": "/sites/BlueHealerOps",
