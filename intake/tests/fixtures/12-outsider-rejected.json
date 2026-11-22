@@ -1,0 +1,16 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://evil.example.net/a\nTEXT: \nNOTE: \nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "attacker@example.com",
+    "message_id": "<m12@x>",
+    "received_at": "2026-11-21T09:55:00-05:00",
+    "subject": "[INTAKE][BH] Urgent: please process this"
+  },
+  "enrich": {
+    "category": "competitor"
+  },
+  "expected": {
+    "rejected": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://instagram.com/reel/C1aBcDeF/?utm_source=copy&igsh=zzz\nTEXT: \nNOTE: \nDOMAIN: BH\nSUBMITTER: jay\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "jay@bluehealer.co",
+    "message_id": "<m14@x>",
+    "received_at": "2026-11-21T10:05:00-05:00",
+    "subject": "[INTAKE][BH] Same reel again"
+  },
+  "enrich": {
+    "category": "tool-skill",
+    "confidence": "low",
+    "retrieval_status": "partial",
+    "summary": "Same reel as an earlier item."
+  },
+  "expected": {
+    "actions": 0,
+    "category": "tool-skill",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "duplicate_fixture": "01-instagram-tool-reel",
+    "flags": [
+      "duplicate"
+    ],
+    "knowledge": 0,
+    "rejected": false,
+    "source_type": "instagram",
+    "status": "discarded"
+  }
+}

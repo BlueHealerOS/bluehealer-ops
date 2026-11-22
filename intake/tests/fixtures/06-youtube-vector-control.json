@@ -1,0 +1,32 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://www.youtube.com/shorts/LaRvAsUrVey1\nTEXT: Field team notes on larval habitats\nNOTE: Useful for LarvaCam validation\nDOMAIN: VC\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m06@x>",
+    "received_at": "2026-11-21T09:25:00-05:00",
+    "subject": "[INTAKE][VC] Mosquito larval survey methods talk"
+  },
+  "enrich": {
+    "category": "market",
+    "confidence": "medium",
+    "retrieval_status": "full",
+    "summary": "Talk on larval survey methods in urban settings."
+  },
+  "expected": {
+    "actions": 1,
+    "category": "market",
+    "domain": "vector-control",
+    "domain_source": "tag",
+    "flags": [
+      "summary-and-link-only"
+    ],
+    "knowledge": 0,
+    "rejected": false,
+    "retrieval_status": "full",
+    "sensitivity": "open",
+    "shared_text_blank": true,
+    "source_type": "youtube",
+    "status": "proposed"
+  }
+}

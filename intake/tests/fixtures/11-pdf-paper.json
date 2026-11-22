@@ -1,0 +1,28 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://journals.example.org/papers/dist-os-2026.pdf\nTEXT: \nNOTE: \nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m11@x>",
+    "received_at": "2026-11-21T09:50:00-05:00",
+    "subject": "[INTAKE][BH] Preprint on distraction osteogenesis for soft tissue"
+  },
+  "enrich": {
+    "category": "clinical-evidence",
+    "confidence": "medium",
+    "retrieval_status": "full",
+    "summary": "Preprint on soft-tissue distraction histogenesis; small animal study."
+  },
+  "expected": {
+    "actions": 0,
+    "category": "clinical-evidence",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "knowledge": 1,
+    "rejected": false,
+    "retrieval_status": "full",
+    "sensitivity": "open",
+    "source_type": "pdf",
+    "status": "proposed"
+  }
+}

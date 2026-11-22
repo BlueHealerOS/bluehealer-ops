@@ -1,0 +1,32 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://youtu.be/AbCdEfGhIjK?si=tracker\nTEXT: \nNOTE: Patient and outcome data, worth checking\nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m04@x>",
+    "received_at": "2026-11-21T09:15:00-05:00",
+    "subject": "[INTAKE][BH] TTT wound healing outcomes talk"
+  },
+  "enrich": {
+    "category": "clinical-evidence",
+    "confidence": "medium",
+    "retrieval_status": "full",
+    "summary": "Conference talk on transverse tibial transport outcomes in diabetic foot wounds; reports healing rates in a small series.",
+    "why_it_matters": "TTT patient and outcome data is the hardest evidence to find."
+  },
+  "expected": {
+    "actions": 0,
+    "category": "clinical-evidence",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "knowledge": 1,
+    "ku_tags": [
+      "TTT"
+    ],
+    "rejected": false,
+    "retrieval_status": "full",
+    "sensitivity": "open",
+    "source_type": "youtube",
+    "status": "proposed"
+  }
+}

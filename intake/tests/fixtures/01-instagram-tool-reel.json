@@ -1,0 +1,29 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://www.instagram.com/reel/C1aBcDeF/?igsh=abc123\nTEXT: \nNOTE: Reel about a Claude skill that drafts regulatory summaries\nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m01@x>",
+    "received_at": "2026-11-21T09:01:00-05:00",
+    "subject": "[INTAKE][BH] AI skill reel for drafting 510(k) summaries"
+  },
+  "enrich": {
+    "category": "tool-skill",
+    "confidence": "medium",
+    "retrieval_status": "partial",
+    "summary": "Reel promotes a Claude skill for regulatory drafting. Login wall: built from the submitter note only.",
+    "why_it_matters": "Possible aid for QMS drafting; verdict needed before any install."
+  },
+  "expected": {
+    "actions": 1,
+    "category": "tool-skill",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "knowledge": 0,
+    "rejected": false,
+    "retrieval_status": "partial",
+    "sensitivity": "open",
+    "source_type": "instagram",
+    "status": "proposed"
+  }
+}

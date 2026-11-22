@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "knowledge-update.schema.json",
+  "title": "Knowledge Update (proposal for a hub pull request)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id","intake_id","destination","kind","title","tags","status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^ku-[0-9a-f]{8}$"},
+    "intake_id": {"type": "string", "pattern": "^ir-[0-9a-f]{10}$"},
+    "destination": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["new-note", "addition"]},
+    "title": {"type": "string", "minLength": 3},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "status": {"enum": ["proposed", "accepted", "rejected", "merged"]}
+  }
+}
