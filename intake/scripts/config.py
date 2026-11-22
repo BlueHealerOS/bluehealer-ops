@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 
 DEFAULT = Path(__file__).resolve().parents[1] / "config" / "domains.yaml"
-REQUIRED = ["allowlist", "subject_tags", "summary_only_domains", "knowledge_domains", "category_rules", "sink", "sinks", "injection_patterns", "patent_hosts"]
+REQUIRED = ["allowlist", "subject_tags", "summary_only_domains", "knowledge_domains", "category_rules", "sink", "sinks", "injection_patterns", "patent_hosts", "firecrawl_credit_cap"]
 DOMAINS = {"bluehealer", "vector-control", "jhu", "personal", "unknown"}
 CATEGORIES = {"competitor", "market", "clinical-evidence", "regulatory", "reimbursement", "funding-application", "contact-relationship", "hiring", "tool-skill", "idea", "other"}
 
@@ -25,6 +25,9 @@ def load(path=DEFAULT) -> dict:
     unknown = set(cfg["category_rules"]) - CATEGORIES
     if unknown:
         raise ConfigError(f"unknown categories: {unknown}")
+    cap = cfg["firecrawl_credit_cap"]
+    if not isinstance(cap, int) or isinstance(cap, bool) or not 0 < cap <= 100:
+        raise ConfigError("firecrawl_credit_cap must be an integer from 1 to 100")
     if cfg["sink"] not in cfg["sinks"]:
         raise ConfigError("sink not defined in sinks")
     if not cfg["sinks"][cfg["sink"]].get("enabled"):

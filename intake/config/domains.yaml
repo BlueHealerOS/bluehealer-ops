@@ -39,6 +39,10 @@ injection_patterns:
   - new instructions
   - do not tell (the )?(user|santiago)
 
+# Firecrawl free plan: 1,000 credits a month, no rollover, HTTP 402 at zero (docs.firecrawl.dev/billing, read 2026-11-22).
+# Per-run cap leaves headroom for other routines that share the pool. YouTube transcript is about 5 credits.
+firecrawl_credit_cap: 20
+
 # Task sink. Only "file" is live in the pilot; the others are disabled stubs.
 sink: file
 sinks:

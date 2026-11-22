@@ -67,7 +67,7 @@ Repo A = bluehealer-ops, Repo B = santiago-hq.
 6. Review and merge both pull requests.
 
 ## 5. Open decisions
-- Firecrawl spend: about 5 credits per YouTube transcript; set a per-run cap (proposed 100 credits).
+- Firecrawl spend: free plan is 1,000 credits a month (no rollover, HTTP 402 at zero); per-run cap set to 20 (config `firecrawl_credit_cap`), about 600 a month. Open: confirm 20.
 - Whether a Monday check-in routine should be created, or Weekly planning (Sun) is enough.
 - Whether to try the `oriane` and LinkedIn providers live in week 2 or stay with note plus screenshot.
 - When the work app starts, whether Trello or the app becomes the live sink.

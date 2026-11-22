@@ -75,7 +75,16 @@ def test_config_validation(tmp_path):
     p = tmp_path / "c.yaml"; p.write_text(yaml.dump(bad))
     with pytest.raises(cfgmod.ConfigError):
         cfgmod.load(p)
-    assert CFG["sink"] == "file"
+    assert CFG["sink"] == "file" and CFG["firecrawl_credit_cap"] == 20
+    for bad_cap in (None, 0, 500, "20"):
+        c = yaml.safe_load(Path(cfgmod.DEFAULT).read_text()); c["firecrawl_credit_cap"] = bad_cap
+        p.write_text(yaml.dump(c))
+        with pytest.raises(cfgmod.ConfigError):
+            cfgmod.load(p)
+    c = yaml.safe_load(Path(cfgmod.DEFAULT).read_text()); del c["firecrawl_credit_cap"]
+    p.write_text(yaml.dump(c))
+    with pytest.raises(cfgmod.ConfigError):
+        cfgmod.load(p)
 
 
 def test_sinks():
