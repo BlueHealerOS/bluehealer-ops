@@ -1,0 +1,81 @@
+# Intake pipeline configuration. Provisional (2026-11-22). No credentials; connectors are referenced by name only.
+version: 1
+timezone: America/New_York
+
+# Sender allowlist, by address only. Jay's address is a placeholder to confirm.
+allowlist:
+  - santiago@bluehealer.co
+  - jay@bluehealer.co
+
+# Subject tag to domain. AUTO (or no tag) means the routine infers the domain and says so.
+subject_tags:
+  BH: bluehealer
+  VC: vector-control
+  JHU: jhu
+  ME: personal
+  AUTO: null
+
+# Domains whose records keep summary and link only (no submitted text, note or attachments).
+summary_only_domains: [vector-control, jhu]
+# Domains allowed to produce hub knowledge updates.
+knowledge_domains: [bluehealer]
+
+# Hub paths that must never receive an update from this pipeline (legal, IP, QMS).
+forbidden_destination_prefixes:
+  - knowledge/Corporate and Legal
+  - knowledge/Intellectual Property
+  - knowledge/Regulatory and Quality/Regulatory/Quality Management System
+
+# Hosts whose pages are flagged ip-flag (patents): flagged for Santiago and counsel, no freedom-to-operate opinion.
+patent_hosts: [patents.google.com, patentimages.storage.googleapis.com, uspto.gov, ppubs.uspto.gov, worldwide.espacenet.com]
+
+# Phrases that mark text as a possible prompt injection (case-insensitive regex). Text is never followed; it is flagged.
+injection_patterns:
+  - ignore (all |any )?(previous|prior|above) (instructions|prompts)
+  - disregard (the |your )?(previous|prior|system)
+  - you are now
+  - system prompt
+  - (forward|send|email) .{0,40}(all|every).{0,30}(mail|email|message)
+  - new instructions
+  - do not tell (the )?(user|santiago)
+
+# Task sink. Only "file" is live in the pilot; the others are disabled stubs.
+sink: file
+sinks:
+  file: {enabled: true}
+  trello: {enabled: false}
+  github-issues: {enabled: false}
+
+# Category rules (defaults, editable). owner: submitter | santiago | jay | unassigned
+# hub_destination applies only to domains in knowledge_domains.
+category_rules:
+  competitor:
+    hub_destination: knowledge/Business Strategy/Competition
+    action: {title: "Review competitor update: {title}", owner: santiago, priority: medium}
+  market:
+    hub_destination: knowledge/Business Strategy
+    action: {title: "Review market update: {title}", owner: santiago, priority: low}
+  clinical-evidence:
+    hub_destination: knowledge/Clinical and Customer Evidence/Literature/Literature Notes
+    tag_patterns: {TTT: "\\bTTT\\b|transverse tibial|bone transport"}
+  regulatory:
+    hub_destination: knowledge/Regulatory and Quality
+    action: {title: "Review regulatory item: {title}", owner: santiago, priority: medium}
+  reimbursement:
+    hub_destination: knowledge/Reimbursement
+  funding-application:
+    hub_destination: knowledge/Competitions and Grants
+    action: {title: "Prepare application: {title}", owner: submitter, priority: high, due_from: deadline}
+  contact-relationship:
+    action: {title: "Follow up with contact: {title}", owner: submitter, priority: medium}
+    crm_placeholder: true
+  hiring:
+    note_only: true
+  tool-skill:
+    action: {title: "Queue tool-scout review (no install): {title}", owner: santiago, priority: low}
+  idea:
+    parking_lot: true
+  other: {}
+
+unknown_domain_action: {title: "Assign a domain to intake item: {title}", owner: santiago, priority: low}
+patent_action: {title: "Flag patent for Santiago and counsel (no freedom-to-operate opinion): {title}", owner: santiago, priority: high}

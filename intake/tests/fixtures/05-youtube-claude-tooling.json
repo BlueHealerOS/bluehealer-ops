@@ -1,0 +1,28 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://www.youtube.com/watch?v=ZzYyXxWwVvU&feature=share\nTEXT: \nNOTE: \nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m05@x>",
+    "received_at": "2026-11-21T09:20:00-05:00",
+    "subject": "[INTAKE][BH] Claude Code subagents walkthrough"
+  },
+  "enrich": {
+    "category": "tool-skill",
+    "confidence": "high",
+    "retrieval_status": "full",
+    "summary": "Walkthrough of subagent patterns in Claude Code."
+  },
+  "expected": {
+    "actions": 1,
+    "category": "tool-skill",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "knowledge": 0,
+    "rejected": false,
+    "retrieval_status": "full",
+    "sensitivity": "open",
+    "source_type": "youtube",
+    "status": "proposed"
+  }
+}

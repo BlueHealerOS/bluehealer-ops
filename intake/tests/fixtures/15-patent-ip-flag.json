@@ -1,0 +1,29 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://patents.google.com/patent/US1234567B2/en\nTEXT: \nNOTE: Check against our approach\nDOMAIN: BH\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m15@x>",
+    "received_at": "2026-11-21T10:10:00-05:00",
+    "subject": "[INTAKE][BH] Patent on a transport distractor"
+  },
+  "enrich": {
+    "category": "competitor",
+    "confidence": "medium",
+    "retrieval_status": "full",
+    "summary": "Granted US patent on a bone transport distractor.",
+    "why_it_matters": "Possible overlap; for counsel."
+  },
+  "expected": {
+    "actions": 1,
+    "category": "competitor",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "knowledge": 0,
+    "rejected": false,
+    "retrieval_status": "full",
+    "sensitivity": "ip-flag",
+    "source_type": "web",
+    "status": "proposed"
+  }
+}

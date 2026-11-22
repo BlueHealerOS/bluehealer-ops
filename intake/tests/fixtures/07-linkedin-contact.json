@@ -1,0 +1,32 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://www.linkedin.com/in/example-surgeon/?trk=public\nTEXT: \nNOTE: Met at the conference; follow up\nDOMAIN: BH\nSUBMITTER: jay\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "jay@bluehealer.co",
+    "message_id": "<m07@x>",
+    "received_at": "2026-11-21T09:30:00-05:00",
+    "subject": "[INTAKE][BH] Orthopedic surgeon profile, possible advisor"
+  },
+  "enrich": {
+    "category": "contact-relationship",
+    "confidence": "medium",
+    "retrieval_status": "partial",
+    "summary": "Profile of an orthopedic trauma surgeon. Only the shared content and role are kept."
+  },
+  "expected": {
+    "actions": 1,
+    "category": "contact-relationship",
+    "domain": "bluehealer",
+    "domain_source": "tag",
+    "flags": [
+      "private-individual-no-enrichment"
+    ],
+    "knowledge": 0,
+    "owner": "jay",
+    "rejected": false,
+    "retrieval_status": "partial",
+    "sensitivity": "open",
+    "source_type": "linkedin",
+    "status": "proposed"
+  }
+}

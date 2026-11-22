@@ -1,0 +1,29 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://www.linkedin.com/posts/orthofix_launch-123456/\nTEXT: New limb reconstruction system launched\nNOTE: \nDOMAIN: AUTO\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m08@x>",
+    "received_at": "2026-11-21T09:35:00-05:00",
+    "subject": "[INTAKE][AUTO] Orthofix product launch post"
+  },
+  "enrich": {
+    "category": "competitor",
+    "confidence": "medium",
+    "domain_guess": "bluehealer",
+    "retrieval_status": "partial",
+    "summary": "Company post announcing a limb reconstruction system launch."
+  },
+  "expected": {
+    "actions": 1,
+    "category": "competitor",
+    "domain": "bluehealer",
+    "domain_source": "inferred",
+    "knowledge": 1,
+    "rejected": false,
+    "retrieval_status": "partial",
+    "sensitivity": "open",
+    "source_type": "linkedin",
+    "status": "proposed"
+  }
+}

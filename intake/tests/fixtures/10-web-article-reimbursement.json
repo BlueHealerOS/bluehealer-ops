@@ -1,0 +1,29 @@
+{
+  "email": {
+    "attachments": [],
+    "body": "URL: https://www.example-news.com/cms-wound-care-payment?utm_source=nl\nTEXT: \nNOTE: \nDOMAIN: AUTO\nSUBMITTER: santiago\nTIMESTAMP: 2026-11-21T10:00:00-05:00\n",
+    "from": "santiago@bluehealer.co",
+    "message_id": "<m10@x>",
+    "received_at": "2026-11-21T09:45:00-05:00",
+    "subject": "[INTAKE][AUTO] CMS proposed rule on outpatient wound care payment"
+  },
+  "enrich": {
+    "category": "reimbursement",
+    "confidence": "medium",
+    "domain_guess": "bluehealer",
+    "retrieval_status": "full",
+    "summary": "Article on a proposed payment rule for outpatient wound care."
+  },
+  "expected": {
+    "actions": 0,
+    "category": "reimbursement",
+    "domain": "bluehealer",
+    "domain_source": "inferred",
+    "knowledge": 1,
+    "rejected": false,
+    "retrieval_status": "full",
+    "sensitivity": "open",
+    "source_type": "web",
+    "status": "proposed"
+  }
+}

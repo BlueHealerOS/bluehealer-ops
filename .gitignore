@@ -12,3 +12,6 @@ coverage/
 hub-export*.json
 trello*.json
 exports/
+__pycache__/
+.pytest_cache/
+*.pyc
