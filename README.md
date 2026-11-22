@@ -15,10 +15,10 @@ This repository contains code only. No records, contacts, documents or credentia
 - [Specification](docs/SPEC.md) and [implementation plan](docs/PLAN.md)
 - [Phase 0 setup for the tenant administrator](docs/SETUP.md)
 - [Flow guides](docs/flows/README.md)
-- [Demo script, Phase 1a](docs/demo/phase-1a.md)
+- Demo scripts: [Phase 1a](docs/demo/phase-1a.md), [Phase 1b](docs/demo/phase-1b.md)
 
 ## Status
-Phase 1a is built: sign-in gate, list provisioning from a schema, tasks (Today, This week, Board, List, Calendar, Waiting, Proposed, Done, Hygiene), facet filters, quick add, notifications with snooze, record history, Settings and Admin. Phase 1b (milestones, CRM, intake triage, meetings, imports, Outlook drafts) is next. See `docs/PLAN.md`.
+Phase 1 is built: sign-in gate, list provisioning from a schema, tasks (Today, This week, Board, List, Calendar, Waiting, Proposed, Done, Hygiene), facet filters, quick add, notifications with snooze, record history, milestones with timeline, relationships (people, organizations, investor follow-ups, overdue contacts), interaction logging, Outlook drafts, intake triage, meetings with agendas, one-time imports (hub and Trello) and Settings and Admin. Phases 2 and 3 (applications, answer bank, meeting-pack flows, OKRs, KPIs) are next. See `docs/PLAN.md`.
 
 ## Development
 ```bash

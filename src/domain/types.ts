@@ -71,3 +71,81 @@ export interface Application {
 }
 
 export type Founder = 'Santiago' | 'Jay';
+
+export interface MilestoneFull extends Milestone {
+  Description?: string;
+  BaselineDate?: string;
+  ApprovalGate?: string;
+  ApprovedDate?: string;
+  EvidenceLinks?: string;
+  Track?: string[];
+}
+export interface PersonFull extends Person {
+  OrganizationLookupId?: number;
+  Role?: string;
+  Email?: string;
+  Phone?: string;
+  RelationshipType?: string;
+  IntroducedByLookupId?: number;
+  IntroChannel?: string;
+  IntroDate?: string;
+  Tier?: string;
+  LastContactSeed?: string;
+  Stage?: string;
+  NextStep?: string;
+  Aliases?: string;
+  ExtId?: string;
+  Labels?: string;
+}
+export interface OrgFull {
+  id: number;
+  Title: string;
+  OrgType?: string;
+  Website?: string;
+  Aliases?: string;
+  Owner?: string;
+  Sensitivity?: string;
+  ExtId?: string;
+}
+export interface Interaction {
+  id: number;
+  Title: string;
+  Date?: string;
+  InteractionType?: string;
+  PersonLookupId?: number;
+  PeopleIds?: string;
+  Summary?: string;
+  FollowUpTaskId?: number;
+  SourceLink?: string;
+  Sensitivity?: string;
+}
+export interface IntakeItem {
+  id: number;
+  Title: string;
+  Raw?: string;
+  RawSource?: string;
+  ReceivedAt?: string;
+  TriageState?: string;
+  ProposedType?: string;
+  ProposalJson?: string;
+  Rationale?: string;
+  ResultListName?: string;
+  ResultItemId?: number;
+  IntelSummary?: string;
+  Sensitivity?: string;
+  Owner?: string;
+  Labels?: string;
+  ExtId?: string;
+  Source?: string;
+  ReminderOptIn?: boolean;
+}
+export interface MeetingRec {
+  id: number;
+  Title: string;
+  MeetingKind?: string;
+  Start?: string;
+  CalendarEventId?: string;
+  NoteLink?: string;
+  AgendaJson?: string;
+  ActionsCreated?: boolean;
+}

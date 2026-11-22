@@ -122,3 +122,28 @@ export function useTaskActions() {
 }
 
 export const weekEnd = (today: string) => addDays(mondayOf(today), 6);
+
+/** Generic list reader for the smaller lists (they stay far under the view threshold). */
+export function useItems<T>(list: string, filter?: string, enabled = true) {
+  const { store } = useOps();
+  return useQuery({ queryKey: ['items', list, filter ?? ''], enabled, staleTime: 15_000, queryFn: () => store.items<T>(list, { filter }) });
+}
+
+export function useWrite() {
+  const { store } = useOps();
+  const qc = useQueryClient();
+  const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['items'] }), qc.invalidateQueries({ queryKey: ['tasks'] }), qc.invalidateQueries({ queryKey: ['lookup'] })]);
+  return {
+    create: async <T,>(list: string, fields: Record<string, unknown>) => { const r = await store.create<T>(list, fields); await refresh(); return r; },
+    update: async (list: string, id: number, fields: Record<string, unknown>) => { await store.update(list, id, fields); await refresh(); },
+  };
+}
+
+/** Open tasks plus done tasks, so milestone progress is complete. */
+export function useAllTasksForProgress() {
+  const open = useTasks();
+  const done = useItems<Task>('Tasks', "fields/Status eq 'Done'");
+  const byId = new Map<number, TaskItem>();
+  for (const t of [...(open.data ?? []), ...(done.data ?? [])]) byId.set(t.id, t);
+  return { tasks: [...byId.values()], loading: open.isLoading || done.isLoading };
+}

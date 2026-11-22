@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useOps } from './ctx';
 import { LISTS, schemaHash, validateSchema } from '../schema/lists';
 import { applyProvision, planProvision, type ProvisionPlan } from '../provision/provision';
+import { parseHubExport, planHubImport, planTrelloImport, seedMilestones } from './importRunner';
 
 export function AdminPage() {
   const { store } = useOps();
@@ -42,10 +43,45 @@ export function AdminPage() {
         </div>
       )}
       {log.length > 0 && <pre className="card overflow-x-auto text-xs" aria-label="Provisioning log">{log.join('\n')}</pre>}
+      <ImportPanel />
       <div className="card space-y-2 text-sm">
         <h2 className="font-semibold">Version history checklist (manual)</h2>
         <p>Microsoft Graph cannot change versioning. After provisioning, open each list in Microsoft Lists, choose List settings, then Versioning settings, and confirm that item version history is on. The record history tab depends on it.</p>
       </div>
     </section>
+  );
+}
+
+type Pending = { title: string; report: Record<string, number>; run: (p?: (m: string) => void) => Promise<string> };
+
+function ImportPanel() {
+  const { store } = useOps();
+  const [pending, setPending] = useState<Pending>();
+  const [msg, setMsg] = useState<string>();
+  const [busy, setBusy] = useState(false);
+  async function guarded(fn: () => Promise<void>) { setBusy(true); setMsg(undefined); try { await fn(); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } }
+  const readFile = (f: File | undefined) => f ? f.text() : Promise.reject(new Error('Please choose a file.'));
+  return (
+    <div className="card space-y-3 text-sm" aria-label="Seed and imports">
+      <h2 className="font-semibold">Seed and one-time imports</h2>
+      <p>Files are read in this browser and written only to your SharePoint lists. Each import shows a dry run first. Imports create new records and fill blank fields only; they never overwrite what you have edited.</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <button className="btn" disabled={busy} onClick={() => guarded(async () => setMsg(`Seeded ${await seedMilestones(store)} draft milestone(s) for confirmation.`))}>Seed end-of-February milestones</button>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div><label htmlFor="hub-file" className="mb-1 block font-medium">Hub export (People and Companies, JSON)</label>
+          <input id="hub-file" type="file" accept="application/json,.json" className="input" disabled={busy} onChange={(e) => guarded(async () => { const p = await planHubImport(store, parseHubExport(await readFile(e.target.files?.[0]))); setPending({ title: 'Hub import dry run', report: p.report as unknown as Record<string, number>, run: p.run }); })} /></div>
+        <div><label htmlFor="trello-file" className="mb-1 block font-medium">Trello board export (JSON)</label>
+          <input id="trello-file" type="file" accept="application/json,.json" className="input" disabled={busy} onChange={(e) => guarded(async () => { const p = await planTrelloImport(store, JSON.parse(await readFile(e.target.files?.[0]))); setPending({ title: 'Trello import dry run', report: p.report, run: p.run }); })} /></div>
+      </div>
+      {pending && (
+        <div className="rounded-md border border-slate-300 p-3" role="region" aria-label={pending.title}>
+          <h3 className="font-semibold">{pending.title}</h3>
+          <ul className="mt-1 list-disc pl-5">{Object.entries(pending.report).map(([k, v]) => <li key={k}>{k}: {v}</li>)}</ul>
+          <div className="mt-2 flex gap-2"><button className="btn btn-primary" disabled={busy} onClick={() => guarded(async () => { setMsg(await pending.run((m) => setMsg(m))); setPending(undefined); })}>Import now</button><button className="btn" onClick={() => setPending(undefined)}>Cancel</button></div>
+        </div>
+      )}
+      {msg && <p role="status">{msg}</p>}
+    </div>
   );
 }

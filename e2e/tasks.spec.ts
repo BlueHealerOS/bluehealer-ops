@@ -114,7 +114,7 @@ test.describe('mobile', () => {
     await nav.getByRole('button', { name: 'Add' }).click();
     await page.getByLabel('Quick add to Inbox').fill('Mobile captured item');
     await page.getByRole('button', { name: 'Add', exact: true }).last().click();
-    await nav.getByRole('link', { name: 'Proposed' }).click();
+    await page.goto('./#/tasks/proposed');
     await expect(page.getByText('Machine proposed task')).toBeVisible();
     await page.getByRole('button', { name: /Alerts/ }).click();
     await expect(page.getByRole('region', { name: 'Notifications' })).toBeVisible();

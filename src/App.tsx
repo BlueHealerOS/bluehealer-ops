@@ -11,6 +11,10 @@ import { Shell } from './ui/Shell';
 import { TasksPage } from './ui/TasksPage';
 import { SettingsPage } from './ui/SettingsPage';
 import { AdminPage } from './ui/AdminPage';
+import { MilestonesPage } from './ui/MilestonesPage';
+import { CrmPage } from './ui/CrmPage';
+import { TriagePage } from './ui/TriagePage';
+import { MeetingsPage } from './ui/MeetingsPage';
 import { TaskDrawer } from './ui/TaskDrawer';
 import { QuickAdd } from './ui/QuickAdd';
 import { useHashRoute } from './ui/router';
@@ -83,7 +87,7 @@ function Authed({ store, account, signOut }: { store: OpsStore; account: Account
   return (
     <OpsContext.Provider value={{ store, account, founder, setFounder, signOut: () => void signOut(), search, setSearch, quickAdd: () => setAdding(true), openTask: setOpen }}>
       <Shell>
-        {page === 'settings' ? <SettingsPage /> : page === 'admin' ? <AdminPage /> : <TasksPage />}
+        {page === 'settings' ? <SettingsPage /> : page === 'admin' ? <AdminPage /> : page === 'milestones' ? <MilestonesPage /> : page === 'crm' ? <CrmPage /> : page === 'triage' ? <TriagePage /> : page === 'meetings' ? <MeetingsPage /> : <TasksPage />}
       </Shell>
       {adding && <QuickAdd onClose={() => setAdding(false)} />}
       {open !== null && <TaskDrawer id={open} onClose={() => setOpen(null)} />}

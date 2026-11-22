@@ -79,6 +79,23 @@ export class OpsStore {
     return decodeItem<T>(this.def(name), raw);
   }
 
+  /** Create many items with $batch (20 per request). Returns one result per input, in order. */
+  async createMany(name: string, partials: Record<string, unknown>[]): Promise<{ id: number | null; status: number }[]> {
+    const def = this.def(name);
+    const base = await this.base(name);
+    for (const p of partials) this.guard(name, p);
+    const res = await this.client.batch(partials.map((p, i) => ({ id: String(i), method: 'POST', url: `${base}/items`, body: { fields: encodeFields(def, p) } })));
+    return res.map((r) => ({ status: r.status, id: r.status < 300 ? Number((r.body as { id: string }).id) : null }));
+  }
+
+  async updateMany(name: string, updates: { id: number; fields: Record<string, unknown> }[]): Promise<number> {
+    const def = this.def(name);
+    const base = await this.base(name);
+    for (const u of updates) this.guard(name, u.fields);
+    const res = await this.client.batch(updates.map((u, i) => ({ id: String(i), method: 'PATCH', url: `${base}/items/${u.id}/fields`, body: encodeFields(def, u.fields) })));
+    return res.filter((r) => r.status < 300).length;
+  }
+
   async update(name: string, id: number, partial: Record<string, unknown>): Promise<void> {
     this.guard(name, partial);
     await this.client.request('PATCH', `${await this.base(name)}/items/${id}/fields`, { body: encodeFields(this.def(name), partial) });

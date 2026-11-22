@@ -9,13 +9,14 @@ export interface FakeState {
   pageSize: number;
   lists: FList[];
   drafts: { subject: string; to: string[] }[];
+  events: { id: string; subject: string; start: { dateTime: string } }[];
   requests: { method: string; path: string }[];
   now: () => string;
 }
 export interface Handled { status: number; body: unknown; headers?: Record<string, string> }
 
 export function createFakeGraph(init: Partial<FakeState> = {}) {
-  const state: FakeState = { forbidden: false, throttleNext: 0, pageSize: 200, lists: [], drafts: [], requests: [], now: () => new Date().toISOString(), ...init };
+  const state: FakeState = { forbidden: false, throttleNext: 0, pageSize: 200, lists: [], drafts: [], events: [], requests: [], now: () => new Date().toISOString(), ...init };
   let seq = 0;
   const err = (status: number, code: string): Handled => ({ status, body: { error: { code, message: code } } });
 
@@ -51,6 +52,7 @@ export function createFakeGraph(init: Partial<FakeState> = {}) {
       const reqs = (body as { requests: { id: string; method: string; url: string; body?: unknown }[] }).requests;
       return { status: 200, body: { responses: reqs.map((r) => { const h = handle(r.method, `https://graph.microsoft.com/v1.0${r.url}`, r.body); return { id: r.id, status: h.status, body: h.body }; }) } };
     }
+    if (method === 'GET' && path === '/me/calendarView') return { status: 200, body: { value: state.events } };
     if (method === 'POST' && path === '/me/messages') {
       const b = body as { subject: string; toRecipients: { emailAddress: { address: string } }[] };
       state.drafts.push({ subject: b.subject, to: b.toRecipients.map((r) => r.emailAddress.address) });

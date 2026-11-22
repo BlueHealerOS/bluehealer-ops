@@ -131,8 +131,11 @@ On approval, the first commit (branch `plan/spec`) adds `docs/SPEC.md` (this spe
 - Default views: My Today, Jay this week, Overdue, Waiting on others, Proposed, February milestones, Investor follow-ups, Applications due in 14 days, Overdue contacts, Restricted.
 
 ## Build status
-- Phase 1a built (see README Status). Schema is authored as TypeScript in `src/schema/lists.ts` (validated with zod) instead of a JSON file; the content is as specified in the plan.
-- Deferred from 1a to 1b: Milestones, CRM, Intake and Triage views, Meetings, imports, Outlook composer UI, custom snooze time.
+- Phase 1 (1a and 1b) built; see README Status. Both parts are on one branch and one pull request because this session could push to a single branch.
+- The schema is authored as TypeScript in `src/schema/lists.ts` (validated with zod) instead of a JSON file; the content is as specified in the plan.
+- Imports create new records and fill blank fields only. They never overwrite a founder's edits (stricter than the plan's timestamp comparison).
+- The end-of-February milestone titles are in code (`src/domain/milestones.ts`) and are created as drafts from the Admin page.
+- Not yet built: custom snooze time, a person field on Intake accept for CRM interactions, Outlook calendar matching beyond title keywords, F3 and F5 flows (Phase 2).
 
 ## Phases (one pull request each)
 - Phase 0 (Santiago, manual, guided by `docs/SETUP.md`): Entra app registration (SPA redirect URI for the Pages URL and localhost), admin consent for the chosen scopes, SharePoint permissions for the lists, intake mailbox, GitHub Pages enabled.

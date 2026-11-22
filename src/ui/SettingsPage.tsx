@@ -10,6 +10,9 @@ export function SettingsPage() {
   return (
     <section className="max-w-2xl space-y-6" aria-labelledby="set-h">
       <h1 id="set-h" className="text-xl font-semibold">Settings</h1>
+      <nav aria-label="More" className="card flex flex-wrap gap-2 sm:hidden">
+        {[['milestones', 'Milestones'], ['meetings', 'Meetings'], ['admin', 'Admin']].map(([h, l]) => <a key={h} className="btn" href={`#/${h}`}>{l}</a>)}
+      </nav>
       <div className="card space-y-2">
         <h2 className="font-semibold">You</h2>
         <p className="text-sm">Signed in as {account.name}. Choose which founder you are, so My Today and reminders match your work. This is remembered on this device only.</p>
