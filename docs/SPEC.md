@@ -130,6 +130,10 @@ On approval, the first commit (branch `plan/spec`) adds `docs/SPEC.md` (this spe
 - AND across facets, OR within a facet. Saved and pinned views, stored in the Settings list; view URLs carry filters only, never record content.
 - Default views: My Today, Jay this week, Overdue, Waiting on others, Proposed, February milestones, Investor follow-ups, Applications due in 14 days, Overdue contacts, Restricted.
 
+## Build status
+- Phase 1a built (see README Status). Schema is authored as TypeScript in `src/schema/lists.ts` (validated with zod) instead of a JSON file; the content is as specified in the plan.
+- Deferred from 1a to 1b: Milestones, CRM, Intake and Triage views, Meetings, imports, Outlook composer UI, custom snooze time.
+
 ## Phases (one pull request each)
 - Phase 0 (Santiago, manual, guided by `docs/SETUP.md`): Entra app registration (SPA redirect URI for the Pages URL and localhost), admin consent for the chosen scopes, SharePoint permissions for the lists, intake mailbox, GitHub Pages enabled.
 - Phase 1 (MVP, target 2 weeks): sign-in, provisioning from schema, labels and filters, tasks with all views, milestones with timeline, CRM with follow-ups and investor pipeline, interactions, overdue contacts, intake and triage view, meeting agendas, in-app notifications, Outlook draft composer, imports (dry run then import), Settings. Flow guides for intake and the daily digest.

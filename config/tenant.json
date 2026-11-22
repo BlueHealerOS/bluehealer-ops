@@ -1,0 +1,8 @@
+{
+  "_comment": "Identifiers only, not secrets. Replace the placeholders in a pull request after Phase 0 (see docs/SETUP.md).",
+  "tenantId": "00000000-0000-0000-0000-000000000000",
+  "clientId": "00000000-0000-0000-0000-000000000000",
+  "siteHostname": "bluehealer.sharepoint.com",
+  "sitePath": "/sites/BlueHealerOps",
+  "redirectUri": "https://bluehealeros.github.io/bluehealer-ops/"
+}

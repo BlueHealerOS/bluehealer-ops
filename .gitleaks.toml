@@ -1,0 +1,3 @@
+# Default rules apply. No secrets exist in this design (SPA with PKCE has no client secret).
+[extend]
+useDefault = true

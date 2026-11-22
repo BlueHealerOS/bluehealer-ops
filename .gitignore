@@ -1,0 +1,14 @@
+node_modules/
+dist/
+dist-e2e/
+playwright-report/
+test-results/
+coverage/
+*.log
+.env
+.env.*
+.DS_Store
+# Data exports must never be committed (public repository rules)
+hub-export*.json
+trello*.json
+exports/

@@ -1,0 +1,10 @@
+{
+  "name": "BlueHealer Ops",
+  "short_name": "Ops",
+  "start_url": "/bluehealer-ops/",
+  "scope": "/bluehealer-ops/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f3d5e",
+  "icons": [{ "src": "/bluehealer-ops/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
