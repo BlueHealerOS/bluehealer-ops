@@ -49,7 +49,7 @@ export function MeetingsPage() {
   void founder;
   return (
     <section aria-labelledby="mt-h" className="space-y-4">
-      <h1 id="mt-h" className="text-xl font-semibold">Meetings</h1>
+      <h1 id="mt-h" className="text-[1.75rem] md:text-display">Meetings</h1>
       <div className="card space-y-2">
         <h2 className="font-semibold">From your Outlook calendar (next 14 days)</h2>
         {events.isLoading && <Loading what="calendar" />}
@@ -64,7 +64,7 @@ export function MeetingsPage() {
           ))}
         </ul>
         <button className="btn" onClick={() => void create('Ad hoc meeting', 'ad hoc', today)}>New ad hoc meeting</button>
-        {err && <p role="alert" className="text-sm text-red-800">{err}</p>}
+        {err && <p role="alert" className="text-sm text-danger">{err}</p>}
       </div>
       <ul className="space-y-3" aria-label="Meeting records">
         {[...(meetings.data ?? [])].sort((a, b) => (b.Start ?? '').localeCompare(a.Start ?? '')).map((m) => <MeetingCard key={m.id} m={m} open={open === m.id} toggle={() => setOpen(open === m.id ? null : m.id)} refreshAgenda={() => w.update('Meetings', m.id, { AgendaJson: JSON.stringify(agendaFor()) })} />)}
@@ -90,12 +90,12 @@ function MeetingCard({ m, open, toggle, refreshAgenda }: { m: MeetingRec; open: 
   }
   return (
     <li className="card">
-      <button className="w-full text-left" aria-expanded={open} onClick={toggle}><span className="font-medium">{m.Title}</span> <span className="chip">{m.MeetingKind}</span> {m.Start && <span className="text-xs text-slate-700">{m.Start.slice(0, 10)}</span>}</button>
+      <button className="w-full text-left" aria-expanded={open} onClick={toggle}><span className="font-medium">{m.Title}</span> <span className="chip">{m.MeetingKind}</span> {m.Start && <span className="text-xs text-ink-muted">{m.Start.slice(0, 10)}</span>}</button>
       {open && (
         <div className="mt-3 space-y-3">
           {(['flagged', 'overdue', 'decisions'] as const).map((k) => (
             <div key={k}><h3 className="text-sm font-semibold">{{ flagged: 'Flagged for agenda', overdue: 'Overdue items', decisions: 'Decisions needed' }[k]}</h3>
-              {(agenda[k] ?? []).length ? <ul className="list-disc pl-5 text-sm">{agenda[k]!.map((t) => <li key={t.id}>{t.title}</li>)}</ul> : <p className="text-sm text-slate-700">None.</p>}</div>
+              {(agenda[k] ?? []).length ? <ul className="list-disc pl-5 text-sm">{agenda[k]!.map((t) => <li key={t.id}>{t.title}</li>)}</ul> : <p className="text-sm text-ink-muted">None.</p>}</div>
           ))}
           <button className="btn" onClick={() => void refreshAgenda()}>Refresh agenda</button>
           <div><label className="mb-1 block text-sm font-medium" htmlFor={`a-${m.id}`}>Action items (one per line)</label><textarea id={`a-${m.id}`} className="input" rows={3} value={actions} onChange={(e) => setActions(e.target.value)} /></div>

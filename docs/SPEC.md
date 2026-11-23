@@ -68,7 +68,7 @@ On approval, the first commit (branch `plan/spec`) adds `docs/SPEC.md` (this spe
 - Fields: title, description, owner, status, priority (P0 to P3), due date, start date, estimate, recurrence, contribution type, links, labels, checklist, blocked by, source, sensitivity.
 - Statuses: Proposed, Inbox, Next, In progress, Waiting (with waiting-on and expected date), Done (optional outcome note), Dropped (reason).
 - Contribution type, required to leave Inbox: Milestone, Key result, Application, Fundraising follow-up, Relationship, Operations. Strategic types require a link to the matching record; Operations does not.
-- Views: Today (capped, default 7), This week, Board, List, Calendar, Waiting on others, Proposed, Done this week.
+- Views: Today (capped, default 7), This week, Board, List, Calendar, Waiting on others, Suggested, Done this week, Needs attention.
 - Recurring tasks create the next instance on completion.
 - Meeting agendas: a Meeting record (Monday, Wednesday, Friday or ad hoc from the Outlook calendar) collects items flagged for agenda, overdue items and decisions needed; afterwards, action items become tasks in one step; link the Granola or hub note.
 
@@ -114,7 +114,7 @@ On approval, the first commit (branch `plan/spec`) adds `docs/SPEC.md` (this spe
 3. Triage (founder): the Triage view lists proposals; accept, edit then accept, convert type, or reject, one click each. Nothing becomes active without a founder action. Intel is kept as an Intake item of type Intel with link and summary. Hub knowledge notes are exported as markdown for a hub pull request; the app never writes to the hub.
 4. Plan: weekly planning shows milestones and KRs at risk first, then candidate tasks ranked by priority, due date and contribution; founders pull tasks into This week. Each morning, Today is proposed from This week plus due items, capped.
 5. Execute and close: optional outcome note for strategic tasks; completion updates milestone progress and, for KR-linked tasks, asks whether the KR value changed.
-6. Hygiene list (weekly): unlinked strategic tasks, Inbox items older than 3 days, Next tasks without dates older than 14 days.
+6. Needs attention list (weekly): unlinked strategic tasks, Inbox items older than 3 days, Next tasks without dates older than 14 days.
 7. Routine read access: routines read lists through the Microsoft 365 connector where it supports this (to verify), otherwise through a founders-only export file the Friday flow writes to SharePoint. Restricted records are excluded from both.
 
 ## Labels and filtering
@@ -128,7 +128,7 @@ On approval, the first commit (branch `plan/spec`) adds `docs/SPEC.md` (this spe
   - Due window: overdue, today, this week, next 14 days, no date.
 - Free tags allowed, suggested from existing tags.
 - AND across facets, OR within a facet. Saved and pinned views, stored in the Settings list; view URLs carry filters only, never record content.
-- Default views: My Today, Jay this week, Overdue, Waiting on others, Proposed, February milestones, Investor follow-ups, Applications due in 14 days, Overdue contacts, Restricted.
+- Default views: My Today, Jay this week, Overdue, Waiting on others, Suggested, February milestones, Investor follow-ups, Applications due in 14 days, Overdue contacts, Restricted.
 
 ## Build status
 - Phase 1 (1a and 1b) built; see README Status. Both parts are on one branch and one pull request because this session could push to a single branch.
@@ -140,7 +140,7 @@ On approval, the first commit (branch `plan/spec`) adds `docs/SPEC.md` (this spe
 ## Phases (one pull request each)
 - Phase 0 (Santiago, manual, guided by `docs/SETUP.md`): Entra app registration (SPA redirect URI for the Pages URL and localhost), admin consent for the chosen scopes, SharePoint permissions for the lists, intake mailbox, GitHub Pages enabled.
 - Phase 1 (MVP, target 2 weeks): sign-in, provisioning from schema, labels and filters, tasks with all views, milestones with timeline, CRM with follow-ups and investor pipeline, interactions, overdue contacts, intake and triage view, meeting agendas, in-app notifications, Outlook draft composer, imports (dry run then import), Settings. Flow guides for intake and the daily digest.
-- Phase 2: applications and answer bank, meeting packs flows, proposals flow for routines, hygiene list, KR prompts.
+- Phase 2: applications and answer bank, meeting packs flows, proposals flow for routines, Needs attention list, KR prompts.
 - Phase 3: OKRs and KPIs with computed metrics, analytics, PWA offline read cache (no record content persisted beyond the session unless a founder enables it).
 - Each phase updates `docs/SPEC.md` and `README.md` and includes a demo script.
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Icon } from './icons';
 import { useOps } from './ctx';
 import { useNow, useReminderLog, useTaskActions, useTasks, type TaskItem } from './data';
 import { etToday, inQuietHours } from '../domain/time';
@@ -25,11 +26,12 @@ export function NotificationBell() {
   const quiet = inQuietHours(now); // quiet hours hide the badge, not the list
   return (
     <div className="relative">
-      <button className="btn" aria-expanded={open} aria-controls="notif-panel" onClick={() => setOpen(!open)}>
-        Alerts{!quiet && reminders.length > 0 && <span aria-label={`${reminders.length} reminders`} className="ml-2 rounded-full bg-red-700 px-2 text-xs text-white">{reminders.length}</span>}
+      <button className="btn relative !px-2.5 lg:!px-3" aria-expanded={open} aria-controls="notif-panel" onClick={() => setOpen(!open)}>
+        <Icon name="bell" className="h-5 w-5" /><span className="sr-only lg:not-sr-only">Alerts</span>
+        {!quiet && reminders.length > 0 && <span aria-label={`${reminders.length} reminders`} className="min-w-5 rounded-pill bg-signal px-1.5 text-center text-xs font-semibold text-ink">{reminders.length}</span>}
       </button>
       {open && (
-        <div id="notif-panel" role="region" aria-label="Notifications" className="absolute right-0 z-30 mt-2 max-h-[70vh] w-[min(92vw,26rem)] overflow-y-auto rounded-lg border border-slate-300 bg-white p-3 shadow-xl">
+        <div id="notif-panel" role="region" aria-label="Notifications" className="absolute right-0 z-30 mt-2 max-h-[70vh] w-[min(92vw,26rem)] overflow-y-auto rounded-card border border-hairline bg-surface p-3 shadow-float">
           {reminders.length === 0 ? <p className="p-2 text-sm">No reminders right now.</p> : (
             <ul className="space-y-2">
               {reminders.map((r) => {
@@ -37,7 +39,7 @@ export function NotificationBell() {
                 return (
                   <li key={r.id} className="card p-2 text-sm">
                     <button className="text-left font-medium underline" onClick={() => { if (r.list === 'Tasks') openTask(r.recordId); setOpen(false); }}>{r.title}</button>
-                    <div className="text-slate-700">{r.detail}</div>
+                    <div className="text-ink-muted">{r.detail}</div>
                     <div className="mt-2 flex flex-wrap gap-1">
                       {Object.entries(snoozeOptions(now, today)).map(([label, until]) => (
                         <button key={label} className="btn !min-h-8 !px-2 !py-1 text-xs" onClick={() => actions.snooze.mutate({ list: r.list, recordId: r.recordId, trigger: r.trigger, until })}>Snooze: {label}</button>

@@ -132,7 +132,7 @@ export function useItems<T>(list: string, filter?: string, enabled = true) {
 export function useWrite() {
   const { store } = useOps();
   const qc = useQueryClient();
-  const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['items'] }), qc.invalidateQueries({ queryKey: ['tasks'] }), qc.invalidateQueries({ queryKey: ['lookup'] })]);
+  const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['items'] }), qc.invalidateQueries({ queryKey: ['tasks'] }), qc.invalidateQueries({ queryKey: ['lookup'] }), qc.invalidateQueries({ queryKey: ['nav'] })]);
   return {
     create: async <T,>(list: string, fields: Record<string, unknown>) => { const r = await store.create<T>(list, fields); await refresh(); return r; },
     update: async (list: string, id: number, fields: Record<string, unknown>) => { await store.update(list, id, fields); await refresh(); },

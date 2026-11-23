@@ -21,11 +21,11 @@ export function MilestonesPage() {
   return (
     <section aria-labelledby="ms-h" className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 id="ms-h" className="text-xl font-semibold">Milestones</h1>
+        <h1 id="ms-h" className="text-[1.75rem] md:text-display">Milestones</h1>
         <button className="btn btn-primary" onClick={() => setEditing('new')}>New milestone</button>
       </div>
       {q.isLoading && <Loading what="milestones" />}
-      {!q.isLoading && ms.length === 0 && <Empty>No milestones yet. An administrator can seed the end-of-February drafts on the Admin page.</Empty>}
+      {!q.isLoading && ms.length === 0 && <Empty>No milestones yet. An administrator can seed the end-of-February drafts under Settings, in lists and imports.</Empty>}
       {ms.length > 0 && <Timeline ms={ms} today={today} />}
       {tracks.map((tr) => (
         <section key={tr} aria-label={tr}>
@@ -47,8 +47,8 @@ export function MilestonesPage() {
                     </span>
                   </button>
                   <div className="w-40" aria-label={`Task progress ${p.done} of ${p.total}`}>
-                    <div className="h-2 rounded bg-slate-200"><div className="h-2 rounded bg-sky-700" style={{ width: `${p.pct}%` }} /></div>
-                    <div className="mt-1 text-xs text-slate-700">{p.total ? `${p.done} of ${p.total} tasks done` : 'No linked tasks'}</div>
+                    <div className="h-2 rounded bg-canvas"><div className="h-2 rounded bg-primary" style={{ width: `${p.pct}%` }} /></div>
+                    <div className="mt-1 text-xs text-ink-muted">{p.total ? `${p.done} of ${p.total} tasks done` : 'No linked tasks'}</div>
                   </div>
                 </li>
               );
@@ -87,7 +87,7 @@ function Timeline({ ms, today }: { ms: MilestoneFull[]; today: string }) {
           );
         })}
       </svg>
-      <p className="mt-1 text-xs text-slate-700">Filled diamond: target date. Hollow circle: baseline when the target has moved. Dashed blue line: today.</p>
+      <p className="mt-1 text-xs text-ink-muted">Filled diamond: target date. Hollow circle: baseline when the target has moved. Dashed blue line: today.</p>
     </div>
   );
 }
@@ -118,13 +118,13 @@ function MilestoneForm({ m, defaultOwner, onClose }: { m?: MilestoneFull; defaul
             <Select label="Owner" value={d.Owner} options={C.OWNERS} onChange={(v) => set('Owner', v as MilestoneFull['Owner'])} />
             <Select label="Status (owner's call)" value={d.Status} options={C.MILESTONE_STATUS} onChange={(v) => set('Status', v as MilestoneFull['Status'])} />
             <div><label className={lab} htmlFor="m-td">Target date</label><input id="m-td" type="date" className="input" value={d.TargetDate ?? ''} onChange={(e) => set('TargetDate', e.target.value)} /></div>
-            <div><label className={lab}>Baseline date</label><p className="input bg-slate-100">{m?.BaselineDate ?? d.TargetDate ?? 'Set on save'}</p></div>
+            <div><label className={lab}>Baseline date</label><p className="input bg-canvas">{m?.BaselineDate ?? d.TargetDate ?? 'Set on save'}</p></div>
             <Select label="Approval gate" value={d.ApprovalGate} options={C.APPROVAL_GATE} onChange={(v) => set('ApprovalGate', v)} />
             <div><label className={lab} htmlFor="m-ad">Approval date</label><input id="m-ad" type="date" className="input" value={d.ApprovedDate ?? ''} onChange={(e) => set('ApprovedDate', e.target.value)} /></div>
             <Select label="Sensitivity" value={d.Sensitivity ?? 'normal'} options={C.SENSITIVITY} onChange={(v) => set('Sensitivity', v as MilestoneFull['Sensitivity'])} />
           </div>
           <div><label className={lab} htmlFor="m-e">Evidence links (SharePoint or hub paths, one per line)</label><textarea id="m-e" className="input" rows={3} value={d.EvidenceLinks ?? ''} onChange={(e) => set('EvidenceLinks', e.target.value)} /></div>
-          {err && <p role="alert" className="rounded-md bg-red-50 p-2 text-sm text-red-800">{err}</p>}
+          {err && <p role="alert" className="rounded-md bg-danger-soft p-2 text-sm text-danger">{err}</p>}
           <div className="flex gap-2"><button className="btn btn-primary" type="submit">Save</button><button className="btn" type="button" onClick={onClose}>Cancel</button></div>
         </form>
       </aside>

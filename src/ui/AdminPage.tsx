@@ -18,9 +18,10 @@ export function AdminPage() {
   }
   return (
     <section className="max-w-3xl space-y-4" aria-labelledby="adm-h">
-      <h1 id="adm-h" className="text-xl font-semibold">Admin: lists</h1>
+      <a href="#/settings" className="text-sm text-primary-strong underline">Back to settings</a>
+      <h1 id="adm-h" className="text-[1.75rem] md:text-display">Lists and imports</h1>
       <p className="text-sm">Creates or updates the SharePoint lists and columns from the schema in this app (version {schemaHash(LISTS)}). It never deletes or renames anything, and running it again changes nothing. Review the dry run first.</p>
-      {problems.length > 0 && <p role="alert" className="text-red-800">Schema problems: {problems.join('; ')}</p>}
+      {problems.length > 0 && <p role="alert" className="text-danger">Schema problems: {problems.join('; ')}</p>}
       <div className="flex gap-2">
         <button className="btn btn-primary" disabled={busy} onClick={() => run(async () => { setLog([]); setPlan(await planProvision(store.client, await store.siteId(), LISTS)); })}>Dry run</button>
         <button className="btn" disabled={busy || !plan || plan.changes === 0} onClick={() => run(async () => {
@@ -30,7 +31,7 @@ export function AdminPage() {
           setPlan(await planProvision(store.client, plan!.siteId, LISTS));
         })}>Apply {plan ? `(${plan.changes} changes)` : ''}</button>
       </div>
-      {error && <p role="alert" className="rounded-md bg-red-50 p-2 text-sm text-red-800">{error}</p>}
+      {error && <p role="alert" className="rounded-md bg-danger-soft p-2 text-sm text-danger">{error}</p>}
       {plan && (
         <div className="card text-sm" aria-label="Dry run result">
           {plan.changes === 0 ? <p>Everything is up to date.</p> : (
@@ -75,7 +76,7 @@ function ImportPanel() {
           <input id="trello-file" type="file" accept="application/json,.json" className="input" disabled={busy} onChange={(e) => guarded(async () => { const p = await planTrelloImport(store, JSON.parse(await readFile(e.target.files?.[0]))); setPending({ title: 'Trello import dry run', report: p.report, run: p.run }); })} /></div>
       </div>
       {pending && (
-        <div className="rounded-md border border-slate-300 p-3" role="region" aria-label={pending.title}>
+        <div className="rounded-md border border-hairline p-3" role="region" aria-label={pending.title}>
           <h3 className="font-semibold">{pending.title}</h3>
           <ul className="mt-1 list-disc pl-5">{Object.entries(pending.report).map(([k, v]) => <li key={k}>{k}: {v}</li>)}</ul>
           <div className="mt-2 flex gap-2"><button className="btn btn-primary" disabled={busy} onClick={() => guarded(async () => { setMsg(await pending.run((m) => setMsg(m))); setPending(undefined); })}>Import now</button><button className="btn" onClick={() => setPending(undefined)}>Cancel</button></div>

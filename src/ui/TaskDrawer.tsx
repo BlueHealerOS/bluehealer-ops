@@ -61,7 +61,7 @@ export function TaskDrawer({ id, onClose }: { id: number | 'new'; onClose: () =>
     onClose();
   }
 
-  const lab = 'block text-sm font-medium text-slate-800 mb-1';
+  const lab = 'block text-sm font-medium text-ink mb-1';
   return (
     <div className="fixed inset-0 z-40 flex justify-end bg-black/40" role="presentation" onClick={onClose}>
       <aside role="dialog" aria-modal="true" aria-label={id === 'new' ? 'New task' : 'Edit task'} className="h-full w-full max-w-xl overflow-y-auto bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
@@ -93,7 +93,7 @@ export function TaskDrawer({ id, onClose }: { id: number | 'new'; onClose: () =>
                   <option value="">Choose…</option>
                   {(lookup.data ?? []).map((m) => <option key={m.id} value={m.id}>{m.Title}</option>)}
                 </select>
-                {lookup.data?.length === 0 && <p className="mt-1 text-xs text-slate-600">No {req.list} records exist yet. Add one first, or choose Operations.</p>}
+                {lookup.data?.length === 0 && <p className="mt-1 text-xs text-ink-muted">No {req.list} records exist yet. Add one first, or choose Operations.</p>}
               </div>
             )}
             <div className="grid grid-cols-2 gap-3">
@@ -129,7 +129,7 @@ export function TaskDrawer({ id, onClose }: { id: number | 'new'; onClose: () =>
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={!!draft.ThisWeek} onChange={(e) => set('ThisWeek', e.target.checked)} /> This week</label>
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={!!draft.Agenda} onChange={(e) => set('Agenda', e.target.checked)} /> Flag for agenda</label>
             </div>
-            {error && <p role="alert" className="rounded-md bg-red-50 p-2 text-sm text-red-800">{error}</p>}
+            {error && <p role="alert" className="rounded-md bg-danger-soft p-2 text-sm text-danger">{error}</p>}
             <div className="flex flex-wrap items-center gap-2 pt-2">
               <button type="submit" className="btn btn-primary" disabled={actions.save.isPending}>Save</button>
               {existing && existing.Status !== 'Done' && (
@@ -141,7 +141,7 @@ export function TaskDrawer({ id, onClose }: { id: number | 'new'; onClose: () =>
             </div>
           </form>
         )}
-        <p className="mt-4 text-xs text-slate-600">{existing?._modified ? `Last modified ${existing._modified.slice(0, 16).replace('T', ' ')} UTC` : ''}</p>
+        <p className="mt-4 text-xs text-ink-muted">{existing?._modified ? `Last modified ${existing._modified.slice(0, 16).replace('T', ' ')} UTC` : ''}</p>
       </aside>
     </div>
   );
@@ -161,7 +161,7 @@ function History({ id }: { id: number }) {
         return (
           <li key={v.id} className="card text-sm">
             <div className="font-medium">Version {v.id} · {v.modified?.slice(0, 16).replace('T', ' ')} UTC · {v.by ?? 'unknown'}</div>
-            <div className="text-slate-700">{prev ? (changed.length ? `Changed: ${changed.join(', ')}` : 'No field changes') : 'Created'}</div>
+            <div className="text-ink-muted">{prev ? (changed.length ? `Changed: ${changed.join(', ')}` : 'No field changes') : 'Created'}</div>
           </li>
         );
       })}
