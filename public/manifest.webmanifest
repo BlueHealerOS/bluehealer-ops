@@ -5,6 +5,6 @@
   "scope": "/bluehealer-ops/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0f3d5e",
+  "theme_color": "#ffffff",
   "icons": [{ "src": "/bluehealer-ops/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
 }

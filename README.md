@@ -18,7 +18,7 @@ This repository contains code only. No records, contacts, documents or credentia
 - Demo scripts: [Phase 1a](docs/demo/phase-1a.md), [Phase 1b](docs/demo/phase-1b.md)
 
 ## Status
-Phase 1 is built: sign-in gate, list provisioning from a schema, tasks (Today, This week, Board, List, Calendar, Waiting, Proposed, Done, Hygiene), facet filters, quick add, notifications with snooze, record history, milestones with timeline, relationships (people, organizations, investor follow-ups, overdue contacts), interaction logging, Outlook drafts, intake triage, meetings with agendas, one-time imports (hub and Trello) and Settings and Admin. Phases 2 and 3 (applications, answer bank, meeting-pack flows, OKRs, KPIs) are next. See `docs/PLAN.md`.
+Phase 1 is built: sign-in gate, list provisioning from a schema, tasks (Today, This week, Board, List, Calendar, Waiting, Suggested, Done, Needs attention), facet filters, quick add, notifications with snooze, record history, milestones with timeline, relationships (people, organizations, investor follow-ups, overdue contacts), interaction logging, Outlook drafts, intake triage, meetings with agendas, one-time imports (hub and Trello) and Settings and Admin. Phases 2 and 3 (applications, answer bank, meeting-pack flows, OKRs, KPIs) are next. See `docs/PLAN.md`.
 
 ## Development
 ```bash

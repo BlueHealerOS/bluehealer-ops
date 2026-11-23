@@ -17,7 +17,7 @@ test.describe('tasks', () => {
   test('quick add with the n key creates an Inbox task', async ({ page }) => {
     await setup(page);
     await page.goto('./#/tasks/board');
-    await expect(page.getByRole('navigation', { name: 'Task views' })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
     await page.keyboard.press('n');
     await page.getByLabel('Quick add to Inbox').fill('Call fictional contact');
     await page.keyboard.press('Enter');

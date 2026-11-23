@@ -77,8 +77,8 @@ function Authed({ store, account, signOut }: { store: OpsStore; account: Account
   if (!founder) {
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-4 p-6 text-center">
-        <h1 className="text-xl font-semibold">Who is signed in?</h1>
-        <p className="text-sm text-slate-700">Please choose your name. It is remembered on this device only.</p>
+        <h1 className="text-[1.75rem]">Who is signed in?</h1>
+        <p className="text-sm text-ink-muted">Please choose your name. It is remembered on this device only.</p>
         <div className="flex gap-2">{(['Santiago', 'Jay'] as const).map((f) => <button key={f} className="btn btn-primary" onClick={() => setFounder(f)}>{f}</button>)}</div>
       </main>
     );

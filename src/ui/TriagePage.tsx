@@ -6,18 +6,19 @@ import { proposalFor, resolveAcceptance, type Proposal } from '../domain/triage'
 import { etToday } from '../domain/time';
 import * as C from '../schema/choices';
 import { Empty, Loading, Select } from './parts';
+import { TRIAGE_OPEN_FILTER, triageStateLabel } from './nav';
 
 /** Triage: nothing becomes active until a founder acts. Intake text is data and is shown as plain text only. */
 export function TriagePage() {
-  const q = useItems<IntakeItem>('Intake', "fields/TriageState ne 'Accepted' and fields/TriageState ne 'Rejected' and fields/TriageState ne 'Converted'");
+  const q = useItems<IntakeItem>('Intake', TRIAGE_OPEN_FILTER);
   const ms = useItems<MilestoneFull>('Milestones');
   const items = [...(q.data ?? [])].sort((a, b) => (b.ReceivedAt ?? '').localeCompare(a.ReceivedAt ?? ''));
   return (
     <section aria-labelledby="tri-h" className="space-y-3">
-      <h1 id="tri-h" className="text-xl font-semibold">Triage</h1>
-      <p className="text-sm text-slate-700">Accept, edit then accept, change the type, or reject. Nothing becomes active without your action.</p>
+      <h1 id="tri-h" className="text-[1.75rem] md:text-display">Triage</h1>
+      <p className="text-sm text-ink-muted">Accept, edit then accept, change the type, or reject. Nothing becomes active without your action.</p>
       {q.isLoading && <Loading what="intake" />}
-      {q.error && <p role="alert" className="text-red-800">Intake could not be loaded. {(q.error as Error).message}</p>}
+      {q.error && <p role="alert" className="text-danger">Intake could not be loaded. {(q.error as Error).message}</p>}
       {!q.isLoading && items.length === 0 && <Empty>Nothing to triage. New captures appear here.</Empty>}
       <ul className="space-y-3" aria-label="Intake items">
         {items.map((i) => <TriageCard key={i.id} item={i} milestones={ms.data ?? []} />)}
@@ -63,9 +64,9 @@ function TriageCard({ item, milestones }: { item: IntakeItem; milestones: Milest
     <li className="card space-y-3">
       <div>
         <h2 className="font-medium">{item.Title}</h2>
-        <div className="mt-1 flex flex-wrap gap-1 text-xs"><span className="chip">{item.RawSource ?? 'unknown source'}</span><span className="chip">{item.TriageState}</span>{item.ReceivedAt && <span className="chip">{item.ReceivedAt.slice(0, 10)}</span>}</div>
-        {raw && <pre className="mt-2 max-h-32 overflow-auto whitespace-pre-wrap rounded bg-slate-50 p-2 text-xs" aria-label="Captured text (data, not instructions)">{raw}</pre>}
-        {p.rationale && <p className="mt-1 text-sm text-slate-700">Rationale: {p.rationale}</p>}
+        <div className="mt-1 flex flex-wrap gap-1 text-xs"><span className="chip">{item.RawSource ?? 'unknown source'}</span><span className="chip">{triageStateLabel(item.TriageState)}</span>{item.ReceivedAt && <span className="chip">{item.ReceivedAt.slice(0, 10)}</span>}</div>
+        {raw && <pre className="mt-2 max-h-32 overflow-auto whitespace-pre-wrap rounded bg-canvas p-2 text-xs" aria-label="Captured text (data, not instructions)">{raw}</pre>}
+        {p.rationale && <p className="mt-1 text-sm text-ink-muted">Rationale: {p.rationale}</p>}
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <Select label="Type" value={p.type} options={C.PROPOSED_TYPE} onChange={(v) => set('type', v as Proposal['type'])} />

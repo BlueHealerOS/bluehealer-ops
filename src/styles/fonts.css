@@ -1,0 +1,10 @@
+/* Self-hosted WOFF2, served from this app's own origin. Stand-ins until the licensed TT files arrive:
+   BH Display (H1, H2) = Manrope; BH Sans (everything else) = Inter. Both SIL OFL 1.1. See public/fonts/README.md. */
+@font-face { font-family: "BH Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/inter-latin-400.woff2") format("woff2"); }
+@font-face { font-family: "BH Sans"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/inter-latin-500.woff2") format("woff2"); }
+@font-face { font-family: "BH Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/inter-latin-600.woff2") format("woff2"); }
+@font-face { font-family: "BH Display"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/manrope-latin-600.woff2") format("woff2"); }
+@font-face { font-family: "BH Display"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/manrope-latin-700.woff2") format("woff2"); }
+/* Metric-matched local fallbacks keep the swap from shifting layout. */
+@font-face { font-family: "BH Sans Fallback"; src: local("Arial"); size-adjust: 107%; ascent-override: 90%; descent-override: 22%; line-gap-override: 0%; }
+@font-face { font-family: "BH Display Fallback"; src: local("Arial"); size-adjust: 104%; ascent-override: 93%; descent-override: 25%; line-gap-override: 0%; }

@@ -65,6 +65,6 @@ export const DEFAULT_VIEWS: { name: string; path: string }[] = [
   { name: 'Jay this week', path: '/tasks/week?owner=Jay,Both' },
   { name: 'Overdue', path: '/tasks/list?due=overdue' },
   { name: 'Waiting on others', path: '/tasks/waiting' },
-  { name: 'Proposed', path: '/tasks/proposed' },
+  { name: 'Suggested', path: '/tasks/proposed' },
   { name: 'Restricted', path: '/tasks/list?sensitivity=restricted' },
 ];

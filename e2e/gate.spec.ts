@@ -28,6 +28,6 @@ test.describe('access gate', () => {
     await page.getByRole('button', { name: 'Sign in with Microsoft' }).click();
     await page.waitForLoadState();
     await page.getByRole('button', { name: 'Santiago' }).click(); // first run: choose founder
-    await expect(page.getByRole('navigation', { name: 'Task views' })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
   });
 });

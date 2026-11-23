@@ -24,7 +24,7 @@ export function QuickAdd({ onClose }: { onClose: () => void }) {
         }}>
         <label htmlFor="qa" className="block text-sm font-medium">Quick add to Inbox</label>
         <input id="qa" ref={ref} className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What needs to happen?" />
-        {error && <p role="alert" className="text-sm text-red-800">{error}</p>}
+        {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         <div className="flex justify-end gap-2">
           <button type="button" className="btn" onClick={onClose}>Cancel</button>
           <button type="submit" className="btn btn-primary" disabled={save.isPending}>Add</button>

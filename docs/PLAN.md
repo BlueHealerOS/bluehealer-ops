@@ -164,7 +164,7 @@ The morning brief reads the latest export. `docs/flows/routines.md` gives the pr
 
 ## UI views
 - **Shell**: left nav (desktop) or bottom tabs (mobile: Today, Triage, Add, Alerts, More), global search (`/`), quick add (`n`; on mobile, a floating button and a one-field sheet that creates an Inbox task or an Intake item), and a notification center.
-- **Tasks**: Today (capped by the Settings value, with a "propose Today" button that ranks This week plus due items), This week, Board (by Status), List, Calendar (month and week), Waiting on others, Proposed, Done this week, Hygiene.
+- **Tasks**: Today (capped by the Settings value, with a "propose Today" button that ranks This week plus due items), This week, Board (by Status), List, Calendar (month and week), Waiting on others, Suggested, Done this week, Needs attention.
 - **Record drawer**: fields, backlinks (a reverse index built in memory over ID and lookup columns), and a History tab (versions).
 - **Milestones**: Timeline (custom SVG Gantt from Dec 2026 to Jun 2027, showing baseline against target) and a list grouped by Track. Progress means linked tasks done divided by total, shown beside the owner's status.
 - **CRM**: Organizations, People, person page (interactions timeline, stage, next step, "Draft email", "Log interaction"), Overdue contacts, Investor follow-ups (board by stage), Follow-ups due this week. Duplicate warning on create: normalised email equality, or name similarity (Jaro-Winkler ≥ 0.92) against People and Aliases.
@@ -243,7 +243,7 @@ Each phase is one branch and one draft pull request until CI is green. Each upda
   - Live: a real iPhone share reaches Intake through F1. Restricted-exclusion unit tests pass for the export and digest payloads. A non-founder manual check is done.
 
 **Phase 2**
-- **Scope**: Programs, Applications, AnswerBank (insert, record usage, 90-day review); F3 and F5 guides with the proposal schema; Triage consuming proposals; Hygiene list; KR prompts on Friday.
+- **Scope**: Programs, Applications, AnswerBank (insert, record usage, 90-day review); F3 and F5 guides with the proposal schema; Triage consuming proposals; Needs attention list; KR prompts on Friday.
 - **Acceptance**: a fictional proposals file in the mock is ingested, then accepted. Deadline T-rules are tested. The answer is inserted and recorded.
 
 **Phase 3**
