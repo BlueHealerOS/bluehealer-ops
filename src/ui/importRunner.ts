@@ -1,6 +1,6 @@
 import type { OpsStore } from '../graph/store';
 import type { OrgFull, PersonFull, IntakeItem } from '../domain/types';
-import { fillBlanks, mapOrg, mapPerson, mapTrello, type DryRun, type HubRecord, type TrelloExport } from '../domain/imports';
+import { fillBlanks, mapOrg, mapPerson, mapCurated, mapTrello, type CuratedExport, type DryRun, type HubRecord, type TrelloExport } from '../domain/imports';
 import { findDuplicates } from '../domain/crm';
 import { SEED_MILESTONES, FEBRUARY_TARGET } from '../domain/milestones';
 
@@ -84,4 +84,22 @@ export async function planTrelloImport(store: OpsStore, x: TrelloExport) {
     report: { toCreate: fresh.length, alreadyImported: items.length - fresh.length, skippedClosedOrDone: skipped },
     run: async () => { const r = await store.createMany('Intake', fresh); return `Imported ${r.filter((y) => y.id).length} cards into Intake.`; },
   };
+}
+
+/** Curated dataset: creates Intake items (Proposed) and ImportStaging rows. Creates only; never updates or deletes. */
+export async function planCuratedImport(store: OpsStore, x: CuratedExport) {
+  const m = mapCurated(x);
+  if (m.problems.length) throw new Error(`Import blocked. Please fix these rows first: ${m.problems.join('; ')}`);
+  const have = new Set((await store.items<IntakeItem>('Intake')).map((i) => i.ExtId).filter(Boolean));
+  const fresh = m.intake.map((it, i) => ({ it, st: m.staging[i]! })).filter(({ it }) => !have.has(it.ExtId as string));
+  const count = (key: string, rows: Record<string, unknown>[]) => { const o: Record<string, number> = {}; for (const r of rows) { const v = String(r[key] ?? 'none'); o[`${key} ${v}`] = (o[`${key} ${v}`] ?? 0) + 1; } return o; };
+  const report: Record<string, number> = { toCreate: fresh.length, alreadyImported: m.intake.length - fresh.length, ...count('Sensitivity', fresh.map((f) => f.it)), ...count('TriageState', fresh.map((f) => f.it)), ...count('StatusSuggested', fresh.map((f) => f.st)) };
+  const run = async () => {
+    const res = await store.createMany('Intake', fresh.map((f) => f.it));
+    const withIds = fresh.map((f, i) => ({ ...f.st, IntakeItemId: res[i]?.id ?? undefined })).filter((_, i) => res[i]?.id);
+    const sres = await store.createMany('ImportStaging', withIds);
+    const failed = res.filter((r) => r.id === null).length + sres.filter((r) => r.id === null).length;
+    return `Imported ${res.filter((r) => r.id).length} Intake items and ${sres.filter((r) => r.id).length} staging rows.${failed ? ` ${failed} writes failed; run the dry run again to see what is left.` : ''}`;
+  };
+  return { report, run };
 }

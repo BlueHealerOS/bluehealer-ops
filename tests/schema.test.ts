@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { creationOrder, DENY_PATTERN, LISTS, validateSchema, type ListDef } from '../src/schema/lists';
 
 describe('schema', () => {
-  it('is valid and has the 17 lists', () => {
+  it('is valid and has the 18 lists', () => {
     expect(validateSchema(LISTS)).toEqual([]);
     expect(LISTS.map((l) => l.name).sort()).toEqual([
-      'AnswerBank', 'Applications', 'Intake', 'Interactions', 'KPIMeasurements', 'KPIs', 'KeyResults', 'Labels', 'Meetings',
+      'AnswerBank', 'Applications', 'ImportStaging', 'Intake', 'Interactions', 'KPIMeasurements', 'KPIs', 'KeyResults', 'Labels', 'Meetings',
       'Milestones', 'Objectives', 'Organizations', 'People', 'Programs', 'ReminderLog', 'Settings', 'Tasks',
     ]);
   });

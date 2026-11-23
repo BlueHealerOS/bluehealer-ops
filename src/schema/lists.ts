@@ -103,6 +103,10 @@ export const LISTS: ListDef[] = [
     note('ProposalJson'), t('Rationale'), t('ResultListName'), num('ResultItemId'), t('IntelSummary'),
     t('MessageId', { indexed: true }), ...common(),
   ] },
+  { name: 'ImportStaging', description: 'Provenance for the one-time Trello import. Founders only. Restricted rows hold no original title.', columns: [
+    t('ImportId', { indexed: true }), t('TrelloCardId', { indexed: true }), t('TrelloList'), t('TitleOriginal'), t('StatusSuggested'),
+    t('OwnerSignals'), note('Flags'), t('MappingConfidence'), num('IntakeItemId'), ...sensitivityOnly(),
+  ] },
   { name: 'Meetings', description: 'Meeting agendas and links to notes.', columns: [
     ch('MeetingKind', C.MEETING_KIND), dt('Start', true), t('CalendarEventId'), url('NoteLink'), note('AgendaJson'), bool('ActionsCreated'), ...common(),
   ] },

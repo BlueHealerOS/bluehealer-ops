@@ -1,5 +1,7 @@
 // One-time imports. Parsing and mapping are pure and tested on fictional data; real files are read in the browser only.
 import type { OrgFull, PersonFull } from './types';
+import { dealDataProblem } from './guards';
+import { DENY_PATTERN } from '../schema/lists';
 
 export interface HubRecord { kind: 'person' | 'company'; file: string; fields: Record<string, string> }
 
@@ -83,4 +85,46 @@ export function mapTrello(x: TrelloExport): { items: Record<string, unknown>[]; 
     });
   }
   return { items, skipped };
+}
+
+// Curated Trello dataset (records plus calendar events), staged by a founder-reviewed script. Every row loads as Proposed.
+export interface CuratedRow { import_id: string; trello_card_id: string; title_original: string; title_proposed?: string; proposed_home: string; sensitivity: string; flags?: string; note?: string; [k: string]: unknown }
+export interface CuratedExport { records?: CuratedRow[]; events?: CuratedRow[] }
+
+const EMAIL_RE = /[\w.+-]+@[\w-]+\.[\w.]+/;
+const PHONE_RE = /\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}|\+\d{6,}/;
+const HOME_TYPE: Record<string, string> = { Task: 'task', Application: 'application opportunity' };
+const PROPOSAL_FIELDS = ['proposed_home', 'kind', 'owner', 'collaborators', 'track', 'subtrack', 'workstream', 'counterparty', 'waiting_on', 'review_date', 'planned_date', 'due_internal', 'external_deadline', 'date_basis', 'review_gates', 'gating', 'event_type', 'who', 'start_date', 'end_date', 'location', 'source_ref'];
+export const WITHHELD = 'Withheld (restricted). See the Trello card.';
+
+export interface CuratedMapped { intake: Record<string, unknown>[]; staging: Record<string, unknown>[]; problems: string[] }
+
+/** Pure mapping. Restricted rows get no Raw text and no original title. Any value that looks like deal data or contact data is reported and the row is not loaded. */
+export function mapCurated(x: CuratedExport): CuratedMapped {
+  const rows = [...(x.records ?? []), ...(x.events ?? [])];
+  const intake: Record<string, unknown>[] = [], staging: Record<string, unknown>[] = [], problems: string[] = [];
+  const seen = new Set<string>();
+  for (const r of rows) {
+    const id = r.import_id;
+    if (!id || !r.trello_card_id) { problems.push(`${id ?? 'unknown row'}: missing import or card id`); continue; }
+    if (seen.has(r.trello_card_id)) { problems.push(`${id}: duplicate card id`); continue; }
+    seen.add(r.trello_card_id);
+    const restricted = r.sensitivity === 'restricted';
+    const bad = Object.entries(r).filter(([k, v]) => k !== 'title_original' && typeof v === 'string' && v && (dealDataProblem(v) || EMAIL_RE.test(v) || PHONE_RE.test(v) || (k !== 'flags' && DENY_PATTERN.test(v))));
+    if (restricted && r.note) bad.push(['note', 'restricted row has a note']);
+    if (bad.length) { problems.push(`${id}: ${bad.map(([k]) => k).join(', ')}`); continue; }
+    const title = (r.title_proposed ?? r.title_original).slice(0, 250);
+    const proposal = Object.fromEntries(PROPOSAL_FIELDS.filter((k) => r[k]).map((k) => [k, r[k]]));
+    const owner = ['Santiago', 'Jay', 'Both'].includes(String(r.owner)) ? String(r.owner) : 'Unassigned';
+    intake.push({
+      Title: title, Raw: restricted ? '' : String(r.note ?? ''), RawSource: 'Trello import', ReceivedAt: new Date().toISOString(), TriageState: 'Proposed',
+      ProposedType: HOME_TYPE[r.proposed_home], ProposalJson: JSON.stringify(proposal), Rationale: `Imported ${id}; confidence ${r.mapping_confidence ?? 'n/a'}`,
+      Sensitivity: restricted ? 'restricted' : 'normal', Owner: owner, Source: 'Trello import', ExtId: `trello:${r.trello_card_id}`,
+    });
+    staging.push({
+      Title: id, ImportId: id, TrelloCardId: r.trello_card_id, TrelloList: r.trello_list, TitleOriginal: restricted ? WITHHELD : r.title_original,
+      StatusSuggested: r.status_suggested, OwnerSignals: r.owner_signals, Flags: r.flags || undefined, MappingConfidence: r.mapping_confidence, Sensitivity: restricted ? 'restricted' : 'normal',
+    });
+  }
+  return { intake, staging, problems };
 }
