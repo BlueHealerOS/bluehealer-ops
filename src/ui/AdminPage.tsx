@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useOps } from './ctx';
 import { LISTS, schemaHash, validateSchema } from '../schema/lists';
 import { applyProvision, planProvision, type ProvisionPlan } from '../provision/provision';
-import { parseHubExport, planHubImport, planTrelloImport, seedMilestones } from './importRunner';
+import { parseHubExport, planHubImport, planCuratedImport, planTrelloImport, seedMilestones } from './importRunner';
 
 export function AdminPage() {
   const { store } = useOps();
@@ -74,6 +74,8 @@ function ImportPanel() {
           <input id="hub-file" type="file" accept="application/json,.json" className="input" disabled={busy} onChange={(e) => guarded(async () => { const p = await planHubImport(store, parseHubExport(await readFile(e.target.files?.[0]))); setPending({ title: 'Hub import dry run', report: p.report as unknown as Record<string, number>, run: p.run }); })} /></div>
         <div><label htmlFor="trello-file" className="mb-1 block font-medium">Trello board export (JSON)</label>
           <input id="trello-file" type="file" accept="application/json,.json" className="input" disabled={busy} onChange={(e) => guarded(async () => { const p = await planTrelloImport(store, JSON.parse(await readFile(e.target.files?.[0]))); setPending({ title: 'Trello import dry run', report: p.report, run: p.run }); })} /></div>
+        <div><label htmlFor="curated-file" className="mb-1 block font-medium">Curated Trello dataset (JSON, records and events)</label>
+          <input id="curated-file" type="file" accept="application/json,.json" className="input" disabled={busy} onChange={(e) => guarded(async () => { const p = await planCuratedImport(store, JSON.parse(await readFile(e.target.files?.[0]))); setPending({ title: 'Curated import dry run', report: p.report, run: p.run }); })} /></div>
       </div>
       {pending && (
         <div className="rounded-md border border-hairline p-3" role="region" aria-label={pending.title}>

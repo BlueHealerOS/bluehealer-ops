@@ -9,7 +9,7 @@ describe('provisioning', () => {
     const plan = await planProvision(client, await store.siteId(), LISTS);
     expect(plan.lists.every((l) => l.create)).toBe(true);
     await applyProvision(client, plan);
-    expect(fake.state.lists).toHaveLength(17);
+    expect(fake.state.lists).toHaveLength(18);
     const tasks = fake.state.lists.find((l) => l.displayName === 'Tasks')!;
     const status = tasks.columns.find((c) => c.name === 'Status')!;
     expect(status.indexed).toBe(true);
