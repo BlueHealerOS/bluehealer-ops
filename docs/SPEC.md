@@ -10,7 +10,7 @@ Status: revision 3, 2026-11-22, approved by Santiago together with `docs/PLAN.md
 5. Tier is stored as A, B, C. Import maps hub tier 1, 2, 3 to A, B, C. Free-text hub relationships are mapped by keyword, and unmatched values are reported in the dry run.
 6. People gain IntroChannel and IntroDate columns. A ReminderLog list is added (17 lists in total).
 7. The branch named `plan/spec` is replaced by the session branch `claude/dazzling-carson-7wb70t` for this first commit.
-8. After Phase 1 ships, a hub pull request (both founders) must amend SHARED-RULES, whose Tasks section names Trello. Not part of this work.
+8. After Phase 1 ships, a hub pull request (Santiago approves) must amend SHARED-RULES, whose Tasks section names Trello. Not part of this work.
 
 ---
 
@@ -53,7 +53,7 @@ On approval, the first commit (branch `plan/spec`) adds `docs/SPEC.md` (this spe
 
 ## Source of truth
 - SharePoint Lists are canonical for structured operational records: tasks, milestones, OKRs, KPIs, applications, answer bank, people and organizations (structured fields), interactions and follow-ups, intake items, meetings.
-- The hub stays canonical for narrative knowledge, meeting notes, decisions and evidence. List items link to hub notes by path; hub notes may later carry an `ops_id` field (through a hub pull request with founder review, not in this work).
+- The hub stays canonical for narrative knowledge, meeting notes, decisions and evidence. List items link to hub notes by path; hub notes may later carry an `ops_id` field (through a hub pull request, not in this work).
 - One-time imports, run from the signed-in app (an Admin page) after a dry-run report: People and Companies frontmatter from the hub (provided as a JSON file Santiago generates locally from the hub; the file is never committed), and open Trello cards (from a Trello JSON export) into Intake.
 
 ## Functional requirements
