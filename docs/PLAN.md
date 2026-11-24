@@ -21,7 +21,7 @@ Repository state today: `BlueHealerOS/bluehealer-ops` is public and holds only `
 | Organization on person | Lookup | Wikilink text `[[Company]]` | Resolve by name or alias against imported Organizations; unresolved names are reported |
 | Last contact | From interactions | `last-contact` field exists (218 of 220) | Import as `LastContactSeed`; `LastContact` = max(seed, latest Interaction date) |
 | Intro path | Introduced by | `introduced-by`, `intro-channel` (warm-intro, event, inbound, cold, mutual-network), `intro-date` | Add `IntroChannel` and `IntroDate` columns to People |
-| Tasks | Replace Trello | SHARED-RULES "Tasks" section names Trello as the shared task system | After Phase 1 ships, a hub pull request amending SHARED-RULES (both founders) is needed. Not done in this work |
+| Tasks | Replace Trello | SHARED-RULES "Tasks" section names Trello as the shared task system | After Phase 1 ships, a hub pull request amending SHARED-RULES (Santiago approves) is needed. Not done in this work |
 | Contact details | | Rules allow work email and phone in register notes; bulk contact exports belong in the CRM | Consistent with the People list. The import JSON stays out of Git |
 
 All 220 people, 148 companies, 266 meetings and 10 decisions are `sensitivity: normal` and `hub_status: Working`, so the import maps `Sensitivity` directly.
@@ -279,7 +279,7 @@ Each phase is one branch and one draft pull request until CI is green. Each upda
 4. **Assumption**: decisions needed in agendas come from tasks labelled `decision`. The hub `registers/Decisions` stays canonical and is linked by path only.
 5. **Assumption**: Meetings in the app are agenda shells. Hub meeting notes are not imported. 266 exist, linked by HubPath on demand.
 6. **Open**: should Jay's routines (if any) use the same export file? The plan assumes yes, read-only.
-7. **Open**: a hub pull request to amend SHARED-RULES "Tasks" (Trello to the ops app) and to optionally add `ops_id`. It needs both founders and is outside this work.
+7. **Open**: a hub pull request to amend SHARED-RULES "Tasks" (Trello to the ops app) and to optionally add `ops_id`. Santiago approves it; it is outside this work.
 8. **Known gap (decision 2)**: the agent restriction is a policy control. Review it if Microsoft or Anthropic offer per-site consent for the connector.
 
 ## Files the first commit adds (on approval)
