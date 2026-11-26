@@ -11,6 +11,9 @@ This repository contains code only. No records, contacts, documents or credentia
 - The app creates Outlook drafts and never sends mail.
 - Reminders and intake run on Power Automate and Claude routines. See `docs/flows/`.
 
+## Engineering workspace
+A top-bar workspace (Tasks, Engineering, CRM, More). Engineering opens a bundle folder from the local disk (File System Access API, Chromium browsers; other browsers open it read-only), shows the 3D model, review items and the trace graph, and writes review items and checkbox states into the same folder where Claude Code reads them. It makes no network requests and the app serves a Content Security Policy. Specification: [docs/engineering/CONTEXT.md](docs/engineering/CONTEXT.md). The only bundle in this repository is the invented `fixtures/dummy-bracket/`; CI fails on bundle files anywhere else. Use Node 22 (`.nvmrc`).
+
 ## Documents
 - [Specification](docs/SPEC.md) and [implementation plan](docs/PLAN.md)
 - [Phase 0 setup for the tenant administrator](docs/SETUP.md)

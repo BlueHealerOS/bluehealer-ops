@@ -33,3 +33,6 @@ h1, h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.
 .nav-count { @apply ml-auto min-w-6 rounded-pill px-1.5 text-center text-xs text-ink-muted; font-variant-numeric: tabular-nums; }
 .nav-dot { @apply ml-1 inline-block h-2 w-2 rounded-full bg-signal; }
 }
+
+/* Rule that Cytoscape would otherwise inject as an inline <style> element (blocked by the Content Security Policy). */
+.__________cytoscape_container { position: relative; }

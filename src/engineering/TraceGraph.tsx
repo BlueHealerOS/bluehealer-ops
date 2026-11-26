@@ -35,6 +35,11 @@ export default function TraceGraph({ bundle }: { bundle: Bundle }) {
 
   useEffect(() => {
     if (!el.current || !graph) return;
+    // Cytoscape adds a <style> element on start-up unless one with its id exists; inline styles are blocked by the
+    // Content Security Policy. The rule it would add lives in index.css, so a stub element is enough.
+    if (!document.getElementById('__________cytoscape_stylesheet')) {
+      const stub = document.createElement('meta'); stub.id = '__________cytoscape_stylesheet'; document.head.appendChild(stub);
+    }
     const danger = token('--color-danger', '#b42318'), primary = token('--color-primary', '#2f80c9'), ink = token('--color-ink', '#414042'), hair = token('--color-hairline', '#dcdce0');
     const rows = [0, 0, 0, 0];
     const nodes = [...graph.nodes].sort((a, b) => a.type.localeCompare(b.type) || a.id.localeCompare(b.id)).map((n) => {
