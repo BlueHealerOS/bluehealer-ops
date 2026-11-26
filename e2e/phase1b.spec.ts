@@ -32,52 +32,6 @@ test('Phase 1 journey: a shared link is triaged, linked to a milestone, shows in
   await expect(page.getByText('1 of 1 tasks done')).toBeVisible();
 });
 
-test('investor contact moves through stages, an Outlook draft is created, the interaction is logged, and no amount field exists', async ({ page }) => {
-  const { env } = await setup(page, { seed: false });
-  env.fake.seed('People', { Title: 'Avery Placeholder', RelationshipType: 'investor', Email: 'avery@example.com', Owner: 'Santiago', Stage: 'Identified' });
-  await page.goto('./#/crm/investors');
-  await expect(page.getByRole('region', { name: 'Identified' }).getByText('Avery Placeholder')).toBeVisible();
-
-  await page.getByRole('button', { name: 'Avery Placeholder' }).click();
-  await page.getByLabel('Pipeline stage').selectOption('Contacted');
-  await page.getByLabel('Next step (free text)').fill('Send a short update');
-  await page.getByRole('button', { name: 'Save' }).click();
-  await expect(page.getByRole('region', { name: 'Contacted' }).getByText('Avery Placeholder')).toBeVisible();
-
-  await page.getByRole('button', { name: 'Avery Placeholder' }).click();
-  const text = (await page.locator('body').innerText()).toLowerCase();
-  for (const w of ['amount', 'valuation', 'equity', 'cap table', 'terms', 'wire']) expect(text).not.toContain(w);
-  await page.getByRole('tab', { name: 'Draft email' }).click();
-  await page.getByRole('button', { name: 'Save draft in Outlook' }).click();
-  await expect(page.getByRole('status')).toContainText('Draft saved');
-  expect(env.fake.state.drafts).toEqual([{ subject: 'Thank you, Avery', to: ['avery@example.com'] }]);
-  expect(env.fake.state.requests.some((r) => /send/i.test(r.path))).toBe(false);
-
-  await page.getByRole('button', { name: 'Log this interaction' }).click();
-  await page.getByLabel('Follow-up needed by').fill(today());
-  await page.getByRole('button', { name: 'Log interaction' }).click();
-  await page.getByRole('tab', { name: 'Details' }).click();
-  await expect(page.getByRole('list', { name: 'Interactions' })).toContainText('Draft email created');
-  await expect(page.getByText(`Last contact: ${today()}`)).toBeVisible();
-
-  await page.goto('./#/tasks/list');
-  await expect(page.getByText('Follow up with Avery Placeholder')).toBeVisible();
-});
-
-test('saving a draft is refused cleanly when the person has no email, and currency in a summary is blocked', async ({ page }) => {
-  const { env } = await setup(page, { seed: false });
-  env.fake.seed('People', { Title: 'Casey Fictional', RelationshipType: 'vendor', Owner: 'Santiago' });
-  await page.goto('./#/crm/people');
-  await page.getByRole('button', { name: 'Casey Fictional' }).click();
-  await page.getByRole('tab', { name: 'Draft email' }).click();
-  await page.getByRole('button', { name: 'Save draft in Outlook' }).click();
-  await expect(page.getByRole('alert')).toContainText('no email address');
-  await page.getByRole('tab', { name: 'Log interaction' }).click();
-  await page.getByLabel('Short summary').fill('They want $25,000 at a cap');
-  await page.getByRole('button', { name: 'Log interaction' }).click();
-  await expect(page.getByRole('alert')).toContainText('currency figure');
-});
-
 test('meetings: agenda from the calendar, then action items become tasks in one step', async ({ page }) => {
   const { env } = await setup(page);
   env.fake.state.events = [{ id: 'ev1', subject: 'Monday check-in', start: { dateTime: `${today()}T09:00:00.0000000` } }];

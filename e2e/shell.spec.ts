@@ -43,10 +43,10 @@ test.describe('desktop shell', () => {
     await expect(page.getByRole('menu')).toHaveCount(0);
     await expect(more).toBeFocused();
     await tabs.getByRole('link', { name: 'CRM' }).click();
-    await expect(page).toHaveURL(/#\/crm\/people$/);
+    await expect(page).toHaveURL(/#\/crm\/today$/);
     const nav = page.getByRole('navigation', { name: 'Main' });
-    for (const name of ['People', 'Organizations', 'Investor follow-ups', 'Overdue contacts']) await expect(nav.getByRole('link', { name })).toBeVisible();
-    await expect(nav.getByRole('link', { name: /Today/ })).toHaveCount(0);
+    for (const name of ['Today', 'People', 'Organizations', 'Needs attention']) await expect(nav.getByRole('link', { name })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Milestones' })).toHaveCount(0);
     await tabs.getByRole('link', { name: 'Engineering' }).click();
     await expect(page).toHaveURL(/#\/engineering\/review$/);
     for (const name of ['Review', 'Trace graph']) await expect(nav.getByRole('link', { name })).toBeVisible();
@@ -55,7 +55,7 @@ test.describe('desktop shell', () => {
   test('every earlier route redirects to its place in the workspaces', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await setup(page);
-    for (const [from, to] of [['#/triage', '#/tasks/triage'], ['#/milestones', '#/tasks/milestones'], ['#/meetings', '#/tasks/meetings'], ['#/crm', '#/crm/people'], ['#/tasks', '#/tasks/today'], ['', '#/tasks/today'], ['#/triage?x=1', '#/tasks/triage?x=1']] as const) {
+    for (const [from, to] of [['#/triage', '#/tasks/triage'], ['#/milestones', '#/tasks/milestones'], ['#/meetings', '#/tasks/meetings'], ['#/crm', '#/crm/today'], ['#/crm/investors', '#/crm/people?relationship=investor'], ['#/crm/overdue', '#/crm/today'], ['#/crm/due', '#/crm/today'], ['#/tasks', '#/tasks/today'], ['', '#/tasks/today'], ['#/triage?x=1', '#/tasks/triage?x=1']] as const) {
       await page.goto(`./${from}`);
       await expect(page).toHaveURL(new RegExp(to.replace(/[?#/]/g, '\\$&') + '$'));
     }

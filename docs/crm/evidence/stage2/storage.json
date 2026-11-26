@@ -1,0 +1,10 @@
+{
+  "note": "Fixture mode after one Log contact. Key names only.",
+  "localStorageKeys": [
+    "ops-founder"
+  ],
+  "sessionStorageKeys": [
+    "e2e-account"
+  ],
+  "indexedDbDatabases": []
+}

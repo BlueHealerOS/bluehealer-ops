@@ -12,8 +12,8 @@ h1, h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.
 
 @layer components {
 .btn { @apply inline-flex items-center justify-center gap-2 rounded-control border border-hairline bg-surface px-3 py-2 text-sm font-medium text-ink hover:bg-canvas disabled:opacity-50; min-height: 40px; }
-.btn-primary { @apply border-primary-strong bg-primary-strong text-white hover:brightness-90; }
-.btn-danger { @apply border-danger bg-danger text-white; }
+.btn-primary { @apply border-primary-strong bg-primary-strong text-white hover:bg-primary-strong hover:brightness-90; } /* hover:bg keeps the .btn hover background from turning white text pale */
+.btn-danger { @apply border-danger bg-danger text-white hover:bg-danger hover:brightness-90; }
 .btn-quiet { @apply border-transparent bg-transparent hover:bg-primary-soft/25; }
 .input { @apply w-full rounded-control border border-ink/40 bg-surface px-3 py-2 text-sm text-ink; min-height: 40px; }
 .card { @apply rounded-card border border-hairline bg-surface p-4; }

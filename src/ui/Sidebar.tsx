@@ -6,7 +6,7 @@ import { doneThisWeek, hygiene, proposeToday, proposed, thisWeek, waitingOnOther
 import { etToday } from '../domain/time';
 import type { IntakeItem } from '../domain/types';
 import { Icon } from './icons';
-import { CRM_TABS, ENGINEERING_SECTIONS, QUEUES, SECTIONS, TRIAGE_OPEN_FILTER, sidebarWorkspace } from './nav';
+import { CRM_SECTIONS, ENGINEERING_SECTIONS, QUEUES, SECTIONS, TRIAGE_OPEN_FILTER, sidebarWorkspace } from './nav';
 import { useHashRoute } from './router';
 import { TOPBAR_H } from './TopBar';
 import { useEngineering } from '../engineering/session';
@@ -87,13 +87,13 @@ function TasksSections() {
 
 function CrmSections() {
   const { segments } = useHashRoute();
-  const tab = segments[1] ?? 'people';
+  const tab = segments[1] === 'person' ? 'people' : segments[1] === 'org' ? 'organizations' : segments[1] ?? 'today';
   return (
     <div>
       <h2 className={SH}>CRM</h2>
       <ul className="space-y-0.5">
-        {CRM_TABS.map(([k, label]) => (
-          <li key={k}><a className="nav-link" href={`#/crm/${k}`} aria-current={segments[0] === 'crm' && tab === k ? 'page' : undefined}><Icon name="people" />{label}</a></li>
+        {CRM_SECTIONS.map(([k, label, icon]) => (
+          <li key={k}><a className="nav-link" href={`#/crm/${k}`} aria-current={segments[0] === 'crm' && tab === k ? 'page' : undefined}><Icon name={icon} />{label}</a></li>
         ))}
       </ul>
     </div>

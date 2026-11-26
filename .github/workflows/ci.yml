@@ -32,6 +32,7 @@ jobs:
         run: |
           npm run build
           ! grep -rl "e2e-token" dist
+          ! grep -rl "Avery Fixture" dist
   intake:
     runs-on: ubuntu-latest
     steps:
