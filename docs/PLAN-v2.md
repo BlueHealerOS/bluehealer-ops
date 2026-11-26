@@ -25,7 +25,7 @@ Three facts the v2 build plan does not mention and that shape this plan:
 
 1. **No Workstream field exists.** The plan requires one on every card and uses it for timeline rows. Decision taken with Santiago on 2026-11-26: a `Workstream` facet in the existing `Labels` list (value, colour, order, active), plus a `WorkstreamId` number column on Tasks and Milestones. This avoids a fifth lookup column on Tasks (`validateSchema` in `src/schema/lists.ts` caps lookups at four, and SharePoint's lookup threshold is 12 joins per query, verified).
 2. **Intake has no `Kind` column.** It has `RawSource` and `ProposedType`. See the deviation in section 6.
-3. **Three input documents named in the launch prompt were not available to this session** (the spec revision 2 launch prompt, the 2026-11-22 frontend brief and the decisions file of the same date). This plan therefore relies on `docs/SPEC.md` revision 3, on the implemented tokens in `src/styles/tokens.css` and `src/styles/fonts.css`, and on the text of the v2 build plan. Decisions D7 and D9 are cited only as the v2 build plan states them (D7: This week shows a soft target of 7 per founder, as an indicator; D9: no dependency cycles). Please compare against the originals before approving.
+3. **Three input documents named in the launch prompt were not available to this session** (the spec revision 2 launch prompt, the 2026-11-22 frontend brief and the decisions file of the same date). Santiago confirmed on 2026-11-26 that revision 3 supersedes revision 2, so this plan relies on `docs/SPEC.md` revision 3, on the implemented tokens in `src/styles/tokens.css` and `src/styles/fonts.css`, and on the text of the v2 build plan. Decisions D7 and D9 are cited only as the v2 build plan states them (D7: This week shows a soft target of 7 per founder, as an indicator; D9: no dependency cycles). The frontend brief and decisions file themselves remain unread by this plan; where they differ from the implemented tokens, the implemented tokens win until a founder says otherwise.
 
 ## 2. Requirement traceability
 
@@ -87,7 +87,7 @@ App
     ChecklistEditor, LinksEditor, BlockedByPicker, HistoryTab, ConflictBanner
    WaitingDialog                        phase B (modal; three required fields)
   TabBar                                mobile bottom tabs, offset above the request button
-  CommandMenu                           src/ui/cmdk/CommandMenu.tsx (Cmd+K)
+  CommandMenu                           src/ui/cmdk/CommandMenu.tsx (Ctrl+K on Windows, Cmd+K on macOS; the label follows the platform and both modifiers open it)
   QuickAddGlobal                        `n` anywhere, shares the parser with QuickAddLine
   RequestButton + RequestPanel          src/ui/request/ (48 px round button, bottom right)
   Toasts, LiveRegion                    src/ui/parts.tsx (announce moves, saves and failures)
@@ -172,6 +172,8 @@ All changes go through `src/schema/lists.ts` and the Admin page's idempotent pro
 | Tasks | `CheckAgain` | date | no | Today, weekly review | required when Status is Waiting; supersedes `WaitingExpected` |
 | Tasks | `LastTouched` | datetime | yes | aging fade | set by the app on every edit |
 | Tasks | `ClosedBy` | choice: Santiago, Jay | no | proof a founder closed it | set when Done |
+| Tasks | `LooksDone` | boolean | no | "Looks done?" chip on a card | set only by a flow from a routine proposal; a founder accepts (closes) or dismisses (clears) it; never closes a card (R2). Accepted 2026-11-26 |
+| Tasks | `RequestedBy` | text, 255 | no | "Waiting on me" filter | free text naming someone outside the founders; no CRM link in v2. Accepted 2026-11-26 |
 | Milestones | `WorkstreamId` | number | no | timeline rows | |
 | Labels | facet `Workstream` | add to `LABEL_FACET` in `src/schema/choices.ts` | existing | workstream list | values seeded from the Admin page; names are the founders' to choose |
 | Intake | `RawSource` | choice, add `app request` | no | triage, F6 | see deviation below |
@@ -187,7 +189,7 @@ Deviations from the v2 build plan, for Santiago's yes:
 - **`WaitingOn` stays text** (`Tasks.WaitingOn`); the CRM link is the two number columns. A true lookup would be Tasks' fifth, breaching the four-lookup rule in `validateSchema`.
 - **`Intake.Device`** is added because the build plan lists browser and device as context but names no column.
 
-Index budget: Tasks already indexes `Status`, `DueDate`, `ThisWeek`, `CompletedAt` plus the common `Owner`, `Sensitivity` and `ExtId` (seven). v2 adds `SortKey` and `LastTouched` (nine). The documented per-list limit on indexed columns is **provisional**: the commonly cited figure is 20, but it was not on the Microsoft pages read for this plan. The smoke test in section 12 creates the nine indexes on a scratch list. Lists stay far below the 5,000-item view threshold (verified; cannot be changed in SharePoint Online), and the app loads open tasks in full and filters in memory, as `docs/PLAN.md` already decides.
+Index budget: Tasks already indexes `Status`, `DueDate`, `ThisWeek`, `CompletedAt` plus the common `Owner`, `Sensitivity` and `ExtId` (seven). v2 adds `SortKey` and `LastTouched` (nine); `LooksDone` and `RequestedBy` are not indexed. The documented per-list limit on indexed columns is **provisional**: the commonly cited figure is 20, but it was not on the Microsoft pages read for this plan. The smoke test in section 12 creates the nine indexes on a scratch list. Lists stay far below the 5,000-item view threshold (verified; cannot be changed in SharePoint Online), and the app loads open tasks in full and filters in memory, as `docs/PLAN.md` already decides.
 
 ### 6.2 Status migration, dry run first
 
@@ -319,7 +321,7 @@ Every pull request: `npm run typecheck`, `npm run lint`, `npm test`, `npm run ch
 
 **Screenshots** at 1440 px and 390 px in each pull request, from fictional fixtures only, stored under `docs/screenshots/` as the brand-shell pull request already does. The existing hygiene check stays: sign-in screen only without a token, secret and PII scan, fictional fixtures only, restricted records never in digests or requests.
 
-**Manual checks per phase (Santiago):** a non-founder Microsoft account is denied by SharePoint; two founders edit one card at once and the second sees the change; a real request reaches the intake mailbox within 5 minutes.
+**Manual checks per phase (Santiago):** a non-founder Microsoft account is denied by SharePoint; two founders edit one card at once and the second sees the change; a real request reaches the intake mailbox within 5 minutes; the board, keyboard moves, Ctrl+K and Ctrl+Enter (send request) work in Microsoft Edge on Windows, which is Jay's platform. CI runs Chromium, which covers the engine but not the Windows keyboard or Edge itself, so this check is manual.
 
 ## 10. Phases A to D
 
@@ -338,7 +340,7 @@ Each phase is one branch and one pull request, merged only by Santiago. The week
 **Gate:** Jay uses the board for one week and gives feedback through the request button.
 
 ### Phase B: Today, Waiting on and calm design
-**Builds:** Today with the "what can wait" step and cap of 7, calm rollover note after day three, Waiting status with its three fields and Check with items (one-click Outlook draft, never sent), aging fade (7, 14, 28 days, thresholds in Settings), reminders as touchpoints on CRM records, weekly review, swimlanes, Today as default on a phone, "Looks done?" chip (see open question 6).
+**Builds:** Today with the "what can wait" step and cap of 7, calm rollover note after day three, Waiting status with its three fields and Check with items (one-click Outlook draft, never sent), aging fade (7, 14, 28 days, thresholds in Settings), reminders as touchpoints on CRM records, weekly review, swimlanes (off by default), Today as default on a phone, "Looks done?" chip and the F5 proposals-in flow guide (open question 6, accepted), and the `RequestedBy` field behind "Waiting on me" (open question 7, accepted).
 **Accepted when:** moving to Waiting without the three fields is refused and the Check with item appears in Today on the check-again date; a card untouched for 14 days shows the second aging step; Today shows no red anywhere.
 
 ### Phase C: timeline
@@ -347,7 +349,7 @@ Each phase is one branch and one pull request, merged only by Santiago. The week
 
 ### Phase D: indicators and polish (when needed)
 **Builds:** red KPI indicators only; draggable timeline bars; motion; opt-in screenshot for requests (stored in a founders-only SharePoint folder).
-**Accepted when:** both founders have used A to C for two weeks and still want each item. See open question 8: the KPI lists exist in the schema but no KPI screen is built, so phase D needs either the phase 3 KPI work from `docs/SPEC.md` or a smaller indicator strip.
+**Accepted when:** both founders have used A to C for two weeks and still want each item. The KPI lists exist in the schema but no KPI screen is built; per the accepted answer to open question 8, phase D builds a minimal indicator strip, not the phase 3 KPI screens of `docs/SPEC.md`.
 
 ### New runtime dependencies (all free)
 
@@ -380,7 +382,7 @@ Sources read on 2026-11-26. "Updated" is the page's own date.
 | Number column decimal precision | unknown for default settings | provisional | smoke test 2 |
 | ETag in the PATCH response | unknown whether the response carries the new `@odata.etag` | provisional | smoke test 3 |
 | `If-Match` inside `$batch` | undocumented on the pages read | provisional | plan uses single PATCH |
-| Power Automate standard connectors on Business Basic | The Free licence allows cloud flows with standard connectors only (verified, Microsoft Learn "Types of Power Automate licenses", updated 2026-09-22); Business Basic itself is not named there | provisional | smoke test 4 (build F6 once) |
+| Power Automate standard connectors on Business Basic | The Free licence allows cloud flows with standard connectors only (verified, Microsoft Learn "Types of Power Automate licenses", updated 2026-09-22); Business Basic itself is not named there. Santiago believes the plan includes some Power Automate credits or tokens (2026-11-26); credits are not the same as a connector entitlement, so this stays provisional with lower expected risk | provisional | smoke test 4 (build F6 once) |
 | Power Automate daily request allowance on Business Basic | not found | provisional | flow volume is a handful of runs a day; check the admin centre |
 | "Is HTML = No" and "send from shared mailbox" action available | not checked | provisional | smoke test 4 |
 | Library facts (versions, licences, size, keyboard stance) | see section 4 | verified for registry data; provisional for our layout | npm registry and vendor docs, 2026-11-26 |
@@ -407,15 +409,17 @@ A page the previous plan had cited, the old large-lists developer guide, now ret
 8. Schema deviations in section 6.1: `ClosedBy` as a choice, `RawSource` instead of a new `Intake.Kind`, `Intake.Device`, `WaitingOn` kept as text.
 
 ### Open questions
-1. Where are the original revision 2 launch prompt, the frontend brief and the decisions file, so D7, D9 and the brand rules can be checked? (I could not read them.)
-2. How are gates MG0 to MG3 represented? Proposal: a milestone whose `ApprovalGate` is not `none` draws as a diamond. If gates need their own marker, a `Milestones.IsGate` boolean is the smallest addition. I do not know the intended gate list.
-3. Does a Power Automate standard-connector flow send mail from a shared mailbox under Business Basic? (Smoke test 4.)
-4. Jay's onboarding date, and whether he uses Windows or Mac (affects Cmd or Ctrl labels and the iOS drag spike).
-5. Does Jay want swimlanes by owner on by default? (After phase A.)
-6. How does a routine flag "Looks done?" without write access to the lists? Proposal: through the proposals contract in `docs/flows/proposal.schema.json` and a flow that sets a `Tasks.LooksDone` boolean; this is a new column not in the v2 build plan, so it needs a yes.
-7. Should "I am waiting on" and "Waiting on me" share one column pair? The second filter needs a way to mark "someone outside the founders requested this", which the v2 plan describes but does not give a field for. Proposal: a `Tasks.RequestedBy` text column.
-8. Phase D KPI indicators need a KPI screen that the repository does not have yet. Build the phase 3 KPI work first, or a minimal strip?
-9. Who pays attention to the "not saved" count while Jay is on a phone with a poor connection? (Product question; no engineering answer.)
+Answers from Santiago on 2026-11-26 are recorded here. Items marked **accepted** follow this plan's proposal; the eight decisions above were not part of that answer and remain open.
+
+1. **Resolved.** The original revision 2 launch prompt, the frontend brief and the decisions file: revision 3 of `docs/SPEC.md` supersedes revision 2. D7 and D9 stay cited from the v2 build plan only (section 1).
+2. **Accepted.** Gates MG0 to MG3: a milestone whose `ApprovalGate` is not `none` draws as a diamond. A `Milestones.IsGate` boolean is added only if gates turn out to be a different thing. I still do not know the intended gate list; the phase C acceptance check "the seeded milestones and gates show on the right dates" needs it from the founders.
+3. **Partly answered.** Power Automate: Santiago believes the plan includes some credits or tokens. That does not settle whether the shared-mailbox send action and plain-text body are available, so smoke test 4 stays (section 11).
+4. **Partly resolved.** Jay uses Windows: shortcut labels show Ctrl on Windows and Cmd on macOS, and Edge on Windows is a manual check (section 9). Still open: Jay's onboarding date.
+5. **Accepted.** Swimlanes are off by default; ask Jay after phase A.
+6. **Accepted.** "Looks done?" is set by a flow from a routine proposal through the contract in `docs/flows/proposal.schema.json`, into a new `Tasks.LooksDone` boolean (section 6.1). The flow guide for it (F5, proposals in) is not yet written and belongs to phase B.
+7. **Accepted.** "Waiting on me" uses a new `Tasks.RequestedBy` text column (section 6.1). "I am waiting on" uses the Waiting fields.
+8. **Accepted.** Phase D waits until phases A to C have been used for two weeks; its KPI indicators are then a minimal strip, not the full phase 3 KPI screens of `docs/SPEC.md`.
+9. **Accepted.** Keep the unsaved count in the toolbar and the per-card marker as designed (section 5.3); judge from Jay's feedback after phase A.
 
 ### Risks
 - **Graph latency and throttling:** writes can take a second or more; the queue hides this, coalesces drags and honours `Retry-After`; two users are far below 3,000 requests per 5 minutes. Failed saves stay visible.
