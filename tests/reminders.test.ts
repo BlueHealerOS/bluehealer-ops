@@ -73,6 +73,17 @@ describe('restricted records never leave the app by digest or export', () => {
     expect(text).not.toContain('SECRET');
     expect(text).toContain('plain');
   });
+  it('the routine export leaves out a Restricted CRM person (capital R, no ReminderOptIn) and keeps names only', () => {
+    const crm = [
+      { id: 1, Title: 'Fixture Visible', Owner: 'Jay', Sensitivity: 'Normal', Email: 'visible@example.com' },
+      { id: 2, Title: 'Fixture Hidden', Owner: 'Santiago', Sensitivity: 'Restricted', Email: 'hidden@example.com' },
+    ] as unknown as Person[];
+    const text = JSON.stringify(buildRoutineExport({ tasks: [], people: crm }));
+    expect(text).toContain('Fixture Visible');
+    expect(text).not.toContain('Fixture Hidden');
+    expect(text).not.toContain('example.com'); // names, ids and owners only
+    expect(JSON.parse(text).people).toEqual([{ id: 1, title: 'Fixture Visible', owner: 'Jay' }]);
+  });
   it('digest is not delivered during quiet hours', () => {
     expect(buildDigest({ tasks }, TODAY, 'Santiago', NIGHT).deliver).toBe(false);
   });

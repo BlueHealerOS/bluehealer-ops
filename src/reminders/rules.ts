@@ -11,8 +11,11 @@ export interface RuleInput {
 }
 export interface Shareable { Sensitivity?: string; ReminderOptIn?: boolean }
 
-/** Restricted records are excluded from digests, packs and routine reads unless a founder opts in per record. */
-export const isShareable = (x: Shareable) => (x.Sensitivity ?? 'normal') !== 'restricted' || x.ReminderOptIn === true;
+/**
+ * Restricted records are excluded from digests, packs and routine reads unless a founder opts in per record.
+ * The comparison ignores case: the Phase 1 lists write `restricted`, the CRM lists write `Restricted`.
+ */
+export const isShareable = (x: Shareable) => (x.Sensitivity ?? 'normal').toLowerCase() !== 'restricted' || x.ReminderOptIn === true;
 
 export type Trigger =
   | 'task-due-today' | 'task-overdue' | 'waiting-past-expected' | 'milestone-at-risk'
