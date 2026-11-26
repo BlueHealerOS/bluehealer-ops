@@ -8,6 +8,7 @@ Flows are built in the Power Automate interface, not in this repository, so thes
 | iPhone share Shortcut | [shortcut.md](shortcut.md) | 1 |
 | F2 Daily digest | [F2-daily-digest.md](F2-daily-digest.md) | 1 |
 | F4 Routine export | [F4-routine-export.md](F4-routine-export.md) | 1 |
+| F6 App request to the intake mailbox | [F6-app-request.md](F6-app-request.md) | v2 phase A |
 | Routine prompts and the proposals contract | [routines.md](routines.md), [proposal.schema.json](proposal.schema.json) | 1 and 2 |
 | F3 Meeting packs, F5 Proposals in | not yet written | 2 |
 
