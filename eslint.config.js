@@ -21,6 +21,23 @@ export default tseslint.config(
     },
   },
   {
+    // CRM model and UI (context section 3): records live in memory for the session only. No browser storage, no console output.
+    files: ['src/crm/**/*.{ts,tsx}'],
+    rules: {
+      'no-console': 'error',
+      'no-restricted-globals': ['error',
+        { name: 'localStorage', message: 'CRM records are never written to browser storage.' },
+        { name: 'sessionStorage', message: 'CRM records are never written to browser storage.' },
+        { name: 'indexedDB', message: 'CRM records are never written to browser storage.' },
+      ],
+      'no-restricted-properties': ['error',
+        { object: 'window', property: 'localStorage', message: 'CRM records are never written to browser storage.' },
+        { object: 'window', property: 'sessionStorage', message: 'CRM records are never written to browser storage.' },
+        { object: 'window', property: 'indexedDB', message: 'CRM records are never written to browser storage.' },
+      ],
+    },
+  },
+  {
     // Engineering workspace (context section 8): no network of any kind, and file text is never treated as HTML.
     // This block repeats the sendMail selector because a later rule entry replaces the earlier one.
     files: ['src/engineering/**/*.{ts,tsx}'],

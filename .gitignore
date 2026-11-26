@@ -22,3 +22,8 @@ __pycache__/
 bundles/
 *.bundle/
 bundle-*/
+# CRM: imports, exports and the ranking pilot hold real records and never enter this repository
+imports/
+pilot/
+*.csv
+!fixtures/crm/*.csv

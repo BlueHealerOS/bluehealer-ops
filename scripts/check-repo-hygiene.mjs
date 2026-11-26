@@ -6,7 +6,9 @@ import { readFileSync } from 'node:fs';
 const files = execSync('git ls-files --cached --others --exclude-standard', { encoding: 'utf8' }).split('\n').filter(Boolean);
 const problems = [];
 
-const FORBIDDEN_NAMES = [/(^|\/)\.env(\..*)?$/, /hub-export.*\.json$/i, /trello.*\.json$/i, /\.(pst|ost|xlsx|xls|csv|docx|pdf|zip)$/i, /(^|\/)exports\//];
+const FORBIDDEN_NAMES = [/(^|\/)\.env(\..*)?$/, /hub-export.*\.json$/i, /trello.*\.json$/i, /\.(pst|ost|xlsx|xls|docx|pdf|zip)$/i, /(^|\/)(exports|imports|pilot)\//];
+// CSV files are allowed only as invented fixtures for the CRM.
+const CSV = /\.csv$/i;
 const SKIP_TEXT = [/package-lock\.json$/, /\.(svg|png|ico|woff2?)$/];
 const ALLOWED_EMAIL = /@([a-z0-9-]+\.)*(example\.(com|org|net|test)|example|test|invalid|localhost)$/i;
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
@@ -20,6 +22,7 @@ for (const f of files) {
 }
 
 for (const f of files) {
+  if (CSV.test(f) && !/^fixtures\/crm\/[^/]+\.csv$/.test(f)) problems.push(`${f}: CSV files are allowed only under fixtures/crm/`);
   if (FORBIDDEN_NAMES.some((r) => r.test(f))) problems.push(`${f}: file type or name is not allowed in this repository`);
   if (SKIP_TEXT.some((r) => r.test(f))) continue;
   let text;

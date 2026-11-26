@@ -1,0 +1,21 @@
+name,organization,relationship type,owner,importance,last two-way date,agreed date,stage
+Avery Fixture,Example Capital,investor,Santiago,5,2026-11-09,,Following up
+Blake Sample,Example Capital,investor,Jay,4,2026-10-20,,Contacted
+Casey Placeholder,Example Capital,investor,Santiago,3,,,Identified
+Devon Example,Example Health System,advisor,Jay,5,2026-11-12,,Active
+Emery Fixture,Example Health System,clinical advisor,Santiago,4,2026-10-10,,Active
+Finley Demo,Fixture Devices Inc,customer discovery,Jay,2,2026-09-01,,Active
+Gray Sample,Fixture Devices Inc,customer discovery,Santiago,5,,,Active
+Harper Fixture,Fixture Devices Inc,vendor,Jay,3,2026-10-01,2026-12-15,Active
+Indigo Example,,consultant,Santiago,3,2026-11-20,,Active
+Jordan Fixture,,family and friends,Jay,1,2026-10-24,,Active
+Kai Sample,Example Health System,hospital,Santiago,3,2026-07-03,,Mapped
+Lane Example,Example Health System,payer,Jay,3,,,Targeted
+Morgan Fixture,Fixture Devices Inc,partner,Santiago,4,2026-06-05,,Dormant
+Noel Sample,Example Capital,investor,Jay,5,2026-08-30,,Passed
+Oakley Example,,KOL,Santiago,3,2026-10-28,,Active
+Parker Fixture,Example Health System,clinical advisor,Jay,3,,,Intro pending
+Quinn Demo,Fixture Devices Inc,customer discovery,Santiago,4,2026-11-01,,Active
+Reese Fixture,Example Capital,investor,Santiago,3,2026-11-17,,Meeting held
+Sage Example,Example Health System,advisor,Jay,4,2026-11-21,,Active
+Tatum Fixture,,advisor,Santiago,2,2026-10-30,,Active
