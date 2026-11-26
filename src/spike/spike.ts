@@ -25,6 +25,8 @@ const caps: [string, boolean][] = [
   ['top-level (not iframe)', window.top === window],
 ];
 $('caps').innerHTML = '<tr><th>Feature</th><th>Present</th></tr>' + caps.map(([k, v]) => `<tr><td>${k}</td><td>${v ? 'yes' : 'NO'}</td></tr>`).join('');
+window.addEventListener('error', (e) => log(`page error: ${e.message}`));
+window.addEventListener('unhandledrejection', (e) => log(`unhandled: ${String(e.reason)}`));
 log(`user agent: ${navigator.userAgent}`);
 
 // ---- IndexedDB handle store
@@ -57,6 +59,7 @@ async function ensure(handle: DirHandle, mode: 'read' | 'readwrite') {
 }
 
 $('open').onclick = async () => {
+  log('click: Open folder');
   if (!picker) { log('showDirectoryPicker missing: use the read-only fallback input'); return; }
   try {
     const h = await picker.call(window, { mode: 'readwrite' });
@@ -80,6 +83,7 @@ $('restore').onclick = async () => {
 const sampleItem = () => ({ schema: 'review/0.1', id: 'R-SPIKE', title: 'Spike item (invented)', status: 'open', checked: false, thread: [], rev: 1, updated: new Date().toISOString() });
 
 $('write').onclick = async () => {
+  log('click: Write');
   if (!dir) { log('open a folder first'); return; }
   try {
     if (!(await ensure(dir, 'readwrite'))) { log('write permission denied'); return; }
@@ -103,10 +107,14 @@ $<HTMLInputElement>('fallback').onchange = async (ev) => {
 };
 
 $('copy').onclick = async () => {
+  log('click: Copy');
+  const m = $<HTMLTextAreaElement>('manual'); m.value = JSON.stringify([sampleItem()], null, 2); m.focus(); m.select();
   try { await navigator.clipboard.writeText(JSON.stringify([sampleItem()], null, 2)); log('copied review items to clipboard'); }
   catch (e) { log(`clipboard failed: ${(e as Error).name}`); }
 };
 $('download').onclick = () => {
+  log('click: Download');
+  const m = $<HTMLTextAreaElement>('manual'); m.value = JSON.stringify(sampleItem(), null, 2);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify(sampleItem(), null, 2)], { type: 'application/json' }));
   a.download = 'R-SPIKE.json'; a.click(); URL.revokeObjectURL(a.href); log('download started');
