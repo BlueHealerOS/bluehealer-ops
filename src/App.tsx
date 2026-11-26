@@ -12,7 +12,7 @@ import { TasksPage } from './ui/TasksPage';
 import { SettingsPage } from './ui/SettingsPage';
 import { AdminPage } from './ui/AdminPage';
 import { MilestonesPage } from './ui/MilestonesPage';
-import { CrmPage } from './ui/CrmPage';
+import { CrmWorkspace } from './crm/ui/CrmWorkspace';
 import { TriagePage } from './ui/TriagePage';
 import { MeetingsPage } from './ui/MeetingsPage';
 import { TaskDrawer } from './ui/TaskDrawer';
@@ -91,7 +91,7 @@ function Authed({ store, account, signOut }: { store: OpsStore; account: Account
     <OpsContext.Provider value={{ store, account, founder, setFounder, signOut: () => void signOut(), search, setSearch, quickAdd: () => setAdding(true), openTask: setOpen }}>
       <EngineeringProvider active={page === 'engineering'}>
         <Shell>
-          {page === 'settings' ? <SettingsPage /> : page === 'admin' ? <AdminPage /> : page === 'engineering' ? <EngineeringPage /> : page === 'crm' ? <CrmPage />
+          {page === 'settings' ? <SettingsPage /> : page === 'admin' ? <AdminPage /> : page === 'engineering' ? <EngineeringPage /> : page === 'crm' ? <CrmWorkspace />
             : page === 'tasks' && view === 'milestones' ? <MilestonesPage /> : page === 'tasks' && view === 'triage' ? <TriagePage /> : page === 'tasks' && view === 'meetings' ? <MeetingsPage /> : <TasksPage />}
         </Shell>
       </EngineeringProvider>

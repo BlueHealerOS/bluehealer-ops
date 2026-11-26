@@ -1,0 +1,9 @@
+{
+  "note": "Fixture mode, one Log contact. Requests by origin; the Graph calls are the app shell (site check, task lists). No request touched a CRM list.",
+  "requestsByOrigin": {
+    "http://localhost:4173": 12,
+    "https://graph.microsoft.com": 5
+  },
+  "requestsToCrmLists": 0,
+  "otherOrigins": []
+}

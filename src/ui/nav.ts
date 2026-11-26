@@ -20,7 +20,7 @@ export type Workspace = 'tasks' | 'engineering' | 'crm';
 export const WORKSPACES: readonly (readonly [Workspace, string, string])[] = [
   ['tasks', 'Tasks', '#/tasks/today'],
   ['engineering', 'Engineering', '#/engineering/review'],
-  ['crm', 'CRM', '#/crm/people'],
+  ['crm', 'CRM', '#/crm/today'],
 ];
 /** The More menu: sections that are not workspaces of their own. */
 export const MORE_ITEMS = [
@@ -30,7 +30,8 @@ export const MORE_ITEMS = [
   ['#/settings', 'Settings'],
 ] as const;
 export const ENGINEERING_SECTIONS = [['review', 'Review', 'view'], ['graph', 'Trace graph', 'board']] as const;
-export const CRM_TABS = [['people', 'People'], ['organizations', 'Organizations'], ['investors', 'Investor follow-ups'], ['overdue', 'Overdue contacts'], ['due', 'Follow-ups due this week']] as const;
+/** CRM sections (sidebar on desktop, a row of links on a phone). Export joins in a later stage. */
+export const CRM_SECTIONS = [['today', 'Today', 'today'], ['people', 'People', 'people'], ['organizations', 'Organizations', 'building'], ['attention', 'Needs attention', 'attention']] as const;
 
 /** Workspace whose tab is highlighted. Settings and Admin belong to none. */
 export const activeWorkspace = (segments: string[]): Workspace | null => {

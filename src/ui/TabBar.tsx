@@ -20,7 +20,7 @@ export function TabBar() {
       <button key="add" className="flex flex-col items-center justify-center gap-0.5 py-1.5 text-xs font-semibold text-primary-strong" onClick={quickAdd}>
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white"><Icon name="add" /></span>Add
       </button>
-      {link('crm', '#/crm/people', 'CRM', 'people')}
+      {link('crm', '#/crm/today', 'CRM', 'people')}
       <MenuButton label="More" items={MORE_ITEMS} up className={`${cell} w-full`}><Icon name="more" />More</MenuButton>
     </nav>
   );

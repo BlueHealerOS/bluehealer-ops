@@ -20,6 +20,7 @@ const P: Record<string, ReactNode> = {
   board: <><rect x="3.5" y="4" width="5" height="16" rx="1.2" /><rect x="10" y="4" width="5" height="10" rx="1.2" /><rect x="16.5" y="4" width="4" height="13" rx="1.2" /></>,
   calendar: <><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M4 10h16M9 3v4M15 3v4M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01" /></>,
   view: <path d="M6 4h12v17l-6-4-6 4z" />,
+  building: <><rect x="5" y="3.5" width="14" height="17" rx="1.5" /><path d="M9 8h.01M12 8h.01M15 8h.01M9 12h.01M12 12h.01M15 12h.01M10 20.5v-4h4v4" /></>,
 };
 
 export function Icon({ name, className = 'h-5 w-5' }: { name: keyof typeof P | string; className?: string }) {

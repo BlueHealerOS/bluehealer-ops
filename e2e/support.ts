@@ -1,5 +1,7 @@
 import type { Page } from '@playwright/test';
 import { provisioned } from '../tests/helpers';
+import { applyProvision, planProvision } from '../src/provision/provision';
+import { CRM_LISTS } from '../src/crm/schema';
 import { etToday } from '../src/domain/time';
 import { addDays } from '../src/domain/time';
 
@@ -9,6 +11,8 @@ export { addDays };
 /** Fictional fixtures only. Graph is fully mocked; nothing leaves the browser. */
 export async function setup(page: Page, opts: { signedIn?: boolean; forbidden?: boolean; seed?: boolean } = {}) {
   const env = await provisioned();
+  await applyProvision(env.client, await planProvision(env.client, await env.store.siteId(), CRM_LISTS)); // the four CRM lists, empty
+  env.store.invalidate();
   if (opts.seed !== false) {
     const t = today();
     env.fake.seed('Tasks', { Title: 'Prepare benchtop summary', Status: 'Next', Priority: 'P0', Owner: 'Santiago', ThisWeek: true, ContributionType: 'Operations' });

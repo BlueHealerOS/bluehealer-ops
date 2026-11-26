@@ -13,7 +13,11 @@ const LEGACY: Record<string, string> = {
   '/milestones': '/tasks/milestones',
   '/meetings': '/tasks/meetings',
   '/tasks': '/tasks/today',
-  '/crm': '/crm/people',
+  '/crm': '/crm/today',
+  // The earlier CRM views map to the new ones.
+  '/crm/investors': '/crm/people?relationship=investor',
+  '/crm/overdue': '/crm/today',
+  '/crm/due': '/crm/today',
   '/engineering': '/engineering/review',
 };
 
