@@ -23,11 +23,11 @@ describe('reminder rules', () => {
   it('skips applications that are no longer open', () => {
     expect(generateReminders({ tasks: [], applications: [{ id: 1, Title: 'A', Stage: 'Declined', FullDue: TODAY }] }, TODAY)).toEqual([]);
   });
-  it('raises follow-ups due and milestones at risk', () => {
+  it('raises milestones at risk, and no longer raises people follow-ups (the CRM Today list replaced them)', () => {
     const people: Person[] = [{ id: 1, Title: 'Avery Placeholder', NextFollowUp: '2026-11-22', Owner: 'Jay' }];
     const ms: Milestone[] = [{ id: 1, Title: 'Cadaver testing', Status: 'at risk', Owner: 'Santiago' }, { id: 2, Title: 'Fine', Status: 'on track' }];
     const rs = generateReminders({ tasks: [], people, milestones: ms }, TODAY);
-    expect(rs.map((r) => r.trigger).sort()).toEqual(['follow-up-due', 'milestone-at-risk']);
+    expect(rs.map((r) => r.trigger)).toEqual(['milestone-at-risk']);
   });
   it('filters per founder; Both and Unassigned reach both', () => {
     const tasks = [T({ id: 1, DueDate: TODAY, Owner: 'Jay' }), T({ id: 2, DueDate: TODAY, Owner: 'Both' }), T({ id: 3, DueDate: TODAY, Owner: 'Unassigned' })];

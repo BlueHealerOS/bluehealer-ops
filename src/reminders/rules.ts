@@ -15,13 +15,13 @@ export interface Shareable { Sensitivity?: string; ReminderOptIn?: boolean }
 export const isShareable = (x: Shareable) => (x.Sensitivity ?? 'normal') !== 'restricted' || x.ReminderOptIn === true;
 
 export type Trigger =
-  | 'task-due-today' | 'task-overdue' | 'waiting-past-expected' | 'follow-up-due' | 'milestone-at-risk'
+  | 'task-due-today' | 'task-overdue' | 'waiting-past-expected' | 'milestone-at-risk'
   | `application-deadline-T-${number}`;
 
 export interface Reminder {
   /** One reminder per record, trigger and day. */
   id: string;
-  list: 'Tasks' | 'Milestones' | 'People' | 'Applications';
+  list: 'Tasks' | 'Milestones' | 'Applications';
   recordId: number;
   trigger: Trigger;
   title: string;
@@ -54,10 +54,7 @@ export function generateReminders(input: RuleInput, today: string, founder?: Fou
         add({ list: 'Applications', recordId: a.id, trigger: `application-deadline-T-${n}`, title: a.Title, detail: `${label} due ${date} (T-${n})` });
     }
   }
-  for (const p of input.people ?? []) {
-    if (!p.NextFollowUp || p.NextFollowUp > today || !isShareable(p) || !forFounder(p.Owner, founder)) continue;
-    add({ list: 'People', recordId: p.id, trigger: 'follow-up-due', title: p.Title, detail: `Follow-up due ${p.NextFollowUp}` });
-  }
+  // People follow-ups are not reminders: the CRM Today list ranks who to contact. The earlier People.NextFollowUp trigger was retired when the CRM lists replaced the Phase 1 CRM page.
   for (const m of input.milestones ?? []) {
     if ((m.Status !== 'at risk' && m.Status !== 'late') || !isShareable(m) || !forFounder(m.Owner, founder)) continue;
     add({ list: 'Milestones', recordId: m.id, trigger: 'milestone-at-risk', title: m.Title, detail: `Milestone is ${m.Status}` });
@@ -108,7 +105,6 @@ export function buildDigest(input: RuleInput, today: string, founder: Founder, n
       overdue: by((r) => r.trigger === 'task-overdue'),
       waiting: by((r) => r.trigger === 'waiting-past-expected'),
       deadlines: by((r) => r.trigger.startsWith('application-deadline')),
-      followUps: by((r) => r.trigger === 'follow-up-due'),
       milestonesAtRisk: by((r) => r.trigger === 'milestone-at-risk'),
     },
   };
