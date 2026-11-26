@@ -38,6 +38,7 @@ Create each list as a blank list, with the exact name and column internal names 
 - [ ] Four new lists exist and each shows only the founders in its permissions.
 - [ ] `CRM People` has 14 columns including Title; `CRM Interactions` has 9; `CRM Organizations` has 5; `CRM Merge Log` has 7.
 - [ ] The dry run reports 0 changes.
+- [ ] Run the [live smoke test](live-smoke-test.md) with two invented people, before the import.
 - [ ] The lists are empty. Importing is a separate step (Stage 3) that you run yourself.
 
 ## If something goes wrong
