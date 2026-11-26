@@ -1,0 +1,40 @@
+{
+  "schema": "review/0.1",
+  "id": "R-0001",
+  "title": "Root fillet looks tight",
+  "status": "open",
+  "checked": false,
+  "anchor": {
+    "type": "model",
+    "file": "models/bracket.glb",
+    "part": "bracket-arm",
+    "point": [
+      6.0,
+      6.0,
+      0.0
+    ],
+    "camera": {
+      "position": [
+        80,
+        60,
+        80
+      ],
+      "target": [
+        10,
+        20,
+        0
+      ],
+      "fov": 45
+    },
+    "trace_id": null
+  },
+  "thread": [
+    {
+      "author": "santiago",
+      "at": "2026-11-26T02:49:51+00:00",
+      "text": "Check the fillet radius against the hand calculation."
+    }
+  ],
+  "rev": 1,
+  "updated": "2026-11-26T02:49:51+00:00"
+}

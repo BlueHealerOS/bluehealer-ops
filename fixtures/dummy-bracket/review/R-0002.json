@@ -1,0 +1,24 @@
+{
+  "schema": "review/0.1",
+  "id": "R-0002",
+  "title": "Is 6061-T6 the right material?",
+  "status": "open",
+  "checked": false,
+  "anchor": {
+    "type": "trace",
+    "file": "trace/demo-do-002.md",
+    "part": null,
+    "point": null,
+    "camera": null,
+    "trace_id": "DEMO-DO-002"
+  },
+  "thread": [
+    {
+      "author": "santiago",
+      "at": "2026-11-26T02:49:51+00:00",
+      "text": "Confirm the material choice and say what verifies it."
+    }
+  ],
+  "rev": 1,
+  "updated": "2026-11-26T02:49:51+00:00"
+}

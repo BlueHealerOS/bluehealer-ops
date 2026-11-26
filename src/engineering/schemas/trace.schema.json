@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "trace/0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "title",
+    "links",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9-]+$"
+    },
+    "type": {
+      "enum": [
+        "user_need",
+        "design_input",
+        "design_output",
+        "verification",
+        "validation",
+        "risk",
+        "risk_control"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "approved"
+      ]
+    }
+  }
+}
