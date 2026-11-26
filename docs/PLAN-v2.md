@@ -1,6 +1,6 @@
 # BlueHealer Ops v2: implementation plan
 
-Status: draft for Santiago's review, 2026-11-26. Branch `plan/v2`. This file plans phases A to D of the v2 task manager build plan. It contains no app code. `docs/SPEC.md` (revision 3) remains the source of truth for requirements that v2 does not change.
+Status: approved by Santiago, 2026-11-26, including the eight decisions in section 12. The Phase 0 smoke tests, the F6 flow and the phase A drag-library spike are still to be done. This file plans phases A to D of the v2 task manager build plan. It contains no app code. `docs/SPEC.md` (revision 3) remains the source of truth for requirements that v2 does not change.
 
 Labels used throughout: **verified** (read in current vendor documentation on 2026-11-26, with the source named) and **provisional** (an assumption, with the check that settles it). "I do not know" is written where it applies.
 
@@ -182,7 +182,7 @@ All changes go through `src/schema/lists.ts` and the Admin page's idempotent pro
 | Intake | `AppVersion` | text, 40 | no | email context | commit hash |
 | Intake | `Device` | text, 120 | no | email context | browser and device class |
 
-Deviations from the v2 build plan, for Santiago's yes:
+Deviations from the v2 build plan (accepted by Santiago, 2026-11-26):
 
 - **`ClosedBy` is a choice, not a person column.** A person column is a lookup join (threshold 12, verified) and a second user-resolution call. A founder-name choice matches `Owner` and costs nothing. `LastModifiedBy` in version history is the second proof.
 - **`Intake.Kind` is not added.** The existing `RawSource` carries the same meaning; adding a choice avoids a second routing column. Triage shows it as "App request".
@@ -398,23 +398,29 @@ A page the previous plan had cited, the old large-lists developer guide, now ret
 4. **Flow connectors:** build F6 from `docs/flows/F6-app-request.md`; confirm the SharePoint trigger, the shared-mailbox send action and plain-text body are available under Business Basic and that an F6 email is sent from the shared mailbox.
 5. **F1 edit:** add the `[bluehealer-ops]` subject guard to F1 and send a test request.
 
-### Decisions needing Santiago's yes (preferred option first)
-1. Request delivery: Intake list plus flow F6 (preferred), or Graph `Mail.Send`.
-2. Columns: Backlog, This week, In progress, Waiting, Done (preferred), or Jay's labels after his references arrive.
-3. Top bar plus a sub-bar inside Tasks, sidebar removed (preferred), or keep the sidebar for views inside Tasks.
-4. Red reserved for KPI indicators (preferred), or red overdue on tasks too. Note the current app styles overdue chips red (`src/ui/TasksPage.tsx`, line 118); the preferred option changes that. Please also say whether form error messages keep the danger colour; I assume yes, because they are not task state.
-5. Drag library: dnd-kit stable line behind an adapter (preferred), subject to the phase A spike, or Pragmatic.
-6. Retire the "contribution type required to leave Inbox" rule for board entry (`canLeaveInbox` in `src/domain/tasks.ts`; SPEC.md "Task Manager"). The four required fields do not include it. Preferred: retire the gate, keep the column optional, keep the Needs attention check for unlinked strategic tasks. This changes a SPEC.md rule, so it needs a recorded decision.
-7. Workstream as a `Labels` facet with a `WorkstreamId` column (agreed 2026-11-26), and the founders' list of workstream names.
-8. Schema deviations in section 6.1: `ClosedBy` as a choice, `RawSource` instead of a new `Intake.Kind`, `Intake.Device`, `WaitingOn` kept as text.
+### Decisions (accepted by Santiago, 2026-11-26)
+Each row is the option that was recommended and accepted.
+
+| # | Decision | Accepted option | Follow-on |
+| --- | --- | --- | --- |
+| 1 | Request delivery | Intake list plus flow F6; no `Mail.Send` | Build F6 and edit F1 (smoke tests 4 and 5) |
+| 2 | Board columns | Backlog, This week, In progress, Waiting, Done | Revisit only if Jay's reference screenshots differ |
+| 3 | Shell | Top bar plus a sub-bar inside Tasks; sidebar removed | `Sidebar.tsx` retired in phase A |
+| 4 | Red | Reserved for KPI indicators; the overdue chip at `src/ui/TasksPage.tsx` line 118 loses its red; form errors keep the danger colour | `tests/noRed.test.ts` |
+| 5 | Drag library | `@dnd-kit/core` and `@dnd-kit/sortable`, exact pins, behind `useBoardDnd.ts` | Phase A spike; fall back to Pragmatic if it fails |
+| 6 | Contribution type | Retire the "required to leave Inbox" gate for board entry (`canLeaveInbox` in `src/domain/tasks.ts`); keep the column optional and the Needs attention check for unlinked strategic tasks | Changes a `docs/SPEC.md` rule; recorded in the owner's decision log |
+| 7 | Workstream | A `Labels` facet plus a `WorkstreamId` column | The founders agree the list of workstream names |
+| 8 | Schema deviations | `ClosedBy` as a choice; `RawSource` instead of a new `Intake.Kind`; `Intake.Device`; `WaitingOn` kept as text | Section 6.1 |
 
 ### Open questions
-Answers from Santiago on 2026-11-26 are recorded here. Items marked **accepted** follow this plan's proposal; the eight decisions above were not part of that answer and remain open.
+Answers from Santiago on 2026-11-26 are recorded here. Items marked **accepted** follow this plan's proposal.
 
 1. **Resolved.** The original revision 2 launch prompt, the frontend brief and the decisions file: revision 3 of `docs/SPEC.md` supersedes revision 2. D7 and D9 stay cited from the v2 build plan only (section 1).
 2. **Accepted.** Gates MG0 to MG3: a milestone whose `ApprovalGate` is not `none` draws as a diamond. A `Milestones.IsGate` boolean is added only if gates turn out to be a different thing. I still do not know the intended gate list; the phase C acceptance check "the seeded milestones and gates show on the right dates" needs it from the founders.
 3. **Partly answered.** Power Automate: Santiago believes the plan includes some credits or tokens. That does not settle whether the shared-mailbox send action and plain-text body are available, so smoke test 4 stays (section 11).
-4. **Partly resolved.** Jay uses Windows: shortcut labels show Ctrl on Windows and Cmd on macOS, and Edge on Windows is a manual check (section 9). Still open: Jay's onboarding date.
+4. **Resolved.** Jay uses Windows: shortcut labels show Ctrl on Windows and Cmd on macOS, and Edge on Windows is a manual check (section 9). His onboarding is Monday 2026-12-07.
+
+   **Timing (recommendation, not a decision):** 7 December is 11 days after this plan was approved. The v2 build plan estimates about two weeks of evening work for phase A, which is its own assumption and not measured, so the full phase A board will probably not be ready on that date. I recommend onboarding Jay on 7 December into the app as it stands (it already has Today, Board, List and quick add), keeping Trello read-only as the existing rule says, and starting the phase A gate (one week of use, feedback through the request button) when phase A ships. Santiago decides.
 5. **Accepted.** Swimlanes are off by default; ask Jay after phase A.
 6. **Accepted.** "Looks done?" is set by a flow from a routine proposal through the contract in `docs/flows/proposal.schema.json`, into a new `Tasks.LooksDone` boolean (section 6.1). The flow guide for it (F5, proposals in) is not yet written and belongs to phase B.
 7. **Accepted.** "Waiting on me" uses a new `Tasks.RequestedBy` text column (section 6.1). "I am waiting on" uses the Waiting fields.
