@@ -1,0 +1,35 @@
+{
+  "name": "CRM Merge Log",
+  "description": "Kept record of merges, used by Undo merge. Snapshots are deleted with the person they describe.",
+  "columns": [
+    {
+      "name": "Kind",
+      "type": "choice",
+      "choices": [
+        "person",
+        "organization"
+      ],
+      "required": true
+    },
+    {
+      "name": "Snapshot",
+      "type": "note"
+    },
+    {
+      "name": "MergedIntoId",
+      "type": "number"
+    },
+    {
+      "name": "MergedAt",
+      "type": "datetime"
+    },
+    {
+      "name": "MergedBy",
+      "type": "text"
+    },
+    {
+      "name": "Undone",
+      "type": "boolean"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import * as C from './choices';
+import * as C from './choices.ts';
 
 export const ColumnSchema = z.object({
   name: z.string().regex(/^[A-Za-z][A-Za-z0-9]*$/), // internal name equals display name: no spaces
@@ -8,7 +8,10 @@ export const ColumnSchema = z.object({
   lookup: z.string().optional(), // target list name
   indexed: z.boolean().optional(),
   default: z.string().optional(),
-  max: z.number().optional(),
+  max: z.number().optional(), // text: maximum length. number: maximum value
+  min: z.number().optional(), // number: minimum value
+  required: z.boolean().optional(),
+  multiple: z.boolean().optional(), // lookup: allow several values
 });
 export type Column = z.infer<typeof ColumnSchema>;
 export const ListSchema = z.object({ name: z.string(), description: z.string(), columns: z.array(ColumnSchema) });

@@ -23,8 +23,10 @@ export interface CrmPerson {
   lastTwoWayAt?: string;
   lastTouchAt?: string;
   lastDirection?: Direction;
+  /** Hub path or import key. */
+  sourceId?: string;
 }
-export interface CrmOrg { id: number; name: string; domain?: string }
+export interface CrmOrg { id: number; name: string; orgType?: string; domain?: string; relationshipToBH?: string; hubPath?: string }
 export interface CrmInteraction {
   id: number;
   summary: string;
@@ -33,6 +35,10 @@ export interface CrmInteraction {
   direction: Direction;
   peopleIds: number[];
   organizationId?: number;
+  followUpNeeded?: boolean;
+  sourceLink?: string;
+  /** The most restrictive sensitivity of the people involved. */
+  sensitivity?: Sensitivity;
 }
 
 export interface RankingConfig {

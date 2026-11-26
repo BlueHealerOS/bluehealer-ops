@@ -1,0 +1,64 @@
+{
+  "name": "CRM Interactions",
+  "description": "Logged contacts. No summaries of counsel, equity, tax, banking or deal-structure conversations: link the SharePoint track folder instead.",
+  "columns": [
+    {
+      "name": "Date",
+      "type": "date",
+      "required": true
+    },
+    {
+      "name": "InteractionType",
+      "type": "choice",
+      "choices": [
+        "email",
+        "call",
+        "meeting",
+        "event",
+        "message",
+        "broadcast"
+      ],
+      "required": true,
+      "default": "email"
+    },
+    {
+      "name": "Direction",
+      "type": "choice",
+      "choices": [
+        "outbound",
+        "inbound",
+        "two-way"
+      ],
+      "required": true
+    },
+    {
+      "name": "People",
+      "type": "lookup",
+      "lookup": "CRM People",
+      "required": true,
+      "multiple": true
+    },
+    {
+      "name": "Organization",
+      "type": "lookup",
+      "lookup": "CRM Organizations"
+    },
+    {
+      "name": "FollowUpNeeded",
+      "type": "boolean"
+    },
+    {
+      "name": "SourceLink",
+      "type": "text"
+    },
+    {
+      "name": "Sensitivity",
+      "type": "choice",
+      "choices": [
+        "Normal",
+        "Restricted"
+      ],
+      "default": "Normal"
+    }
+  ]
+}
