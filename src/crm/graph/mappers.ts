@@ -31,6 +31,24 @@ function toFields<T>(map: Entry<T>[], patch: { [K in keyof T]?: T[K] | null }): 
   return out;
 }
 
+/** A merge log row. `snapshot` is JSON text, parsed by parseSnapshot in model/merge.ts. */
+export interface MergeLogEntry { id: number; etag?: string; title: string; kind: string; snapshot: string; mergedIntoId?: number; mergedAt?: string; mergedBy?: string; undone: boolean }
+export function mergeLogFromRow(r: Row): MergeLogEntry {
+  const f = r.fields;
+  return { id: r.id, etag: r.etag, title: String(f.Title ?? ''), kind: String(f.Kind ?? 'person'), snapshot: String(f.Snapshot ?? ''), mergedIntoId: f.MergedIntoId === undefined ? undefined : Number(f.MergedIntoId), mergedAt: f.MergedAt === undefined ? undefined : String(f.MergedAt), mergedBy: f.MergedBy === undefined ? undefined : String(f.MergedBy), undone: f.Undone === true };
+}
+export const mergeLogToFields = (e: { title?: string; kind?: string; snapshot?: string; mergedIntoId?: number; mergedAt?: string; mergedBy?: string; undone?: boolean }): Record<string, unknown> => {
+  const out: Record<string, unknown> = {};
+  if (e.title !== undefined) out.Title = e.title;
+  if (e.kind !== undefined) out.Kind = e.kind;
+  if (e.snapshot !== undefined) out.Snapshot = e.snapshot;
+  if (e.mergedIntoId !== undefined) out.MergedIntoId = e.mergedIntoId;
+  if (e.mergedAt !== undefined) out.MergedAt = e.mergedAt;
+  if (e.mergedBy !== undefined) out.MergedBy = e.mergedBy;
+  if (e.undone !== undefined) out.Undone = e.undone;
+  return out;
+};
+
 export const orgFromRow = (r: Row) => fromRow<CrmOrg>(ORG, r, { name: '' });
 export const personFromRow = (r: Row) => fromRow<CrmPerson>(PERSON, r, { name: '', sensitivity: 'Normal' });
 export const interactionFromRow = (r: Row) => fromRow<CrmInteraction>(INTERACTION, r, { peopleIds: [], summary: '' });

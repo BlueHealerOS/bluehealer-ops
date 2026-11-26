@@ -6,9 +6,11 @@ import { findPersonDuplicates, type PersonDuplicate } from '../model/dedupe.ts';
 import { quickSnoozeDates } from '../model/defaults.ts';
 import type { Direction, InteractionType, Owner, Sensitivity, Stage } from '../model/types.ts';
 import { ORG_TYPES, OWNERS, RELATIONSHIP_TYPES, STAGES } from '../schema.ts';
+import { defaultChoices, MERGE_FIELDS, mergedPatch, type MergeChoices, type MergeField } from '../model/merge.ts';
+import { deletionPreview } from '../export.ts';
 import { navigate } from '../../ui/router';
 import { type SheetState, useCrm } from './crmCtx';
-import { Pick, Sheet, TextField } from './parts';
+import { end, Pick, plural, Sheet, TextField } from './parts';
 import { orgNameOf } from './viewModel';
 
 export function Sheets({ state, onClose }: { state: SheetState | null; onClose: () => void }) {
@@ -18,6 +20,8 @@ export function Sheets({ state, onClose }: { state: SheetState | null; onClose: 
     case 'snooze': return <SnoozeSheet person={state.person} onClose={onClose} />;
     case 'person': return <PersonSheet person={state.person} organizationId={state.organizationId} onClose={onClose} />;
     case 'org': return <OrgSheet onClose={onClose} />;
+    case 'merge': return <MergeSheet aId={state.aId} bId={state.bId} onClose={onClose} />;
+    case 'delete': return <DeleteSheet personId={state.personId} onClose={onClose} />;
   }
 }
 
@@ -47,7 +51,7 @@ function LogContactSheet({ personId, onClose }: { personId?: number; onClose: ()
     setBusy(true); setError(null); setConflict(false);
     try {
       const r = await actions.logContact({ personIds: ids, summary, type, direction, date, followUpNeeded: followUp, sourceLink: link || undefined });
-      notify(`Logged contact with ${ids.map(name).join(', ')}.`);
+      notify(end(`Logged contact with ${ids.map(name).join(', ')}`));
       for (const f of r.failed) notify(f.message, undefined, 10_000);
       for (const w of r.warnings) notify(w, undefined, 10_000);
       onClose();
@@ -137,13 +141,13 @@ function PersonSheet({ person, organizationId, onClose }: { person?: Extract<She
     try {
       if (edit) {
         await actions.updatePerson(person, { name, organizationId: org ? Number(org) : independent?.id, relationshipType: rel, owner, email: email.trim() || null, importance: Number(importance), comfort: comfort ? Number(comfort) : null, stage, sensitivity, agreedCheckIn: agreed || null });
-        notify(`${name} saved.`);
+        notify(end(`${name} saved`));
         onClose();
         return;
       }
       const r = await actions.addPerson({ name, relationshipType: rel, owner, organizationId: org ? Number(org) : undefined, email: email || undefined, importance: Number(importance), comfort: comfort ? Number(comfort) : undefined, stage, sensitivity, agreedCheckIn: agreed || undefined }, { allowDuplicate });
       if (!r.person) { setDups(r.duplicates); return; }
-      notify(`${r.person.name} added.`);
+      notify(end(`${r.person.name} added`));
       onClose();
       navigate(`/crm/person/${r.person.id}`);
     } catch (err) { setError(messageOf(err)); setConflict(err instanceof ConflictError); } finally { setBusy(false); }
@@ -207,6 +211,95 @@ function OrgSheet({ onClose }: { onClose: () => void }) {
         <ErrorLine error={error} />
         <div className="flex gap-2"><button className="btn btn-primary" type="submit">Add organization</button><button className="btn" type="button" onClick={onClose}>Cancel</button></div>
       </form>
+    </Sheet>
+  );
+}
+
+const FIELD_LABEL: Record<MergeField, string> = { name: 'Name', organizationId: 'Organization', relationshipType: 'Relationship type', owner: 'Owner', email: 'Email', importance: 'Importance', comfort: 'Comfort', agreedCheckIn: 'Agreed check-in', stage: 'Stage', sensitivity: 'Sensitivity' };
+
+function MergeSheet({ aId, bId, onClose }: { aId: number; bId: number; onClose: () => void }) {
+  const { data, actions, notify, reload } = useCrm();
+  const a = data.people.find((p) => p.id === aId), b = data.people.find((p) => p.id === bId);
+  const count = (id: number) => data.interactions.filter((i) => i.peopleIds.includes(id)).length;
+  const [keepId, setKeepId] = useState(a && b ? (count(b.id) > count(a.id) ? b.id : a.id) : aId);
+  const keep = keepId === aId ? a : b, lose = keepId === aId ? b : a;
+  const [choices, setChoices] = useState<MergeChoices>(() => (keep && lose ? defaultChoices(keep, lose) : {}));
+  const [error, setError] = useState<string | null>(null);
+  const [conflict, setConflict] = useState(false);
+  const [busy, setBusy] = useState(false);
+  if (!a || !b || !keep || !lose) return <Sheet title="Merge people" onClose={onClose}><p className="text-sm">One of these people no longer exists. <button className="btn" onClick={() => { void reload().then(onClose); }}>Reload</button></p></Sheet>;
+  const show = (p: typeof keep, f: MergeField) => {
+    const v = f === 'organizationId' ? orgNameOf(data.orgs, p.organizationId) : p[f];
+    return v === undefined || v === null || v === '' ? 'empty' : String(v);
+  };
+  const pick = (id: number) => { setKeepId(id); const k = id === aId ? a : b, l = id === aId ? b : a; setChoices(defaultChoices(k, l)); };
+  const result = mergedPatch(keep, lose, choices);
+  async function submit() {
+    setBusy(true); setError(null); setConflict(false);
+    try { await actions.mergePeople(keep!.id, lose!.id, choices); notify(`Merged ${lose!.name} into ${end(keep!.name)} Undo it from Needs attention.`, undefined, 10_000); onClose(); } catch (err) { setError(messageOf(err)); setConflict(err instanceof ConflictError); } finally { setBusy(false); }
+  }
+  return (
+    <Sheet title="Merge people" onClose={onClose}>
+      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); void submit(); }}>
+        <fieldset className="space-y-2">
+          <legend className="mb-1 text-sm font-medium">Keep this record</legend>
+          {[a, b].map((p) => (
+            <label key={p.id} className="card flex items-start gap-2 text-sm">
+              <input type="radio" name="keep" checked={keepId === p.id} onChange={() => pick(p.id)} data-autofocus={p.id === a.id ? true : undefined} />
+              <span><strong>{p.name}</strong>, {orgNameOf(data.orgs, p.organizationId)}<br /><span className="text-ink-muted">{plural(count(p.id), 'interaction')}, last contact {p.lastTwoWayAt ?? 'none'}</span></span>
+            </label>
+          ))}
+        </fieldset>
+        <p className="text-xs text-ink-muted">Choose, field by field, which value the kept record ends with. Interactions of both records move to it. Sensitivity always ends at the most restrictive.</p>
+        {MERGE_FIELDS.map((f) => (
+          <fieldset key={f} className="space-y-1" disabled={f === 'sensitivity'}>
+            <legend className="text-sm font-medium">{FIELD_LABEL[f]}</legend>
+            {(['keep', 'lose'] as const).map((side) => {
+              const p = side === 'keep' ? keep : lose;
+              return (
+                <label key={side} className="flex items-center gap-2 text-sm">
+                  <input type="radio" name={`f-${f}`} checked={(choices[f] ?? 'keep') === side} onChange={() => setChoices((c) => ({ ...c, [f]: side }))} />
+                  <span><span className="text-ink-muted">{side === 'keep' ? 'Kept record' : 'Other record'}:</span> {show(p, f)}</span>
+                </label>
+              );
+            })}
+          </fieldset>
+        ))}
+        <p className="text-sm" role="status">{Object.keys(result).length ? `The kept record will change: ${Object.keys(result).map((k) => FIELD_LABEL[k as MergeField]).join(', ')}.` : 'The kept record keeps all its values.'}</p>
+        <p className="text-xs text-ink-muted">The other record goes to the SharePoint recycle bin. A merge log entry lets you undo this.</p>
+        <ErrorLine error={error} onReload={conflict ? () => { void reload().then(onClose); } : undefined} />
+        <div className="flex gap-2"><button className="btn btn-primary" type="submit" disabled={busy}>Merge records</button><button className="btn" type="button" onClick={onClose}>Cancel</button></div>
+      </form>
+    </Sheet>
+  );
+}
+
+function DeleteSheet({ personId, onClose }: { personId: number; onClose: () => void }) {
+  const { data, actions, notify, reload } = useCrm();
+  const p = data.people.find((x) => x.id === personId);
+  const [error, setError] = useState<string | null>(null);
+  const [conflict, setConflict] = useState(false);
+  const [busy, setBusy] = useState(false);
+  if (!p) return <Sheet title="Delete person" onClose={onClose}><p className="text-sm">This person no longer exists.</p></Sheet>;
+  const pv = deletionPreview(p.id, data);
+  async function submit() {
+    setBusy(true); setError(null); setConflict(false);
+    try { await actions.deletePerson(p!.id); notify(end(`${p!.name} deleted`)); onClose(); navigate('/crm/people'); } catch (err) { setError(messageOf(err)); setConflict(err instanceof ConflictError); } finally { setBusy(false); }
+  }
+  return (
+    <Sheet title={`Delete ${p.name}`} onClose={onClose}>
+      <div className="space-y-3">
+        <p className="text-sm">This will delete:</p>
+        <ul className="list-disc space-y-1 pl-5 text-sm" aria-label="What will be deleted">
+          <li>the person record for {p.name}</li>
+          <li>{pv.solo.length} {pv.solo.length === 1 ? 'interaction' : 'interactions'} only involving {p.name}</li>
+          <li>{p.name} from {pv.shared.length} shared {pv.shared.length === 1 ? 'interaction' : 'interactions'} (the others stay)</li>
+          <li>{pv.mergeLogs.length} merge log {pv.mergeLogs.length === 1 ? 'entry' : 'entries'} for {p.name}</li>
+        </ul>
+        <p className="text-xs text-ink-muted">Items go to the SharePoint recycle bin. Follow-up tasks in the Tasks list are not deleted. This cannot be undone from the app.</p>
+        <ErrorLine error={error} onReload={conflict ? () => { void reload().then(onClose); } : undefined} />
+        <div className="flex gap-2"><button className="btn btn-danger" disabled={busy} onClick={() => void submit()} data-autofocus>Delete person</button><button className="btn" onClick={onClose}>Cancel</button></div>
+      </div>
     </Sheet>
   );
 }

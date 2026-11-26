@@ -22,7 +22,7 @@ for (const f of files) {
 }
 
 for (const f of files) {
-  if (CSV.test(f) && !/^fixtures\/crm\/[^/]+\.csv$/.test(f)) problems.push(`${f}: CSV files are allowed only under fixtures/crm/`);
+  if (CSV.test(f) && !/^fixtures\/crm\/.+\.csv$/.test(f)) problems.push(`${f}: CSV files are allowed only under fixtures/crm/`);
   if (FORBIDDEN_NAMES.some((r) => r.test(f))) problems.push(`${f}: file type or name is not allowed in this repository`);
   if (SKIP_TEXT.some((r) => r.test(f))) continue;
   let text;

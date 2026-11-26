@@ -30,8 +30,8 @@ export const MORE_ITEMS = [
   ['#/settings', 'Settings'],
 ] as const;
 export const ENGINEERING_SECTIONS = [['review', 'Review', 'view'], ['graph', 'Trace graph', 'board']] as const;
-/** CRM sections (sidebar on desktop, a row of links on a phone). Export joins in a later stage. */
-export const CRM_SECTIONS = [['today', 'Today', 'today'], ['people', 'People', 'people'], ['organizations', 'Organizations', 'building'], ['attention', 'Needs attention', 'attention']] as const;
+/** CRM sections (sidebar on desktop, a row of links on a phone). */
+export const CRM_SECTIONS = [['today', 'Today', 'today'], ['people', 'People', 'people'], ['organizations', 'Organizations', 'building'], ['attention', 'Needs attention', 'attention'], ['export', 'Export', 'list']] as const;
 
 /** Workspace whose tab is highlighted. Settings and Admin belong to none. */
 export const activeWorkspace = (segments: string[]): Workspace | null => {

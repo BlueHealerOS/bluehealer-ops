@@ -1,6 +1,7 @@
 import { CRM_SECTIONS } from '../../ui/nav';
 import { useHashRoute } from '../../ui/router';
 import { CrmProvider } from './CrmContext';
+import { ExportView } from './ExportView';
 import { NeedsAttention } from './NeedsAttention';
 import { OrgPage, OrganizationsView } from './OrganizationsView';
 import { PeopleView } from './PeopleView';
@@ -22,6 +23,7 @@ export function CrmWorkspace() {
         {view === 'people' ? <PeopleView />
           : view === 'organizations' ? <OrganizationsView />
           : view === 'attention' ? <NeedsAttention />
+          : view === 'export' ? <ExportView />
           : view === 'person' && Number.isInteger(id) ? <ProfilePage id={id} />
           : view === 'org' && Number.isInteger(id) ? <OrgPage id={id} />
           : <TodayView />}

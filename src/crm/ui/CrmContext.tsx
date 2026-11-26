@@ -83,9 +83,12 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       },
       async addOrganization(i) { const o = await service.addOrganization(i); setData((d) => d && { ...d, orgs: [...d.orgs, o] }); return o; },
       async recompute() { const r = await service.recompute(cur()); await reload(); return r; },
+      async mergePeople(keepId, loseId, choices) { await service.mergePeople(keepId, loseId, choices, cur(), founder); await reload(); },
+      async undoMerge(logId) { await service.undoMerge(logId, cur()); await reload(); },
+      async deletePerson(personId) { const r = await service.deletePerson(personId, cur()); await reload(); return r; },
     };
     return a;
-  }, [service, reload, notify]);
+  }, [service, reload, notify, founder]);
 
   const today = boot.kind === 'ready' && boot.fixture ? etToday(boot.now()) : etToday(tick);
   const value = useMemo<CrmCtx | null>(() => (data && actions && boot.kind === 'ready'
