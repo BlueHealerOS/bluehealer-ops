@@ -13,6 +13,12 @@ const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 const PHONE = /(?:\+?1[ .-])?\(?\b\d{3}\)?[ .-]\d{3}[ .-]\d{4}\b/g;
 const SECRETLIKE = /(client_secret|clientSecret|AccountKey|SharedAccessKey|BEGIN (RSA |EC )?PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|xox[bap]-[A-Za-z0-9-]{10,})/;
 
+// Engineering bundles: models, review items and graphs may exist in the repository only as invented fixtures.
+const BUNDLE_FILES = [/\.(glb|gltf|step|stp)$/i, /(^|\/)review\/R-[^/]*\.json$/i, /(^|\/)graph\.json$/i];
+for (const f of files) {
+  if (!f.startsWith('fixtures/') && BUNDLE_FILES.some((r) => r.test(f))) problems.push(`${f}: bundle files (models, review items, graph.json) are allowed only under fixtures/`);
+}
+
 for (const f of files) {
   if (FORBIDDEN_NAMES.some((r) => r.test(f))) problems.push(`${f}: file type or name is not allowed in this repository`);
   if (SKIP_TEXT.some((r) => r.test(f))) continue;

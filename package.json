@@ -13,13 +13,17 @@
     "lint": "eslint .",
     "test": "vitest run",
     "e2e": "npm run build:e2e && playwright test --trace off",
-    "check:fixtures": "node scripts/check-repo-hygiene.mjs"
+    "check:fixtures": "node scripts/check-repo-hygiene.mjs",
+    "build:validators": "node scripts/build-validators.mjs",
+    "check:validators": "node scripts/build-validators.mjs --check"
   },
   "dependencies": {
     "@azure/msal-browser": "^5.30.0",
     "@tanstack/react-query": "^5.108.2",
+    "cytoscape": "3.35.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "three": "0.187.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -30,7 +34,9 @@
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/three": "0.187.0",
     "@vitejs/plugin-react": "^6.3.0",
+    "ajv": "8.20.0",
     "eslint": "^10.15.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "tailwindcss": "^4.3.5",
@@ -38,5 +44,8 @@
     "typescript-eslint": "^8.73.0",
     "vite": "^8.3.8",
     "vitest": "^5.1.1"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

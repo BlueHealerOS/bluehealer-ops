@@ -9,12 +9,37 @@ export type QueueKey = (typeof QUEUES)[number][0];
 
 export const LAYOUTS = [['list', 'List', 'list'], ['board', 'Board', 'board'], ['calendar', 'Calendar', 'calendar']] as const;
 
+/** Sections of the Tasks workspace beyond the queues. Routes live under #/tasks/. */
 export const SECTIONS = [
-  ['milestones', 'Milestones', 'milestones', 'milestones'],
-  ['crm/people', 'Relationships', 'crm', 'people'],
-  ['triage', 'Triage', 'triage', 'triage'],
-  ['meetings', 'Meetings', 'meetings', 'meetings'],
+  ['tasks/milestones', 'Milestones', 'milestones', 'milestones'],
+  ['tasks/triage', 'Triage', 'triage', 'triage'],
+  ['tasks/meetings', 'Meetings', 'meetings', 'meetings'],
 ] as const;
+
+export type Workspace = 'tasks' | 'engineering' | 'crm';
+export const WORKSPACES: readonly (readonly [Workspace, string, string])[] = [
+  ['tasks', 'Tasks', '#/tasks/today'],
+  ['engineering', 'Engineering', '#/engineering/review'],
+  ['crm', 'CRM', '#/crm/people'],
+];
+/** The More menu: sections that are not workspaces of their own. */
+export const MORE_ITEMS = [
+  ['#/tasks/milestones', 'Milestones'],
+  ['#/tasks/triage', 'Triage'],
+  ['#/tasks/meetings', 'Meetings'],
+  ['#/settings', 'Settings'],
+] as const;
+export const ENGINEERING_SECTIONS = [['review', 'Review', 'view'], ['graph', 'Trace graph', 'board']] as const;
+export const CRM_TABS = [['people', 'People'], ['organizations', 'Organizations'], ['investors', 'Investor follow-ups'], ['overdue', 'Overdue contacts'], ['due', 'Follow-ups due this week']] as const;
+
+/** Workspace whose tab is highlighted. Settings and Admin belong to none. */
+export const activeWorkspace = (segments: string[]): Workspace | null => {
+  const a = segments[0] ?? 'tasks';
+  if (a === 'engineering' || a === 'crm') return a;
+  return a === 'tasks' ? 'tasks' : null;
+};
+/** Workspace whose sections the sidebar shows. */
+export const sidebarWorkspace = (segments: string[]): Workspace => activeWorkspace(segments) ?? 'tasks';
 
 export const queueLabel = (key: string) => QUEUES.find((q) => q[0] === key)?.[1];
 

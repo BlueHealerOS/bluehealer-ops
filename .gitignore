@@ -18,3 +18,7 @@ __pycache__/
 __pycache__/
 *.pyc
 .pytest_cache/
+# Engineering bundles open from a local folder and never enter this repository (only fixtures/ is allowed)
+bundles/
+*.bundle/
+bundle-*/

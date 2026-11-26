@@ -1,0 +1,105 @@
+$ python -m tools.eng.bundle --out <work>/dummy-bracket
+bundle written to <work>/dummy-bracket with {'arm_length': 60.0, 'thickness': 6.0, 'fillet_radius': 2.0}
+
+--- review/R-0003.json written by the tab ---
+{
+  "schema": "review/0.1",
+  "id": "R-0003",
+  "title": "Check the hole spacing",
+  "status": "open",
+  "checked": true,
+  "anchor": {
+    "type": "model",
+    "file": "models/bracket.glb",
+    "part": "bracket-base",
+    "point": [
+      2.39,
+      0.01,
+      10
+    ],
+    "camera": {
+      "position": [
+        80,
+        60,
+        80
+      ],
+      "target": [
+        10,
+        20,
+        0
+      ],
+      "fov": 45
+    },
+    "trace_id": null
+  },
+  "thread": [
+    {
+      "author": "santiago",
+      "at": "2026-11-26T03:51:55.236Z",
+      "text": "Holes look close to the edge. Please check against the hand calculation."
+    }
+  ],
+  "rev": 2,
+  "updated": "2026-11-26T03:51:55.363Z"
+}
+
+
+$ python -m tools.eng.review list <work>/dummy-bracket (ids only)
+R-0001, R-0002, R-0003
+
+$ python -m tools.eng.bundle --out <work>/dummy-bracket --fillet-radius 3
+bundle written to <work>/dummy-bracket with {'arm_length': 60.0, 'thickness': 6.0, 'fillet_radius': 3.0}
+
+$ python -m tools.eng.review reply <work>/dummy-bracket R-0003 --expect-rev 2 --link calcs/c-001.json --status agent_replied
+R-0003: rev 3, status agent_replied
+
+--- review/R-0003.json after the reply ---
+{
+  "schema": "review/0.1",
+  "id": "R-0003",
+  "title": "Check the hole spacing",
+  "status": "agent_replied",
+  "checked": true,
+  "anchor": {
+    "type": "model",
+    "file": "models/bracket.glb",
+    "part": "bracket-base",
+    "point": [
+      2.39,
+      0.01,
+      10
+    ],
+    "camera": {
+      "position": [
+        80,
+        60,
+        80
+      ],
+      "target": [
+        10,
+        20,
+        0
+      ],
+      "fov": 45
+    },
+    "trace_id": null
+  },
+  "thread": [
+    {
+      "author": "santiago",
+      "at": "2026-11-26T03:51:55.236Z",
+      "text": "Holes look close to the edge. Please check against the hand calculation."
+    },
+    {
+      "author": "claude",
+      "at": "2026-11-26T03:51:59+00:00",
+      "text": "I raised the root fillet to 3 mm and regenerated the model. Hand calculation C-001 (100 MPa, safety factor 2.76) does not depend on the fillet or the holes, so it is unchanged. The hole spacing needs its own check; I have not made one.",
+      "links": [
+        "calcs/c-001.json"
+      ]
+    }
+  ],
+  "rev": 3,
+  "updated": "2026-11-26T03:51:59+00:00"
+}
+

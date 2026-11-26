@@ -1,8 +1,8 @@
 import { useEffect, type ReactNode } from 'react';
 import { useOps } from './ctx';
-import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { TabBar } from './TabBar';
+import { TopBar } from './TopBar';
 
 export function Shell({ children }: { children: ReactNode }) {
   const { quickAdd } = useOps();
@@ -17,12 +17,12 @@ export function Shell({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('keydown', k);
   }, [quickAdd]);
   return (
-    <div className="min-h-screen md:flex">
+    <div className="min-h-screen">
       <a href="#main" onClick={(e) => { e.preventDefault(); const m = document.getElementById('main'); m?.focus(); m?.scrollIntoView(); }} className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-control focus:bg-surface focus:px-3 focus:py-2">Skip to content</a>
-      <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Header />
-        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-6xl p-4 pb-24 md:p-6 md:pb-8">{children}</main>
+      <TopBar />
+      <div className="md:flex">
+        <Sidebar />
+        <main id="main" tabIndex={-1} className="mx-auto w-full min-w-0 max-w-6xl flex-1 p-4 pb-24 md:p-6 md:pb-8">{children}</main>
       </div>
       <TabBar />
     </div>

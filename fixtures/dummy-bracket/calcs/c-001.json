@@ -1,0 +1,39 @@
+{
+  "schema": "calc/0.1",
+  "id": "C-001",
+  "title": "Cantilever bending stress at the arm root (hand calculation)",
+  "method": "sigma = 6 F L / (b t^2); safety factor = yield / sigma",
+  "material": "Aluminium 6061-T6 (public handbook value)",
+  "inputs": {
+    "F": {
+      "value": 200.0,
+      "unit": "N"
+    },
+    "L": {
+      "value": 60.0,
+      "unit": "mm"
+    },
+    "b": {
+      "value": 20.0,
+      "unit": "mm"
+    },
+    "t": {
+      "value": 6.0,
+      "unit": "mm"
+    },
+    "yield_strength": {
+      "value": 276.0,
+      "unit": "MPa"
+    }
+  },
+  "results": {
+    "bending_stress": {
+      "value": 100.0,
+      "unit": "MPa"
+    },
+    "safety_factor": {
+      "value": 2.76,
+      "unit": "1"
+    }
+  }
+}

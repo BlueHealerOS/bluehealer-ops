@@ -1,0 +1,103 @@
+{
+  "schema": "graph/0.1",
+  "generated": "2026-11-26T02:49:51+00:00",
+  "nodes": [
+    {
+      "id": "DEMO-DI-001",
+      "type": "design_input",
+      "title": "Safety factor of 2 or more on yield",
+      "file": "trace/demo-di-001.md"
+    },
+    {
+      "id": "DEMO-DI-002",
+      "type": "design_input",
+      "title": "Fits a 70 mm envelope",
+      "file": "trace/demo-di-002.md"
+    },
+    {
+      "id": "DEMO-DO-001",
+      "type": "design_output",
+      "title": "Thickness 6 mm",
+      "file": "trace/demo-do-001.md"
+    },
+    {
+      "id": "DEMO-DO-002",
+      "type": "design_output",
+      "title": "Aluminium 6061-T6",
+      "file": "trace/demo-do-002.md"
+    },
+    {
+      "id": "DEMO-DO-003",
+      "type": "design_output",
+      "title": "Overall height 66 mm",
+      "file": "trace/demo-do-003.md"
+    },
+    {
+      "id": "DEMO-UN-001",
+      "type": "user_need",
+      "title": "Carries the service load",
+      "file": "trace/demo-un-001.md"
+    },
+    {
+      "id": "DEMO-UN-002",
+      "type": "user_need",
+      "title": "Fits the mounting envelope",
+      "file": "trace/demo-un-002.md"
+    },
+    {
+      "id": "DEMO-VER-001",
+      "type": "verification",
+      "title": "Hand calculation C-001",
+      "file": "trace/demo-ver-001.md"
+    },
+    {
+      "id": "DEMO-VER-002",
+      "type": "verification",
+      "title": "Envelope check",
+      "file": "trace/demo-ver-002.md"
+    }
+  ],
+  "edges": [
+    {
+      "from": "DEMO-DI-001",
+      "to": "DEMO-UN-001",
+      "type": "traces_to"
+    },
+    {
+      "from": "DEMO-DI-002",
+      "to": "DEMO-UN-002",
+      "type": "traces_to"
+    },
+    {
+      "from": "DEMO-DO-001",
+      "to": "DEMO-DI-001",
+      "type": "traces_to"
+    },
+    {
+      "from": "DEMO-DO-002",
+      "to": "DEMO-DI-001",
+      "type": "traces_to"
+    },
+    {
+      "from": "DEMO-DO-003",
+      "to": "DEMO-DI-002",
+      "type": "traces_to"
+    },
+    {
+      "from": "DEMO-VER-001",
+      "to": "DEMO-DO-001",
+      "type": "traces_to"
+    },
+    {
+      "from": "DEMO-VER-002",
+      "to": "DEMO-DO-003",
+      "type": "traces_to"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "DEMO-DO-002",
+      "reason": "no_verification"
+    }
+  ]
+}

@@ -18,7 +18,11 @@ test.describe('tasks', () => {
     await setup(page);
     await page.goto('./#/tasks/board');
     await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
-    await page.keyboard.press('n');
+    // The shortcut handler attaches just after first paint; retry the key until it is listening (a race that also exists on main).
+    await expect(async () => {
+      await page.keyboard.press('n');
+      await expect(page.getByLabel('Quick add to Inbox')).toBeVisible({ timeout: 500 });
+    }).toPass({ timeout: 10_000 });
     await page.getByLabel('Quick add to Inbox').fill('Call fictional contact');
     await page.keyboard.press('Enter');
     const inbox = page.getByRole('listitem', { name: 'Inbox' });

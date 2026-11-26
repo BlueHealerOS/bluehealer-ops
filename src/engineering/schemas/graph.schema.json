@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "graph/0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "generated",
+    "nodes",
+    "edges",
+    "gaps"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "pattern": "^graph/0\\.[0-9]+$"
+    },
+    "generated": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "title",
+          "file"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/definitions/ttype"
+          },
+          "title": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to",
+          "type"
+        ],
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "type": {
+            "const": "traces_to"
+          }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "reason"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "no_verification",
+              "no_design_output",
+              "no_design_input"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ttype": {
+      "enum": [
+        "user_need",
+        "design_input",
+        "design_output",
+        "verification",
+        "validation",
+        "risk",
+        "risk_control"
+      ]
+    }
+  }
+}

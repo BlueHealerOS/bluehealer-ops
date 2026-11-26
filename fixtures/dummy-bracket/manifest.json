@@ -1,0 +1,127 @@
+{
+  "schema": "manifest/0.1",
+  "bundle_id": "dummy-bracket",
+  "title": "Dummy L-bracket (invented data)",
+  "classification": "public-fixture",
+  "created": "2026-11-26T02:49:51+00:00",
+  "files": [
+    {
+      "path": "models/bracket.glb",
+      "kind": "model",
+      "tool": "build123d",
+      "sha256": "9474475e08a7fcf6317f1474249b118c3bde51a17df469272c40320397037323",
+      "source": [
+        "src/params.json"
+      ],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "calcs/c-001.json",
+      "kind": "calc",
+      "tool": "pint",
+      "sha256": "10d8515338577104fe3287679ba0b41026a5356413cb9f2ccf718145a9c36fe0",
+      "source": [
+        "src/params.json"
+      ],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "src/params.json",
+      "kind": "doc",
+      "tool": "eng-bundle",
+      "sha256": "3a20ce1e0b9f53b8c0e7b66c986253e187fdcb62a3b78e4725f1eb30466bca33",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "graph.json",
+      "kind": "graph",
+      "tool": "eng-bundle",
+      "sha256": "546526dcf2f7c66845972c31e9d102f96eb73d1749adb741c34c1f757cae977c",
+      "source": [
+        "trace/demo-di-001.md",
+        "trace/demo-di-002.md",
+        "trace/demo-do-001.md",
+        "trace/demo-do-002.md",
+        "trace/demo-do-003.md",
+        "trace/demo-un-001.md",
+        "trace/demo-un-002.md",
+        "trace/demo-ver-001.md",
+        "trace/demo-ver-002.md"
+      ],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-di-001.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "2a1476d349002a561c1a66d17eee848763890bad9c5453641b13eaf0aa3c8eee",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-di-002.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "be75f19bda9f5d0cb6a16b61c3d4d4a3bc3089bff26056c7c372dc5c1459e9f1",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-do-001.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "4e5829129bc906c3b56b8c2b094f1f1649dac532606cae52fe543f64655bbe23",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-do-002.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "af815388527baa0f39e931063f1f6ecff326418c53b9d86ffd8ea2bb9ddcbaca",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-do-003.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "a5d7a30e0f7694c4191b98450a552c911f3b52333448bca0d709617ed5127833",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-un-001.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "3a6a5296dce9121fa0573a2931872591caa8c880635293ed85811c1a8fd9f219",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-un-002.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "0b76a3718695eb1566fee7e7167d1debd4b3db21ef94cf671e86d1070fc80edd",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-ver-001.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "58423e38822f52f398fae3462aa5915e6c2e3ee913b7124d5c8c54cb27589cb2",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    },
+    {
+      "path": "trace/demo-ver-002.md",
+      "kind": "trace",
+      "tool": "eng-bundle",
+      "sha256": "d2b81b1405df7653005c816ba531946f3244b2abca89008f97a2521debe85933",
+      "source": [],
+      "created": "2026-11-26T02:49:51+00:00"
+    }
+  ]
+}

@@ -16,6 +16,8 @@ import { CrmPage } from './ui/CrmPage';
 import { TriagePage } from './ui/TriagePage';
 import { MeetingsPage } from './ui/MeetingsPage';
 import { TaskDrawer } from './ui/TaskDrawer';
+import { EngineeringProvider } from './engineering/session';
+import { EngineeringPage } from './engineering/EngineeringPage';
 import { QuickAdd } from './ui/QuickAdd';
 import { useHashRoute } from './ui/router';
 import type { Founder } from './domain/types';
@@ -84,11 +86,15 @@ function Authed({ store, account, signOut }: { store: OpsStore; account: Account
     );
   }
   const page = segments[0] ?? 'tasks';
+  const view = segments[1];
   return (
     <OpsContext.Provider value={{ store, account, founder, setFounder, signOut: () => void signOut(), search, setSearch, quickAdd: () => setAdding(true), openTask: setOpen }}>
-      <Shell>
-        {page === 'settings' ? <SettingsPage /> : page === 'admin' ? <AdminPage /> : page === 'milestones' ? <MilestonesPage /> : page === 'crm' ? <CrmPage /> : page === 'triage' ? <TriagePage /> : page === 'meetings' ? <MeetingsPage /> : <TasksPage />}
-      </Shell>
+      <EngineeringProvider active={page === 'engineering'}>
+        <Shell>
+          {page === 'settings' ? <SettingsPage /> : page === 'admin' ? <AdminPage /> : page === 'engineering' ? <EngineeringPage /> : page === 'crm' ? <CrmPage />
+            : page === 'tasks' && view === 'milestones' ? <MilestonesPage /> : page === 'tasks' && view === 'triage' ? <TriagePage /> : page === 'tasks' && view === 'meetings' ? <MeetingsPage /> : <TasksPage />}
+        </Shell>
+      </EngineeringProvider>
       {adding && <QuickAdd onClose={() => setAdding(false)} />}
       {open !== null && <TaskDrawer id={open} onClose={() => setOpen(null)} />}
     </OpsContext.Provider>
