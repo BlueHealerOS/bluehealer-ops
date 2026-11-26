@@ -1,0 +1,10 @@
+{
+  "note": "Requests observed from the moment the Engineering workspace was opened until the end of the loop.",
+  "total": 7,
+  "byTypeAndOrigin": {
+    "font http://localhost:4173": 1,
+    "script http://localhost:4173": 2,
+    "other http://localhost:4173": 4
+  },
+  "fetchXhrWebsocketBeacon": []
+}
