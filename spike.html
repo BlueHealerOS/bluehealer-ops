@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Folder access spike</title>
+    <style>
+      body { font: 15px/1.5 system-ui, sans-serif; margin: 1.5rem; max-width: 60rem; }
+      button, input { font: inherit; margin: 0 .5rem .5rem 0; }
+      pre { background: #f3f5f7; padding: .75rem; overflow: auto; }
+      table { border-collapse: collapse; } td, th { border: 1px solid #ccd; padding: .2rem .5rem; text-align: left; }
+      :focus-visible { outline: 3px solid #2f80c9; outline-offset: 2px; }
+    </style>
+  </head>
+  <body>
+    <h1>Folder access spike</h1>
+    <p>Throwaway page. Invented data only. Not part of the app.</p>
+    <h2>Capabilities</h2>
+    <table id="caps"></table>
+    <h2>Folder</h2>
+    <p>
+      <button id="open">Open folder</button>
+      <button id="restore">Re-open remembered folder</button>
+      <button id="write">Write new JSON file</button>
+      <label>Read-only fallback: <input id="fallback" type="file" webkitdirectory multiple /></label>
+    </p>
+    <p>
+      <button id="copy">Copy review items</button>
+      <button id="download">Download review file</button>
+    </p>
+    <h2>Files</h2>
+    <ul id="files"></ul>
+    <h2>First JSON file</h2>
+    <pre id="json">(none read yet)</pre>
+    <h2>Log</h2>
+    <pre id="log"></pre>
+    <script type="module" src="/src/spike/spike.ts"></script>
+  </body>
+</html>
