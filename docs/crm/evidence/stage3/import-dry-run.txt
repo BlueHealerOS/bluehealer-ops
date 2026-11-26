@@ -1,0 +1,19 @@
+$ node scripts/crm/import-hub.mjs --hub fixtures/crm/hub-sample --out <folder> --current fixtures/crm/hub-sample/current --today 2026-11-23
+Read 15 people notes and 8 company notes (frontmatter only). Planned against the exported CSV.
+Organizations: 5 new, 1 match, 1 conflict, 1 skipped
+People: 9 new, 2 match, 2 conflict, 2 skipped
+New people: 3 Active, 6 Mapped, 1 Restricted; 3 interactions; 2 owners defaulted to Santiago
+Hash: f6d48a5afb70fc00
+Report written to <folder>/import-report-f6d48a5afb70fc00.md. Read it, then add: --apply --confirm f6d48a5afb70fc00
+
+$ node scripts/crm/import-hub.mjs --hub fixtures/crm/hub-sample --out <folder> --apply
+--apply needs --confirm <hash> from the dry run report. Run the dry run first and read the report.
+exit code 2
+
+$ node scripts/crm/import-hub.mjs --hub fixtures/crm/hub-sample --out <folder> --apply --confirm 0000000000000000   (no token set)
+Set GRAPH_TOKEN to a Graph access token for your own sign-in. See docs/crm/provisioning-checklist.md.
+exit code 2
+
+$ node scripts/crm/import-hub.mjs --hub fixtures/crm/hub-sample --out docs/
+Refusing: --out inside the repository must be under imports/ (gitignored). Use a folder outside the repository.
+exit code 2

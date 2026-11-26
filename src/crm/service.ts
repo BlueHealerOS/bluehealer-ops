@@ -4,16 +4,18 @@ import { defaultDirection, mostRestrictive, DIRECTIONS, INTERACTION_TYPES } from
 import { deriveSystemFields, staleSystemFields, type SystemFields } from './model/derived.ts';
 import { findPersonDuplicates, normalizeDomain, type PersonDuplicate } from './model/dedupe.ts';
 import type { CrmInteraction, CrmOrg, CrmPerson, Direction, InteractionType, Owner, RankingConfig, Sensitivity, Stage } from './model/types.ts';
-import { interactionFromRow, interactionToFields, orgFromRow, orgToFields, personFromRow, personToFields, type WithEtag } from './graph/mappers.ts';
+import { interactionFromRow, interactionToFields, mergeLogFromRow, mergeLogToFields, orgFromRow, orgToFields, personFromRow, personToFields, type MergeLogEntry, type WithEtag } from './graph/mappers.ts';
+import { mergedPatch, parseSnapshot, repoint, type MergeChoices, type MergeSnapshot } from './model/merge.ts';
+import { deletionPreview } from './export.ts';
 import { ConflictError, CrmValidationError, assertNoDealData, type CrmRepo } from './graph/repo.ts';
-import { CRM_INTERACTIONS, CRM_ORGANIZATIONS, CRM_PEOPLE, ORG_TYPES, OWNERS, RELATIONSHIP_TYPES, STAGES } from './schema.ts';
+import { CRM_INTERACTIONS, CRM_MERGE_LOG, CRM_ORGANIZATIONS, CRM_PEOPLE, ORG_TYPES, OWNERS, RELATIONSHIP_TYPES, STAGES } from './schema.ts';
 
-export interface CrmData { orgs: WithEtag<CrmOrg>[]; people: WithEtag<CrmPerson>[]; interactions: WithEtag<CrmInteraction>[] }
+export interface CrmData { orgs: WithEtag<CrmOrg>[]; people: WithEtag<CrmPerson>[]; interactions: WithEtag<CrmInteraction>[]; mergeLog: MergeLogEntry[] }
 
 /** Everything for the session, read in one pass. Held in memory by the caller; nothing is stored. */
 export async function loadCrm(repo: CrmRepo): Promise<CrmData> {
-  const [o, p, i] = await Promise.all([repo.listAll(CRM_ORGANIZATIONS), repo.listAll(CRM_PEOPLE), repo.listAll(CRM_INTERACTIONS)]);
-  return { orgs: o.map(orgFromRow), people: p.map(personFromRow), interactions: i.map(interactionFromRow) };
+  const [o, p, i, m] = await Promise.all([repo.listAll(CRM_ORGANIZATIONS), repo.listAll(CRM_PEOPLE), repo.listAll(CRM_INTERACTIONS), repo.listAll(CRM_MERGE_LOG)]);
+  return { orgs: o.map(orgFromRow), people: p.map(personFromRow), interactions: i.map(interactionFromRow), mergeLog: m.map(mergeLogFromRow) };
 }
 
 const isDate = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
@@ -204,4 +206,79 @@ export class CrmService {
     }
     return { updated, failed };
   }
+  private async freshOrConflict(p: WithEtag<CrmPerson>) {
+    const fresh = await this.repo.get(CRM_PEOPLE, p.id);
+    if (!fresh) bad('A person in this change no longer exists. Reload.');
+    if (p.etag && fresh!.etag !== p.etag) throw new ConflictError();
+  }
+
+  /**
+   * Merges `lose` into `keep`: writes the merge log first (with everything Undo needs), re-points the losing person's interactions,
+   * updates the surviving person (chosen fields, recomputed system fields), then deletes the losing person to the SharePoint recycle bin.
+   * Not transactional: if it stops part-way the log entry stays, the losing person is still there, and running the merge again finishes it.
+   */
+  async mergePeople(keepId: number, loseId: number, choices: MergeChoices, data: CrmData, by: string): Promise<{ keep: WithEtag<CrmPerson>; log: MergeLogEntry }> {
+    if (keepId === loseId) bad('Choose two different people.');
+    const keep = data.people.find((p) => p.id === keepId), lose = data.people.find((p) => p.id === loseId);
+    if (!keep || !lose) return bad('A person in this merge no longer exists. Reload.');
+    await this.freshOrConflict(keep);
+    await this.freshOrConflict(lose);
+    const patch = mergedPatch(keep, lose, choices);
+    const links = data.interactions.filter((i) => i.peopleIds.includes(loseId)).map((i) => ({ interactionId: i.id, peopleIds: [...i.peopleIds] }));
+    const { etag: _e, ...loseFields } = lose as WithEtag<CrmPerson>; void _e;
+    const snapshot: MergeSnapshot = { v: 1, kind: 'person', lose: loseFields, keepBefore: Object.fromEntries(Object.keys(patch).map((k) => [k, (keep as unknown as Record<string, unknown>)[k] ?? null])), links };
+    const log = mergeLogFromRow(await this.repo.create(CRM_MERGE_LOG, mergeLogToFields({
+      title: `Merged ${lose.name} into ${keep.name}`, kind: 'person', snapshot: JSON.stringify(snapshot), mergedIntoId: keepId, mergedAt: this.now().toISOString(), mergedBy: by, undone: false,
+    })));
+    for (const l of links) {
+      const i = data.interactions.find((x) => x.id === l.interactionId)!;
+      await this.repo.update(CRM_INTERACTIONS, i.id, i.etag, interactionToFields({ peopleIds: repoint(i.peopleIds, loseId, keepId) }));
+    }
+    const after = data.interactions.map((i) => (i.peopleIds.includes(loseId) ? { ...i, peopleIds: repoint(i.peopleIds, loseId, keepId) } : i));
+    const merged = personFromRow(await this.repo.update(CRM_PEOPLE, keepId, keep.etag, personToFields({ ...patch, ...sysPatch(deriveSystemFields(keepId, after), keep) })));
+    await this.repo.remove(CRM_PEOPLE, loseId);
+    return { keep: merged, log };
+  }
+
+  /** Recreates the losing person from the log (with a new item id), puts the interactions and the surviving person's fields back, and blanks the snapshot. */
+  async undoMerge(logId: number, data: CrmData): Promise<{ restored: WithEtag<CrmPerson>; keep: WithEtag<CrmPerson> }> {
+    const entry = data.mergeLog.find((e) => e.id === logId);
+    if (!entry) return bad('That merge was not found. Reload.');
+    if (entry.undone) return bad('This merge was already undone.');
+    const snap = parseSnapshot(entry.snapshot);
+    if (!snap) return bad('This merge log entry cannot be read, so it cannot be undone.');
+    const keep = data.people.find((p) => p.id === entry.mergedIntoId);
+    if (!keep) return bad('The record it was merged into no longer exists, so it cannot be undone.');
+    await this.freshOrConflict(keep);
+    const oldId = snap.lose.id;
+    const { id: _id, ...fields } = snap.lose; void _id;
+    let restored = personFromRow(await this.repo.create(CRM_PEOPLE, personToFields(fields)));
+    const restoredInteractions = data.interactions.map((i) => ({ ...i }));
+    for (const l of snap.links) {
+      const cur = restoredInteractions.find((i) => i.id === l.interactionId);
+      if (!cur) continue; // deleted since
+      const ids = l.peopleIds.map((x) => (x === oldId ? restored.id : x));
+      await this.repo.update(CRM_INTERACTIONS, cur.id, (cur as WithEtag<CrmInteraction>).etag, interactionToFields({ peopleIds: ids }));
+      cur.peopleIds = ids;
+    }
+    const keepRow = await this.repo.update(CRM_PEOPLE, keep.id, keep.etag, personToFields({ ...snap.keepBefore, ...sysPatch(deriveSystemFields(keep.id, restoredInteractions), { ...keep, ...Object.fromEntries(Object.entries(snap.keepBefore).filter(([, v]) => v !== null)) } as CrmPerson) }));
+    const sys = sysPatch(deriveSystemFields(restored.id, restoredInteractions), restored);
+    if (Object.keys(sys).length) restored = personFromRow(await this.repo.update(CRM_PEOPLE, restored.id, restored.etag, personToFields(sys)));
+    await this.repo.update(CRM_MERGE_LOG, entry.id, entry.etag, mergeLogToFields({ undone: true, snapshot: '' })); // no personal data kept for an undone merge
+    return { restored, keep: personFromRow(keepRow) };
+  }
+
+  /** Deletes one person: interactions only they were in, their place in shared interactions, merge log snapshots of them, then the person. Everything goes to the SharePoint recycle bin. */
+  async deletePerson(personId: number, data: CrmData): Promise<{ interactionsDeleted: number; interactionsUpdated: number; mergeLogsDeleted: number }> {
+    const p = data.people.find((x) => x.id === personId);
+    if (!p) return bad('That person no longer exists. Reload.');
+    await this.freshOrConflict(p);
+    const pv = deletionPreview(personId, data);
+    for (const i of pv.solo) await this.repo.remove(CRM_INTERACTIONS, i.id);
+    for (const i of pv.shared) await this.repo.update(CRM_INTERACTIONS, i.id, i.etag, interactionToFields({ peopleIds: i.peopleIds.filter((x) => x !== personId) }));
+    for (const e of pv.mergeLogs) await this.repo.remove(CRM_MERGE_LOG, e.id);
+    await this.repo.remove(CRM_PEOPLE, personId);
+    return { interactionsDeleted: pv.solo.length, interactionsUpdated: pv.shared.length, mergeLogsDeleted: pv.mergeLogs.length };
+  }
+
 }

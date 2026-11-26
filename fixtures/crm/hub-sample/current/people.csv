@@ -1,0 +1,4 @@
+id,name,organization,relationship_type,owner,email,importance,comfort,agreed_check_in,stage,sensitivity,last_two_way_at,last_touch_at,last_direction,source_id
+1,Gray Matched,Matched Org,vendor,Jay,,3,,,Active,Normal,,,,registers/People/Gray Matched.md
+2,Someone Existing,,payer,Santiago,harper.match@example.com,3,,,Active,Normal,,,,
+3,Indigo Conflict,,KOL,Santiago,indigo.old@example.com,3,,,Mapped,Normal,,,,registers/People/Indigo Conflict.md

@@ -9,9 +9,8 @@ Initialize `today` = `formatDateTime(convertTimeZone(utcNow(),'UTC','Eastern Sta
 Read, with SharePoint "Get items" (Top count 500, one filter column each, everything else filtered in the flow with "Filter array"):
 1. Tasks, filter `Status ne 'Done' and Status ne 'Dropped'`. Needed: Owner, DueDate, Status, WaitingOn, WaitingExpected, Sensitivity, ReminderOptIn.
 2. Applications, filter `Stage ne 'Closed'`. Needed: FullDue, LoiDue, ReportingDue, Stage.
-3. People, filter `NextFollowUp le '<today>T23:59:59Z'`. Needed: NextFollowUp, Owner.
-4. Milestones, filter `Status ne 'done'`, then keep at risk and late.
-5. ReminderLog, filter `Day ge '<today>T00:00:00Z'`.
+3. Milestones, filter `Status ne 'done'`, then keep at risk and late.
+4. ReminderLog, filter `Day ge '<today>T00:00:00Z'`.
 
 Then, once per founder (Apply to each over `Santiago`, `Jay`):
 1. Keep records where Owner is the founder, `Both` or `Unassigned`.
@@ -21,7 +20,6 @@ Then, once per founder (Apply to each over `Santiago`, `Jay`):
    - Overdue: DueDate before today
    - Waiting past expected: Status Waiting and WaitingExpected before today
    - Application deadlines: LoiDue, FullDue or ReportingDue at 21, 14, 7, 2 or 0 days from today, and Stage not Awarded, Declined, Withdrawn or Closed
-   - Follow-ups due: NextFollowUp on or before today
    - Milestones at risk: Status at risk or late
 4. Remove items already present in ReminderLog with Channel `digest` for the same RecordKey (`List:id`), Trigger and today.
 5. If every section is empty, stop for this founder.
@@ -32,3 +30,5 @@ Then, once per founder (Apply to each over `Santiago`, `Jay`):
 Never add any other recipient. External email is never sent by a flow.
 
 Test: with fictional tasks due today and overdue, run the flow manually. Draft contents match the in-app Alerts list. A restricted task does not appear. Run again: nothing new is drafted for the same records.
+
+Note (CRM cutover): the digest no longer lists people follow-ups. The Phase 1 People list is not updated once the CRM lists are in use, so its NextFollowUp dates would only go stale. Who to contact is in the CRM Today list. If your copy of this flow still has the People step and the Follow-ups due section, remove them.

@@ -1,0 +1,48 @@
+{
+  "_comment": "Worked out by hand from the synthetic notes in this folder, with --today 2026-11-23 and --current current/. Invented data.",
+  "today": "2026-11-23",
+  "hash": "f6d48a5afb70fc00",
+  "organizations": {
+    "new": 5,
+    "match": 1,
+    "conflict": 1,
+    "skipped": 1
+  },
+  "people": {
+    "new": 9,
+    "match": 2,
+    "conflict": 2,
+    "skipped": 2
+  },
+  "peopleActive": 3,
+  "peopleMapped": 6,
+  "peopleRestricted": 1,
+  "interactionsToCreate": 3,
+  "peopleOwnerDefaulted": 2,
+  "peopleInIndependent": 5,
+  "status": {
+    "registers/People/Avery New.md": "new",
+    "registers/People/Blake Old.md": "new",
+    "registers/People/Casey Shared.md": "new",
+    "registers/People/Devon Blank.md": "new",
+    "registers/People/Emery Restricted.md": "new",
+    "registers/People/Finley Unknown.md": "skipped",
+    "registers/People/Gray Matched.md": "match",
+    "registers/People/Harper Email.md": "match",
+    "registers/People/Indigo Conflict.md": "conflict",
+    "registers/People/Jordan Dup One.md": "new",
+    "registers/People/Jordan Dup Two.md": "conflict",
+    "registers/People/Kai Placeholder.md": "new",
+    "registers/People/Lane Unresolved Org.md": "new",
+    "registers/People/MOC People.md": "skipped",
+    "registers/People/Morgan Family.md": "new",
+    "registers/Companies/Example Capital Partners.md": "new",
+    "registers/Companies/Example Health System.md": "new",
+    "registers/Companies/Fixture Devices Inc.md": "new",
+    "registers/Companies/Matched Org.md": "match",
+    "registers/Companies/MOC Companies.md": "skipped",
+    "registers/Companies/Twin Org.md": "new",
+    "registers/Companies/Twin-Org.md": "conflict",
+    "registers/Companies/Unknown Kind Co.md": "new"
+  }
+}

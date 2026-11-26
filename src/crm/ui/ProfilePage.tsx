@@ -1,6 +1,8 @@
 import { nextCheckIn, reason } from '../model/ranking.ts';
 import { waitingOn } from '../model/ranking.ts';
 import { lastInteractions } from '../model/derived.ts';
+import { personExport, personExportFileName } from '../export.ts';
+import { downloadText } from './download';
 import { useCrm } from './crmCtx';
 import { fmtDate } from './parts';
 import { interactionsOf, orgNameOf, safeHttpUrl } from './viewModel';
@@ -31,6 +33,8 @@ export function ProfilePage({ id }: { id: number }) {
           {dormant ? <button className="btn" onClick={() => void actions.setStage(p, 'Active').then(() => notify(`${p.name} is active again.`)).catch((e: Error) => notify(e.message))}>Make active</button>
             : <button className="btn" onClick={() => void actions.mute(p).catch((e: Error) => notify(e.message))}>Mute</button>}
           <button className="btn" onClick={() => openSheet({ kind: 'person', person: p })}>Edit</button>
+          <button className="btn" onClick={() => { downloadText(personExportFileName(p), JSON.stringify(personExport(p, data, new Date()), null, 2), 'application/json'); notify(`Exported ${p.name}.`); }}>Export</button>
+          <button className="btn" onClick={() => openSheet({ kind: 'delete', personId: p.id })}>Delete</button>
         </div>
       </div>
       <section aria-labelledby="next-h" className="card space-y-1">

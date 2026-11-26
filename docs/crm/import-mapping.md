@@ -1,6 +1,6 @@
 # Hub import: field mapping proposal (Stage 0)
 
-Status: proposal for Santiago's approval. Field names only. No values from the hub appear here.
+Status: Tier to Importance confirmed by Santiago on 2026-11-26. Shared or empty owners: default to the importing founder, with a `--shared-owner` flag (see import-runbook.md). Implemented in `src/crm/import/plan.ts`. Field names only. No values from the hub appear here.
 Source: the YAML frontmatter of the `registers/People` and `registers/Companies` notes of the hub (read from the first 15 files of each, key names only; 220 and 148 notes exist). Note bodies are never read.
 Target: the CRM list fields of `docs/crm/CONTEXT.md` section 4. The hub wins on identity fields (D17).
 

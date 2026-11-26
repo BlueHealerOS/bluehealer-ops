@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 import type { CrmOrg, CrmPerson, Owner, RankingConfig, Stage } from '../model/types.ts';
 import type { WithEtag } from '../graph/mappers.ts';
+import type { MergeChoices } from '../model/merge.ts';
 import type { CrmData, CrmService, LogResult, NewInteraction, NewPerson } from '../service.ts';
 
 type Person = WithEtag<CrmPerson>;
@@ -10,7 +11,9 @@ export type SheetState =
   | { kind: 'log'; personId?: number }
   | { kind: 'snooze'; person: Person }
   | { kind: 'person'; person?: Person; organizationId?: number }
-  | { kind: 'org' };
+  | { kind: 'org' }
+  | { kind: 'merge'; aId: number; bId: number }
+  | { kind: 'delete'; personId: number };
 
 export interface Toast { id: number; text: string; action?: { label: string; run: () => void }; ms: number }
 
@@ -23,6 +26,9 @@ export interface CrmActions {
   setStage(p: Person, stage: Stage): Promise<Person>;
   addOrganization(i: Parameters<CrmService['addOrganization']>[0]): Promise<WithEtag<CrmOrg>>;
   recompute(): Promise<{ updated: number; failed: { personId: number; message: string }[] }>;
+  mergePeople(keepId: number, loseId: number, choices: MergeChoices): Promise<void>;
+  undoMerge(logId: number): Promise<void>;
+  deletePerson(personId: number): Promise<Awaited<ReturnType<CrmService['deletePerson']>>>;
 }
 export interface CrmCtx {
   data: CrmData;

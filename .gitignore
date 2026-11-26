@@ -26,4 +26,4 @@ bundle-*/
 imports/
 pilot/
 *.csv
-!fixtures/crm/*.csv
+!fixtures/crm/**/*.csv
