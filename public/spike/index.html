@@ -35,7 +35,14 @@
     <h2>First JSON file</h2>
     <pre id="json">(none read yet)</pre>
     <h2>Log</h2>
+    <p id="status">Waiting for scripts...</p>
     <pre id="log"></pre>
-    <script type="module" src="/src/spike/spike.ts"></script>
+    <script>
+      // Classic inline script: proves whether any JavaScript runs in this browser at all.
+      document.getElementById('log').textContent = 'inline script ran\n';
+      window.addEventListener('error', function (e) { document.getElementById('log').textContent += 'page error: ' + e.message + '\n'; });
+    </script>
+    <script src="./spike.js"></script>
+    <noscript>JavaScript is disabled.</noscript>
   </body>
 </html>

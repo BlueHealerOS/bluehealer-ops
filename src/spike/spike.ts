@@ -27,6 +27,7 @@ const caps: [string, boolean][] = [
 $('caps').innerHTML = '<tr><th>Feature</th><th>Present</th></tr>' + caps.map(([k, v]) => `<tr><td>${k}</td><td>${v ? 'yes' : 'NO'}</td></tr>`).join('');
 window.addEventListener('error', (e) => log(`page error: ${e.message}`));
 window.addEventListener('unhandledrejection', (e) => log(`unhandled: ${String(e.reason)}`));
+$('status').textContent = 'spike.js ran';
 log(`user agent: ${navigator.userAgent}`);
 
 // ---- IndexedDB handle store
