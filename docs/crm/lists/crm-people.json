@@ -1,0 +1,114 @@
+{
+  "name": "CRM People",
+  "description": "CRM people. Founders only. Restricted people are excluded from Today, digests and drafts.",
+  "columns": [
+    {
+      "name": "Organization",
+      "type": "lookup",
+      "lookup": "CRM Organizations",
+      "required": true
+    },
+    {
+      "name": "RelationshipType",
+      "type": "choice",
+      "choices": [
+        "investor",
+        "advisor",
+        "clinical advisor",
+        "KOL",
+        "customer discovery",
+        "hospital",
+        "payer",
+        "vendor",
+        "counsel",
+        "consultant",
+        "partner",
+        "ecosystem",
+        "family and friends"
+      ],
+      "required": true
+    },
+    {
+      "name": "Owner",
+      "type": "choice",
+      "choices": [
+        "Santiago",
+        "Jay"
+      ],
+      "required": true
+    },
+    {
+      "name": "Email",
+      "type": "text",
+      "indexed": true
+    },
+    {
+      "name": "Importance",
+      "type": "number",
+      "min": 1,
+      "max": 5
+    },
+    {
+      "name": "Comfort",
+      "type": "number",
+      "min": 1,
+      "max": 5
+    },
+    {
+      "name": "AgreedCheckIn",
+      "type": "date"
+    },
+    {
+      "name": "Stage",
+      "type": "choice",
+      "choices": [
+        "Mapped",
+        "Targeted",
+        "Intro pending",
+        "Active",
+        "Dormant",
+        "Closed",
+        "Do not contact",
+        "Identified",
+        "Contacted",
+        "Meeting held",
+        "Following up",
+        "Committed",
+        "Passed"
+      ],
+      "required": true,
+      "default": "Active"
+    },
+    {
+      "name": "Sensitivity",
+      "type": "choice",
+      "choices": [
+        "Normal",
+        "Restricted"
+      ],
+      "default": "Normal"
+    },
+    {
+      "name": "LastTwoWayAt",
+      "type": "date"
+    },
+    {
+      "name": "LastTouchAt",
+      "type": "date"
+    },
+    {
+      "name": "LastDirection",
+      "type": "choice",
+      "choices": [
+        "outbound",
+        "inbound",
+        "two-way"
+      ]
+    },
+    {
+      "name": "SourceId",
+      "type": "text",
+      "indexed": true
+    }
+  ]
+}

@@ -24,8 +24,8 @@ export async function setup(page: Page, opts: { signedIn?: boolean; forbidden?: 
   await page.route('https://graph.microsoft.com/**', async (route) => {
     graphCalls++;
     const req = route.request();
-    const h = env.fake.handle(req.method(), req.url(), req.postData() ? JSON.parse(req.postData()!) : undefined);
-    await route.fulfill({ status: h.status, contentType: 'application/json', headers: h.headers, body: JSON.stringify(h.body) });
+    const h = env.fake.handle(req.method(), req.url(), req.postData() ? JSON.parse(req.postData()!) : undefined, req.headers());
+    await route.fulfill({ status: h.status, contentType: 'application/json', headers: h.headers, ...(h.status === 204 ? {} : { body: JSON.stringify(h.body) }) });
   });
   // Any other external request is a test failure waiting to happen: block it.
   await page.route(/^https?:\/\/(?!localhost)/, (route) => route.request().url().startsWith('https://graph.microsoft.com') ? route.fallback() : route.abort());

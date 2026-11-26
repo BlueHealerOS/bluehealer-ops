@@ -5,7 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 export default tseslint.config(
   { ignores: ['src/engineering/schemas/validators.generated.js', 'dist', 'dist-e2e', 'public', 'node_modules', 'playwright-report', 'test-results'] },
   js.configs.recommended,
-  { files: ['scripts/**/*.mjs'], languageOptions: { globals: { console: 'readonly', process: 'readonly' } } },
+  { files: ['scripts/**/*.mjs'], languageOptions: { globals: { console: 'readonly', process: 'readonly', URL: 'readonly', setTimeout: 'readonly', fetch: 'readonly' } } },
   ...tseslint.configs.recommended,
   {
     files: ['src/**/*.{ts,tsx}'],

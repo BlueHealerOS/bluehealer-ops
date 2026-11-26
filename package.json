@@ -15,7 +15,8 @@
     "e2e": "npm run build:e2e && playwright test --trace off",
     "check:fixtures": "node scripts/check-repo-hygiene.mjs",
     "build:validators": "node scripts/build-validators.mjs",
-    "check:validators": "node scripts/build-validators.mjs --check"
+    "check:validators": "node scripts/build-validators.mjs --check",
+    "crm:schemas": "node scripts/crm/write-schemas.mjs"
   },
   "dependencies": {
     "@azure/msal-browser": "^5.30.0",

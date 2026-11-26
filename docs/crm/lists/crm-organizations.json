@@ -1,0 +1,47 @@
+{
+  "name": "CRM Organizations",
+  "description": "CRM organizations. No amounts, shares or terms.",
+  "columns": [
+    {
+      "name": "OrgType",
+      "type": "choice",
+      "choices": [
+        "hospital system",
+        "payer",
+        "surgeon practice",
+        "industry",
+        "vendor",
+        "investor",
+        "accelerator or grantor",
+        "counsel",
+        "consultant",
+        "academic",
+        "competitor",
+        "government",
+        "other"
+      ],
+      "required": true
+    },
+    {
+      "name": "Domain",
+      "type": "text"
+    },
+    {
+      "name": "RelationshipToBH",
+      "type": "choice",
+      "choices": [
+        "customer prospect",
+        "partner",
+        "vendor",
+        "investor",
+        "advisor",
+        "ecosystem",
+        "none yet"
+      ]
+    },
+    {
+      "name": "HubPath",
+      "type": "text"
+    }
+  ]
+}

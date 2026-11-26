@@ -1,7 +1,7 @@
 // In-memory stand-in for the parts of Microsoft Graph the app uses. Shared by unit tests and Playwright.
 // Fixtures are fictional. Nothing here resembles real data.
 interface FCol { id: string; name: string; [k: string]: unknown }
-interface FItem { id: number; created: string; modified: string; fields: Record<string, unknown>; versions: { id: string; modified: string; fields: Record<string, unknown> }[] }
+interface FItem { id: number; created: string; modified: string; fields: Record<string, unknown>; etagSeq?: number; versions: { id: string; modified: string; fields: Record<string, unknown> }[] }
 interface FList { id: string; displayName: string; columns: FCol[]; items: FItem[]; nextId: number }
 export interface FakeState {
   forbidden: boolean;
@@ -41,7 +41,10 @@ export function createFakeGraph(init: Partial<FakeState> = {}) {
     });
   }
 
-  function handle(method: string, fullUrl: string, body?: unknown): Handled {
+  const etagOf = (i: FItem) => `"${i.id},${i.etagSeq ?? 1}"`;
+  const view = (i: FItem) => ({ id: String(i.id), eTag: etagOf(i), createdDateTime: i.created, lastModifiedDateTime: i.modified, fields: { ...i.fields, Title: i.fields.Title ?? '' } });
+
+  function handle(method: string, fullUrl: string, body?: unknown, headers: Record<string, string> = {}): Handled {
     const u = new URL(fullUrl);
     const path = u.pathname.replace(/^\/v1\.0/, '');
     state.requests.push({ method, path });
@@ -89,7 +92,7 @@ export function createFakeGraph(init: Partial<FakeState> = {}) {
         const skip = Number(u.searchParams.get('$skiptoken') ?? 0);
         const page = all.slice(skip, skip + top);
         const next = skip + top < all.length ? { '@odata.nextLink': `https://graph.microsoft.com/v1.0${path}?${(() => { const q = new URLSearchParams(u.searchParams); q.set('$skiptoken', String(skip + top)); return q.toString(); })()}` } : {};
-        return { status: 200, body: { value: page.map((i) => ({ id: String(i.id), createdDateTime: i.created, lastModifiedDateTime: i.modified, fields: { ...i.fields, Title: i.fields.Title ?? '' } })), ...next } };
+        return { status: 200, body: { value: page.map(view), ...next } };
       }
       if (method === 'POST') {
         const f = { ...((body as { fields: Record<string, unknown> }).fields) };
@@ -100,15 +103,24 @@ export function createFakeGraph(init: Partial<FakeState> = {}) {
         const now = state.now();
         const item: FItem = { id: l.nextId++, created: now, modified: now, fields: f, versions: [{ id: '1.0', modified: now, fields: { ...f } }] };
         l.items.push(item);
-        return { status: 201, body: { id: String(item.id), createdDateTime: now, lastModifiedDateTime: now, fields: f } };
+        return { status: 201, body: view(item) };
       }
     }
     if ((m = path.match(/^\/sites\/site-1\/lists\/([^/]+)\/items\/(\d+)\/fields$/)) && method === 'PATCH') {
       const l = listById(m[1]!); const item = l?.items.find((i) => i.id === Number(m![2])); if (!l || !item) return err(404, 'itemNotFound');
+      const ifMatch = headers['If-Match'] ?? headers['if-match'];
+      if (ifMatch && ifMatch !== etagOf(item)) return err(412, 'preconditionFailed');
       for (const [k, v] of Object.entries(body as Record<string, unknown>)) { if (v === null) delete item.fields[k]; else item.fields[k] = v; }
+      item.etagSeq = (item.etagSeq ?? 1) + 1;
       item.modified = state.now();
       item.versions.push({ id: `${item.versions.length + 1}.0`, modified: item.modified, fields: { ...item.fields } });
       return { status: 200, body: item.fields };
+    }
+    if ((m = path.match(/^\/sites\/site-1\/lists\/([^/]+)\/items\/(\d+)$/))) {
+      const l = listById(m[1]!); const idx = l?.items.findIndex((i) => i.id === Number(m![2])) ?? -1;
+      if (!l || idx < 0) return err(404, 'itemNotFound');
+      if (method === 'GET') return { status: 200, body: view(l.items[idx]!) };
+      if (method === 'DELETE') { l.items.splice(idx, 1); return { status: 204, body: null }; }
     }
     if ((m = path.match(/^\/sites\/site-1\/lists\/([^/]+)\/items\/(\d+)\/versions$/)) && method === 'GET') {
       const item = listById(m[1]!)?.items.find((i) => i.id === Number(m![2])); if (!item) return err(404, 'itemNotFound');
@@ -119,8 +131,8 @@ export function createFakeGraph(init: Partial<FakeState> = {}) {
 
   const fetchFn: typeof fetch = async (input, init) => {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
-    const h = handle(init?.method ?? 'GET', url, init?.body ? JSON.parse(String(init.body)) : undefined);
-    return new Response(JSON.stringify(h.body), { status: h.status, headers: { 'Content-Type': 'application/json', ...h.headers } });
+    const h = handle(init?.method ?? 'GET', url, init?.body ? JSON.parse(String(init.body)) : undefined, (init?.headers ?? {}) as Record<string, string>);
+    return new Response(h.status === 204 ? null : JSON.stringify(h.body), { status: h.status, headers: { 'Content-Type': 'application/json', ...h.headers } });
   };
 
   /** Seed an item directly (bypasses the app). */
@@ -132,6 +144,12 @@ export function createFakeGraph(init: Partial<FakeState> = {}) {
     l.items.push(item);
     return item.id;
   }
-  return { state, handle, fetchFn, seed };
+  /** Make the next If-Match for this item fail, as if another founder had saved it. */
+  function touch(listName: string, id: number) {
+    const item = state.lists.find((x) => x.displayName === listName)?.items.find((i) => i.id === id);
+    if (!item) throw new Error('touch: item missing');
+    item.etagSeq = (item.etagSeq ?? 1) + 1;
+  }
+  return { state, handle, fetchFn, seed, touch };
 }
 export type FakeGraph = ReturnType<typeof createFakeGraph>;

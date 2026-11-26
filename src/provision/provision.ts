@@ -1,5 +1,5 @@
-import type { GraphClient } from '../graph/client';
-import { creationOrder, type Column, type ListDef } from '../schema/lists';
+import type { GraphClient } from '../graph/client.ts';
+import { creationOrder, type Column, type ListDef } from '../schema/lists.ts';
 
 interface RemoteColumn { id: string; name: string; choice?: { choices?: string[] } }
 
@@ -13,11 +13,11 @@ export interface ListPlan {
 export interface ProvisionPlan { siteId: string; lists: ListPlan[]; changes: number }
 
 export function toGraphColumn(c: Column, listIds: Map<string, string>) {
-  const base: Record<string, unknown> = { name: c.name, displayName: c.name, ...(c.indexed ? { indexed: true } : {}) };
+  const base: Record<string, unknown> = { name: c.name, displayName: c.name, ...(c.indexed ? { indexed: true } : {}), ...(c.required ? { required: true } : {}) };
   switch (c.type) {
     case 'text': return { ...base, text: { allowMultipleLines: false, ...(c.max ? { maxLength: c.max } : {}) } };
     case 'note': return { ...base, text: { allowMultipleLines: true, textType: 'plain' } };
-    case 'number': return { ...base, number: {} };
+    case 'number': return { ...base, number: { ...(c.min !== undefined ? { minimum: c.min } : {}), ...(c.max !== undefined ? { maximum: c.max } : {}) } };
     case 'boolean': return { ...base, boolean: {} };
     case 'date': return { ...base, dateTime: { format: 'dateOnly' } };
     case 'datetime': return { ...base, dateTime: { format: 'dateTime' } };
@@ -26,7 +26,7 @@ export function toGraphColumn(c: Column, listIds: Map<string, string>) {
     case 'lookup': {
       const id = listIds.get(c.lookup!);
       if (!id) throw new Error(`Lookup target ${c.lookup} not created yet for ${c.name}`);
-      return { ...base, lookup: { columnName: 'Title', listId: id, allowMultipleValues: false } };
+      return { ...base, lookup: { columnName: 'Title', listId: id, allowMultipleValues: c.multiple === true } };
     }
     case 'url': return { ...base, hyperlinkOrPicture: { isPicture: false } };
   }
