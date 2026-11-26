@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "name": "Example Capital",
+    "domain": "examplecapital.example.com"
+  },
+  {
+    "id": 2,
+    "name": "Example Health System",
+    "domain": "shared-hospital.example.com"
+  },
+  {
+    "id": 3,
+    "name": "Fixture Devices Inc",
+    "domain": "fixturedevices.example.com"
+  },
+  {
+    "id": 4,
+    "name": "Independent"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "weights": { "importance": 8, "recencyMax": 40, "recencyPerCadence": 20, "dueBonus": 20 },
+  "cadenceDays": { "default": 30, "investor": 14, "advisor": 30, "clinical advisor": 30, "family and friends": 30 },
+  "breachDays": { "investor": 14, "advisor": 30 },
+  "defaultImportance": 3,
+  "topN": 5,
+  "upcomingDays": 14,
+  "waitingOnDays": 3,
+  "effectivenessWorkingDays": 2,
+  "familyInvestorsRestricted": false,
+  "sharedDomains": ["shared-university.example.com", "shared-hospital.example.com"],
+  "placeholderEmailPatterns": ["^(noreply|no-reply|unknown|none|tbd|placeholder)@", "^(n/a|na|none|-)$"],
+  "changelog": [
+    { "version": "1.0.0", "date": "2026-11-26", "change": "Initial weights and cadences from the CRM context file, section 5. Shared domains are invented placeholders until Q4 is answered." }
+  ]
+}

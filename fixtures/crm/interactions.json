@@ -1,0 +1,419 @@
+[
+  {
+    "id": 1,
+    "date": "2026-06-05",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      13
+    ],
+    "summary": "Partnership exploration"
+  },
+  {
+    "id": 2,
+    "date": "2026-06-20",
+    "type": "email",
+    "direction": "outbound",
+    "peopleIds": [
+      6
+    ],
+    "summary": "Sent a short fictional overview"
+  },
+  {
+    "id": 3,
+    "date": "2026-07-03",
+    "type": "email",
+    "direction": "two-way",
+    "peopleIds": [
+      11
+    ],
+    "summary": "Imported last contact"
+  },
+  {
+    "id": 4,
+    "date": "2026-07-08",
+    "type": "email",
+    "direction": "outbound",
+    "peopleIds": [
+      1
+    ],
+    "summary": "Introduction and thanks"
+  },
+  {
+    "id": 5,
+    "date": "2026-07-15",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      5
+    ],
+    "summary": "Clinic visit, reviewed workflow notes"
+  },
+  {
+    "id": 6,
+    "date": "2026-08-04",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      2
+    ],
+    "summary": "Intro call about the fictional pilot"
+  },
+  {
+    "id": 7,
+    "date": "2026-08-07",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      14
+    ],
+    "summary": "Investor meeting, fictional"
+  },
+  {
+    "id": 8,
+    "date": "2026-08-14",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      6
+    ],
+    "summary": "Discovery call, workflow questions"
+  },
+  {
+    "id": 9,
+    "date": "2026-08-20",
+    "type": "event",
+    "direction": "two-way",
+    "peopleIds": [
+      1,
+      2,
+      4,
+      5,
+      6
+    ],
+    "summary": "Example conference reception"
+  },
+  {
+    "id": 10,
+    "date": "2026-08-30",
+    "type": "email",
+    "direction": "two-way",
+    "peopleIds": [
+      14
+    ],
+    "summary": "Thanks and decline note"
+  },
+  {
+    "id": 11,
+    "date": "2026-09-01",
+    "type": "email",
+    "direction": "two-way",
+    "peopleIds": [
+      6
+    ],
+    "summary": "Follow-up thread on workflow questions"
+  },
+  {
+    "id": 12,
+    "date": "2026-09-03",
+    "type": "email",
+    "direction": "outbound",
+    "peopleIds": [
+      4
+    ],
+    "summary": "Shared a meeting summary"
+  },
+  {
+    "id": 13,
+    "date": "2026-09-04",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      20
+    ],
+    "summary": "Catch-up call"
+  },
+  {
+    "id": 14,
+    "date": "2026-09-10",
+    "type": "email",
+    "direction": "outbound",
+    "peopleIds": [
+      8
+    ],
+    "summary": "Quote request for a fictional part"
+  },
+  {
+    "id": 15,
+    "date": "2026-09-12",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      5
+    ],
+    "summary": "Walkthrough of the prototype"
+  },
+  {
+    "id": 16,
+    "date": "2026-09-18",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      18
+    ],
+    "summary": "Coffee, discussed the fictional roadmap"
+  },
+  {
+    "id": 17,
+    "date": "2026-09-25",
+    "type": "event",
+    "direction": "two-way",
+    "peopleIds": [
+      10
+    ],
+    "summary": "Dinner with friends of the company"
+  },
+  {
+    "id": 18,
+    "date": "2026-09-29",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      2
+    ],
+    "summary": "Investor meeting, product overview"
+  },
+  {
+    "id": 19,
+    "date": "2026-10-01",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      19
+    ],
+    "summary": "Advisory session on study design"
+  },
+  {
+    "id": 20,
+    "date": "2026-10-01",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      8
+    ],
+    "summary": "Vendor call about lead times"
+  },
+  {
+    "id": 21,
+    "date": "2026-10-02",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      20
+    ],
+    "summary": "Advisor meeting"
+  },
+  {
+    "id": 22,
+    "date": "2026-10-10",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      5
+    ],
+    "summary": "Call about clinic feedback"
+  },
+  {
+    "id": 23,
+    "date": "2026-10-12",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      1
+    ],
+    "summary": "Coffee, discussed bench data"
+  },
+  {
+    "id": 24,
+    "date": "2026-10-15",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      4
+    ],
+    "summary": "Advisor call on protocol"
+  },
+  {
+    "id": 25,
+    "date": "2026-10-15",
+    "type": "broadcast",
+    "direction": "outbound",
+    "peopleIds": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      9,
+      10,
+      18,
+      19,
+      20
+    ],
+    "summary": "Quarterly update newsletter"
+  },
+  {
+    "id": 26,
+    "date": "2026-10-20",
+    "type": "email",
+    "direction": "two-way",
+    "peopleIds": [
+      2
+    ],
+    "summary": "Reply on next steps"
+  },
+  {
+    "id": 27,
+    "date": "2026-10-24",
+    "type": "message",
+    "direction": "two-way",
+    "peopleIds": [
+      10
+    ],
+    "summary": "Message exchange, general catch-up"
+  },
+  {
+    "id": 28,
+    "date": "2026-10-26",
+    "type": "email",
+    "direction": "outbound",
+    "peopleIds": [
+      1
+    ],
+    "summary": "Sent the data summary"
+  },
+  {
+    "id": 29,
+    "date": "2026-10-28",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      15
+    ],
+    "summary": "Call with a restricted contact"
+  },
+  {
+    "id": 30,
+    "date": "2026-10-29",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      18
+    ],
+    "summary": "Investor meeting, fictional"
+  },
+  {
+    "id": 31,
+    "date": "2026-10-30",
+    "type": "email",
+    "direction": "two-way",
+    "peopleIds": [
+      20
+    ],
+    "summary": "Thread on the next review"
+  },
+  {
+    "id": 32,
+    "date": "2026-11-01",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      17
+    ],
+    "summary": "Discovery meeting, workflow review"
+  },
+  {
+    "id": 33,
+    "date": "2026-11-06",
+    "type": "email",
+    "direction": "outbound",
+    "peopleIds": [
+      9
+    ],
+    "summary": "Sent a scheduling note"
+  },
+  {
+    "id": 34,
+    "date": "2026-11-09",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      1
+    ],
+    "summary": "Call about follow-up questions"
+  },
+  {
+    "id": 35,
+    "date": "2026-11-10",
+    "type": "call",
+    "direction": "two-way",
+    "peopleIds": [
+      19
+    ],
+    "summary": "Advisor call"
+  },
+  {
+    "id": 36,
+    "date": "2026-11-12",
+    "type": "meeting",
+    "direction": "two-way",
+    "peopleIds": [
+      4
+    ],
+    "summary": "Advisor meeting, reviewed the draft"
+  },
+  {
+    "id": 37,
+    "date": "2026-11-17",
+    "type": "email",
+    "direction": "outbound",
+    "peopleIds": [
+      18
+    ],
+    "summary": "Sent a requested summary"
+  },
+  {
+    "id": 38,
+    "date": "2026-11-20",
+    "type": "email",
+    "direction": "two-way",
+    "peopleIds": [
+      9
+    ],
+    "summary": "Confirmed the next topic"
+  },
+  {
+    "id": 39,
+    "date": "2026-11-20",
+    "type": "broadcast",
+    "direction": "outbound",
+    "peopleIds": [
+      1,
+      2,
+      6,
+      8,
+      17
+    ],
+    "summary": "Holiday greeting newsletter"
+  },
+  {
+    "id": 40,
+    "date": "2026-11-21",
+    "type": "email",
+    "direction": "inbound",
+    "peopleIds": [
+      19
+    ],
+    "summary": "Question about the study timeline"
+  }
+]

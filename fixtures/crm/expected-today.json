@@ -1,0 +1,21 @@
+{
+  "_comment": "Invented data. Worked out by hand from fixtures/crm/*.json and config/crm-ranking.json 1.0.0: score = 8 x importance + min(40, 20 x days / cadence) + 20 if due. Gray and Avery tie at 80; Gray wins on days since contact (never contacted counts as one cadence).",
+  "today": "2026-11-23",
+  "configVersion": "1.0.0",
+  "due": [
+    { "id": 2, "score": 92 },
+    { "id": 5, "score": 81.3 },
+    { "id": 7, "score": 80 },
+    { "id": 1, "score": 80 },
+    { "id": 6, "score": 76 },
+    { "id": 10, "score": 48 }
+  ],
+  "top": [2, 5, 7, 1, 6],
+  "mineSantiago": [5, 7, 1],
+  "mineJay": [2, 6, 10],
+  "upcoming": [20, 17, 18],
+  "excluded": [3, 8, 9, 4, 11, 12, 13, 14, 15, 16, 19],
+  "waitingOnThem": [18],
+  "waitingOnMe": [19],
+  "indicators": { "investors": [2], "advisors": [5] }
+}
