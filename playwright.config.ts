@@ -11,7 +11,7 @@ export default defineConfig({
   reporter: 'list',
   use: {
     baseURL: 'http://localhost:4173/bluehealer-ops/',
-    launchOptions: { executablePath: process.env.CHROMIUM_PATH ?? (existsSync(preinstalled) ? preinstalled : undefined) },
+    launchOptions: { executablePath: process.env.CHROMIUM_PATH ?? (existsSync(preinstalled) ? preinstalled : undefined), args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] },
   },
   webServer: {
     command: 'npm run preview:e2e',

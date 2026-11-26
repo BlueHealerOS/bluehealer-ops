@@ -6,9 +6,10 @@ import { doneThisWeek, hygiene, proposeToday, proposed, thisWeek, waitingOnOther
 import { etToday } from '../domain/time';
 import type { IntakeItem } from '../domain/types';
 import { Icon } from './icons';
-import { QUEUES, SECTIONS, TRIAGE_OPEN_FILTER } from './nav';
+import { CRM_TABS, ENGINEERING_SECTIONS, QUEUES, SECTIONS, TRIAGE_OPEN_FILTER, sidebarWorkspace } from './nav';
 import { useHashRoute } from './router';
-import lockup from '../assets/brand/lockup-dark.svg';
+import { TOPBAR_H } from './TopBar';
+import { useEngineering } from '../engineering/session';
 
 /** Saved views that duplicate a queue are listed once, as queues. */
 const QUEUE_PATHS = new Set(QUEUES.map((q) => `/tasks/${q[0]}`));
@@ -36,7 +37,9 @@ export function useNavCounts() {
   };
 }
 
-export function Sidebar() {
+const SH = 'px-3 pb-1 !font-sans text-xs !font-semibold uppercase tracking-wider text-ink-muted';
+
+function TasksSections() {
   const { segments, query } = useHashRoute();
   const { counts, signal } = useNavCounts();
   const page = segments[0] ?? 'tasks';
@@ -46,43 +49,89 @@ export function Sidebar() {
     <span className="nav-count">{counts[k] ?? 0}{signal[k] && <span className="nav-dot" role="img" aria-label="needs attention" />}</span>
   );
   return (
-    <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col gap-1 overflow-y-auto border-r border-hairline bg-surface p-3 md:flex">
-      <a href="#/tasks/today" className="mb-3 block rounded-control px-2 py-2" aria-label="BlueHealer Ops, go to Today">
-        <img src={lockup} alt="BlueHealer" className="h-7 w-auto" />
-        <span className="mt-1 block text-xs font-medium tracking-wide text-ink-muted">Ops</span>
-      </a>
-      <nav aria-label="Main" className="flex flex-1 flex-col gap-4">
-        <div>
-          <h2 className="px-3 pb-1 !font-sans text-xs !font-semibold uppercase tracking-wider text-ink-muted">Tasks</h2>
-          <ul className="space-y-0.5">
-            {QUEUES.map(([key, label, icon]) => (
-              <li key={key}>
-                <a className="nav-link" href={`#/tasks/${key}`} aria-current={page === 'tasks' && view === key && !query ? 'page' : undefined}>
-                  <Icon name={icon} />{label}<Count k={key} />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <>
+      <div>
+        <h2 className={SH}>Tasks</h2>
         <ul className="space-y-0.5">
-          {SECTIONS.map(([href, label, key, icon]) => (
+          {QUEUES.map(([key, label, icon]) => (
             <li key={key}>
-              <a className="nav-link" href={`#/${href}`} aria-current={page === key ? 'page' : undefined}>
-                <Icon name={icon} />{label}{key === 'triage' && <Count k="triage" />}
+              <a className="nav-link" href={`#/tasks/${key}`} aria-current={page === 'tasks' && view === key && !query ? 'page' : undefined}>
+                <Icon name={icon} />{label}<Count k={key} />
               </a>
             </li>
           ))}
         </ul>
-        <div>
-          <h2 className="px-3 pb-1 !font-sans text-xs !font-semibold uppercase tracking-wider text-ink-muted">Saved views</h2>
-          <ul className="space-y-0.5">
-            {SAVED.map((v) => (
-              <li key={v.name}>
-                <a className="nav-link" href={`#${v.path}`} aria-current={current === v.path ? 'page' : undefined}><Icon name="view" />{v.name}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
+      </div>
+      <ul className="space-y-0.5">
+        {SECTIONS.map(([href, label, key, icon]) => (
+          <li key={key}>
+            <a className="nav-link" href={`#/${href}`} aria-current={page === 'tasks' && view === key ? 'page' : undefined}>
+              <Icon name={icon} />{label}{key === 'triage' && <Count k="triage" />}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div>
+        <h2 className={SH}>Saved views</h2>
+        <ul className="space-y-0.5">
+          {SAVED.map((v) => (
+            <li key={v.name}>
+              <a className="nav-link" href={`#${v.path}`} aria-current={current === v.path ? 'page' : undefined}><Icon name="view" />{v.name}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+}
+
+function CrmSections() {
+  const { segments } = useHashRoute();
+  const tab = segments[1] ?? 'people';
+  return (
+    <div>
+      <h2 className={SH}>CRM</h2>
+      <ul className="space-y-0.5">
+        {CRM_TABS.map(([k, label]) => (
+          <li key={k}><a className="nav-link" href={`#/crm/${k}`} aria-current={segments[0] === 'crm' && tab === k ? 'page' : undefined}><Icon name="people" />{label}</a></li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function EngineeringSections() {
+  const { segments } = useHashRoute();
+  const section = segments[1] ?? 'review';
+  const eng = useEngineering();
+  return (
+    <div>
+      <h2 className={SH}>Engineering</h2>
+      <ul className="space-y-0.5">
+        {ENGINEERING_SECTIONS.map(([k, label, icon]) => (
+          <li key={k}><a className="nav-link" href={`#/engineering/${k}`} aria-current={segments[0] === 'engineering' && section === k ? 'page' : undefined}><Icon name={icon} />{label}</a></li>
+        ))}
+      </ul>
+      {eng.bundle && (
+        <p className="mt-3 px-3 text-xs text-ink-muted">
+          Bundle: <span className="font-medium text-ink">{eng.bundle.manifest.bundle_id}</span>
+          {eng.bundle.reviews.length > 0 && <><br />{eng.bundle.reviews.filter((r) => r.status !== 'resolved' && r.status !== 'wont_fix').length} active review items</>}
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function Sidebar() {
+  const { segments } = useHashRoute();
+  const ws = sidebarWorkspace(segments);
+  const page = segments[0] ?? 'tasks';
+  return (
+    <aside style={{ top: TOPBAR_H, height: `calc(100vh - ${TOPBAR_H}px)` }} className="sticky hidden w-60 shrink-0 flex-col gap-1 overflow-y-auto border-r border-hairline bg-surface p-3 md:flex">
+      <nav aria-label="Main" className="flex flex-1 flex-col gap-4">
+        {ws === 'tasks' && <TasksSections />}
+        {ws === 'crm' && <CrmSections />}
+        {ws === 'engineering' && <EngineeringSections />}
         <ul className="mt-auto">
           <li>
             <a className="nav-link" href="#/settings" aria-current={page === 'settings' || page === 'admin' ? 'page' : undefined}><Icon name="settings" />Settings</a>

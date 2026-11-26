@@ -9,8 +9,8 @@ import * as C from '../schema/choices';
 import { createDraft, DealDataError } from '../graph/store';
 import { navigate, useHashRoute } from './router';
 import { Empty, Loading, Select } from './parts';
+import { CRM_TABS as TABS } from './nav';
 
-const TABS = [['people', 'People'], ['organizations', 'Organizations'], ['investors', 'Investor follow-ups'], ['overdue', 'Overdue contacts'], ['due', 'Follow-ups due this week']] as const;
 
 export function CrmPage() {
   const { segments } = useHashRoute();
