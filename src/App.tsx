@@ -20,6 +20,7 @@ import { EngineeringProvider } from './engineering/session';
 import { EngineeringPage } from './engineering/EngineeringPage';
 import { QuickAdd } from './ui/QuickAdd';
 import { useHashRoute } from './ui/router';
+import { clearCache, clearIfSignedOut, indexedDbCacheStore } from './data/cache';
 import type { Founder } from './domain/types';
 
 type Phase = { kind: 'loading' } | { kind: 'signedOut' } | { kind: 'checking' } | { kind: 'denied' } | { kind: 'error'; message: string } | { kind: 'ready' };
@@ -41,6 +42,8 @@ export default function App() {
         if (!live) return;
         setAuth(a); setAccount(acc);
         setPhase(acc ? { kind: 'checking' } : { kind: 'signedOut' });
+        // Nobody is signed in: anything the browser cache still holds from an earlier session is removed (docs/PLAN-v2.md section 5.2).
+        await clearIfSignedOut(indexedDbCacheStore(), acc !== null);
       } catch (e) { if (live) setPhase({ kind: 'error', message: (e as Error).message }); }
     })();
     return () => { live = false; };
@@ -53,7 +56,7 @@ export default function App() {
     store.probe().then((r) => setPhase(r === 'ok' ? { kind: 'ready' } : { kind: 'denied' })).catch((e: Error) => setPhase({ kind: 'error', message: e.message }));
   }, [store, phase.kind]);
 
-  const signOut = useCallback(async () => { queryClient.clear(); await auth?.signOut(); }, [auth, queryClient]);
+  const signOut = useCallback(async () => { queryClient.clear(); await clearCache(indexedDbCacheStore()); await auth?.signOut(); }, [auth, queryClient]);
 
   // Until a founder has signed in and SharePoint has accepted the account, nothing but the sign-in screen exists.
   if (phase.kind === 'loading') return <main className="p-6" role="status">Loading…</main>;

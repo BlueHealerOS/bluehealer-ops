@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useOps } from './ctx';
 import { useNow, useSettings, useTaskActions, useTasks, type TaskItem } from './data';
 import { applyFacets, DUE_WINDOWS, facetsFromQuery, facetsToQuery, type FacetKey, type FacetState } from '../domain/filters';
-import { doneThisWeek, hygiene, proposeToday, proposed, thisWeek, waitingOnOthers } from '../domain/tasks';
+import { doneThisWeek, hygiene, proposeToday, proposed, statusOptions, thisWeek, waitingOnOthers } from '../domain/tasks';
 import { addDays, etToday, weekdayOf } from '../domain/time';
 import * as C from '../schema/choices';
 import { navigate, useHashRoute } from './router';
@@ -165,7 +165,7 @@ function Board({ tasks }: { tasks: TaskItem[] }) {
                 <label className="mt-1 block text-xs">
                   <span className="sr-only">Move {t.Title} to</span>
                   <select className="input mt-1 !min-h-8 !py-1 text-xs" value={t.Status} onChange={(e) => actions.save.mutate({ id: t.id, before: t, fields: { Status: e.target.value as TaskItem['Status'] } }, { onError: (err) => alert((err as Error).message) })}>
-                    {C.TASK_STATUS.map((s) => <option key={s} value={s}>{statusLabel(s)}</option>)}
+                    {statusOptions(t.Status).map((s) => <option key={s} value={s}>{statusLabel(s)}</option>)}
                   </select>
                 </label>
               </li>

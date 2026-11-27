@@ -35,7 +35,24 @@ export class OpsStore {
     }
   }
 
-  invalidate() { this.listIds = undefined; }
+  invalidate() { this.listIds = undefined; this.columns.clear(); }
+
+  private columns = new Map<string, Promise<Set<string>>>();
+  /**
+   * Whether a list already has a column. The v2 columns arrive when an administrator runs provisioning, which can happen after the
+   * app code is deployed, so code that writes a v2 column checks here first. One read per list per session.
+   */
+  async hasColumn(list: string, column: string): Promise<boolean> {
+    let p = this.columns.get(list);
+    if (!p) {
+      p = (async () => {
+        const cols = await this.client.getAll<{ name: string }>(`${await this.base(list)}/columns?$top=200`);
+        return new Set(cols.map((c) => c.name));
+      })().catch((e) => { this.columns.delete(list); throw e; });
+      this.columns.set(list, p);
+    }
+    return (await p).has(column);
+  }
 
   async listId(name: string): Promise<string> {
     this.listIds ??= (async () => {
@@ -96,9 +113,24 @@ export class OpsStore {
     return res.filter((r) => r.status < 300).length;
   }
 
-  async update(name: string, id: number, partial: Record<string, unknown>): Promise<void> {
+  /**
+   * Update fields. With `ifMatch`, SharePoint refuses the write with HTTP 412 when someone else changed the item first, and nothing is written.
+   * Returns the new ETag when the response carries one; otherwise call `getItem` to read it.
+   */
+  async update(name: string, id: number, partial: Record<string, unknown>, opts: { ifMatch?: string } = {}): Promise<{ etag?: string }> {
     this.guard(name, partial);
-    await this.client.request('PATCH', `${await this.base(name)}/items/${id}/fields`, { body: encodeFields(this.def(name), partial) });
+    const res = await this.client.request<Record<string, unknown> | undefined>('PATCH', `${await this.base(name)}/items/${id}/fields`, {
+      body: encodeFields(this.def(name), partial),
+      ...(opts.ifMatch ? { headers: { 'If-Match': opts.ifMatch } } : {}),
+    });
+    const etag = res?.['@odata.etag'] ?? res?.eTag;
+    return { etag: typeof etag === 'string' ? etag : undefined };
+  }
+
+  /** Read one item with its fields and ETag. */
+  async getItem<T>(name: string, id: number): Promise<Decoded<T>> {
+    const raw = await this.client.request<RawItem>('GET', `${await this.base(name)}/items/${id}?$expand=fields`);
+    return decodeItem<T>(this.def(name), raw);
   }
 
   /** Version history of one record (SharePoint list versioning). */

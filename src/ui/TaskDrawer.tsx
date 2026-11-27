@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useOps } from './ctx';
 import { useLookup, useTaskActions, useTasks, type TaskItem } from './data';
 import type { Task } from '../domain/types';
+import { statusOptions } from '../domain/tasks';
 import * as C from '../schema/choices';
 import { DealDataError } from '../graph/store';
 import { Select } from './parts';
@@ -81,7 +82,7 @@ export function TaskDrawer({ id, onClose }: { id: number | 'new'; onClose: () =>
             <div><label className={lab} htmlFor="t-title">Title</label><input id="t-title" className="input" value={draft.Title ?? ''} onChange={(e) => set('Title', e.target.value)} autoFocus /></div>
             <div><label className={lab} htmlFor="t-desc">Description</label><textarea id="t-desc" className="input" rows={3} value={draft.Description ?? ''} onChange={(e) => set('Description', e.target.value)} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <Select label="Status" value={draft.Status} options={C.TASK_STATUS} onChange={(v) => set('Status', v as Task['Status'])} />
+              <Select label="Status" value={draft.Status} options={statusOptions(existing?.Status ?? draft.Status)} onChange={(v) => set('Status', v as Task['Status'])} />
               <Select label="Priority" value={draft.Priority} options={C.PRIORITY} onChange={(v) => set('Priority', v as Task['Priority'])} />
               <Select label="Owner" value={draft.Owner} options={C.OWNERS} onChange={(v) => set('Owner', v as Task['Owner'])} blank />
               <Select label="Contribution type" value={draft.ContributionType} options={C.CONTRIBUTION} onChange={(v) => set('ContributionType', v as Task['ContributionType'])} blank />

@@ -4,7 +4,8 @@ import { useOps } from './ctx';
 import type { Decoded } from '../graph/codec';
 import type { Task } from '../domain/types';
 import { addDays, etToday, mondayOf } from '../domain/time';
-import { completeTask, validateTransition } from '../domain/tasks';
+import { validateTransition } from '../domain/tasks';
+import { closeTask } from '../domain/closeTask';
 import type { LogEntry } from '../reminders/rules';
 
 export type TaskItem = Decoded<Task>;
@@ -95,6 +96,8 @@ export function useTaskActions() {
         if (a.id === null) {
           await store.create('Tasks', { Source: 'manual', Owner: founder, Status: 'Inbox', ...a.fields });
         } else {
+          // Only a founder closes a card, and only through `complete` below (closeTask records who).
+          if (a.fields.Status === 'Done' && a.before?.Status !== 'Done') throw new Error('Only a founder can mark a card done. Please use Mark done.');
           if (a.fields.Status && a.before && a.fields.Status !== a.before.Status) {
             const v = validateTransition({ ...a.before, ...a.fields, Status: a.before.Status } as Task, a.fields.Status);
             if (!v.ok) throw new Error(v.reason);
@@ -106,8 +109,11 @@ export function useTaskActions() {
     }),
     complete: useMutation({
       mutationFn: async (a: { task: Task & { id: number }; outcome?: string }) => {
-        const c = completeTask(a.task, etToday(now()), now().toISOString(), a.outcome);
-        await store.update('Tasks', a.task.id, c.update);
+        const c = closeTask(a.task, founder, etToday(now()), now().toISOString(), a.outcome);
+        // ClosedBy exists only after provisioning has run (docs/PLAN-v2.md section 6); until then closing works as before.
+        const update = { ...c.update };
+        if (!(await store.hasColumn('Tasks', 'ClosedBy'))) delete update.ClosedBy;
+        await store.update('Tasks', a.task.id, update);
         if (c.next) await store.create('Tasks', c.next);
       },
       onSuccess: refresh,

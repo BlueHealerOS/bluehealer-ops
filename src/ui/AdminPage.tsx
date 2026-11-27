@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useOps } from './ctx';
 import { LISTS, schemaHash, validateSchema } from '../schema/lists';
 import { applyProvision, planProvision, type ProvisionPlan } from '../provision/provision';
+import { applyMigrationV2, prepareMigrationV2, restoreMigrationV2, type PreparedMigration } from '../provision/migrateV2';
+import { parseRollbackReport } from '../domain/migrateV2';
 import { parseHubExport, planHubImport, planCuratedImport, planTrelloImport, seedMilestones } from './importRunner';
 
 export function AdminPage() {
@@ -44,12 +46,58 @@ export function AdminPage() {
         </div>
       )}
       {log.length > 0 && <pre className="card overflow-x-auto text-xs" aria-label="Provisioning log">{log.join('\n')}</pre>}
+      <MigrationPanel />
       <ImportPanel />
       <div className="card space-y-2 text-sm">
         <h2 className="font-semibold">Version history checklist (manual)</h2>
         <p>Microsoft Graph cannot change versioning. After provisioning, open each list in Microsoft Lists, choose List settings, then Versioning settings, and confirm that item version history is on. The record history tab depends on it.</p>
       </div>
     </section>
+  );
+}
+
+function downloadText(name: string, text: string) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/** Moves cards to the v2 board statuses. Dry run, then a downloaded report, then apply (docs/PLAN-v2.md section 6.2). */
+function MigrationPanel() {
+  const { store } = useOps();
+  const [prepared, setPrepared] = useState<PreparedMigration>();
+  const [downloaded, setDownloaded] = useState(false);
+  const [msg, setMsg] = useState<string>();
+  const [error, setError] = useState<string>();
+  const [busy, setBusy] = useState(false);
+  async function guarded(fn: () => Promise<void>) { setBusy(true); setMsg(undefined); setError(undefined); try { await fn(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }
+  const rows = prepared?.plan.rows.length ?? 0;
+  return (
+    <div className="card space-y-3 text-sm" aria-label="Move cards to the new board">
+      <h2 className="font-semibold">Move cards to the new board</h2>
+      <p>Moves Inbox cards to Backlog and Next cards to This week or Backlog, orders every column, and keeps each card's time of last edit. Please apply the lists above first. Download the report before you apply: it lets you put the previous statuses back. Done and Dropped cards are not touched.</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <button className="btn btn-primary" disabled={busy} onClick={() => guarded(async () => { setDownloaded(false); setPrepared(await prepareMigrationV2(store)); })}>Dry run</button>
+        <button className="btn" disabled={busy || !prepared || rows === 0} onClick={() => { downloadText(`ops-v2-migration-report-${prepared!.rollback.createdAt.slice(0, 10)}.json`, JSON.stringify(prepared!.rollback, null, 2)); setDownloaded(true); }}>Download report</button>
+        <button className="btn" disabled={busy || !prepared || rows === 0 || !downloaded} onClick={() => guarded(async () => { setMsg(await applyMigrationV2(store, prepared!.plan, new Date(), (m) => setMsg(m))); setPrepared(undefined); setDownloaded(false); })}>Apply {rows ? `(${rows} cards)` : ''}</button>
+      </div>
+      {prepared && (
+        <div className="rounded-md border border-hairline p-3" role="region" aria-label="Migration dry run">
+          <ul className="list-disc pl-5">{Object.entries(prepared.plan.report).map(([k, v]) => <li key={k}>{k}: {v}</li>)}</ul>
+          {rows === 0 && <p className="mt-2">Nothing to move. Every card is already on the new board.</p>}
+          {rows > 0 && !downloaded && <p className="mt-2">Please download the report to enable Apply.</p>}
+        </div>
+      )}
+      <div>
+        <label htmlFor="restore-file" className="mb-1 block font-medium">Restore previous statuses from a report (JSON)</label>
+        <input id="restore-file" type="file" accept="application/json,.json" className="input max-w-md" disabled={busy}
+          onChange={(e) => guarded(async () => { const f = e.target.files?.[0]; if (!f) throw new Error('Please choose a file.'); setMsg(await restoreMigrationV2(store, parseRollbackReport(await f.text()), (m) => setMsg(m))); e.target.value = ''; })} />
+      </div>
+      {error && <p role="alert" className="rounded-md bg-danger-soft p-2 text-danger">{error}</p>}
+      {msg && <p role="status">{msg}</p>}
+    </div>
   );
 }
 

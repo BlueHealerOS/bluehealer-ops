@@ -4,6 +4,7 @@ import { fromGraphDate, toGraphDate } from '../domain/time.ts';
 export interface RawItem {
   id: string;
   eTag?: string;
+  '@odata.etag'?: string; // Graph may return the ETag under either name; smoke test 3 in docs/PLAN-v2.md settles which
   createdDateTime?: string;
   lastModifiedDateTime?: string;
   fields: Record<string, unknown>;
@@ -15,7 +16,7 @@ export const keyOf = (c: Column) => (c.type === 'lookup' ? `${c.name}LookupId` :
 
 export function decodeItem<T>(list: ListDef, raw: RawItem): Decoded<T> {
   const f = raw.fields ?? {};
-  const out: Record<string, unknown> = { id: Number(raw.id), Title: f.Title ?? '', _created: raw.createdDateTime, _modified: raw.lastModifiedDateTime, _etag: raw.eTag };
+  const out: Record<string, unknown> = { id: Number(raw.id), Title: f.Title ?? '', _created: raw.createdDateTime, _modified: raw.lastModifiedDateTime, _etag: raw.eTag ?? raw['@odata.etag'] };
   for (const c of list.columns) {
     const k = keyOf(c);
     const v = f[k];

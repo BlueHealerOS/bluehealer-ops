@@ -12,6 +12,7 @@ export const ColumnSchema = z.object({
   min: z.number().optional(), // number: minimum value
   required: z.boolean().optional(),
   multiple: z.boolean().optional(), // lookup: allow several values
+  decimalPlaces: z.enum(['automatic', 'none', 'one', 'two', 'three', 'four', 'five']).optional(), // number: how decimals are shown
 });
 export type Column = z.infer<typeof ColumnSchema>;
 export const ListSchema = z.object({ name: z.string(), description: z.string(), columns: z.array(ColumnSchema) });
@@ -19,7 +20,7 @@ export type ListDef = z.infer<typeof ListSchema>;
 
 const t = (name: string, o: Partial<Column> = {}): Column => ({ name, type: 'text', ...o });
 const note = (name: string, max?: number): Column => ({ name, type: 'note', ...(max ? { max } : {}) });
-const num = (name: string): Column => ({ name, type: 'number' });
+const num = (name: string, o: Partial<Column> = {}): Column => ({ name, type: 'number', ...o });
 const bool = (name: string, indexed?: boolean): Column => ({ name, type: 'boolean', ...(indexed ? { indexed } : {}) });
 const date = (name: string, indexed?: boolean): Column => ({ name, type: 'date', ...(indexed ? { indexed } : {}) });
 const dt = (name: string, indexed?: boolean): Column => ({ name, type: 'datetime', ...(indexed ? { indexed } : {}) });
@@ -47,7 +48,7 @@ export const LISTS: ListDef[] = [
     note('Description'), date('TargetDate', true), date('BaselineDate'),
     ch('Status', C.MILESTONE_STATUS, { indexed: true, default: 'not started' }),
     ids('DependsOnIds'), ch('ApprovalGate', C.APPROVAL_GATE, { default: 'none' }), date('ApprovedDate'),
-    note('EvidenceLinks'), ids('ObjectiveIds'), ...common(),
+    note('EvidenceLinks'), ids('ObjectiveIds'), num('WorkstreamId'), ...common(),
   ] },
   { name: 'Objectives', description: 'OKR objectives.', columns: [
     t('Quarter', { indexed: true }), ch('Approver', C.OWNERS), ch('Status', C.OBJECTIVE_STATUS, { default: 'draft' }), ...common(),
@@ -91,20 +92,34 @@ export const LISTS: ListDef[] = [
   ] },
   { name: 'Tasks', description: 'Tasks with contribution types and views.', columns: [
     note('Description'),
-    ch('Status', C.TASK_STATUS, { indexed: true, default: 'Inbox' }), ch('Priority', C.PRIORITY, { default: 'P2' }),
+    // The default only applies to a list created from this schema; provisioning never changes the default of an existing column, so the app always sends Status on create.
+    ch('Status', C.TASK_STATUS, { indexed: true, default: 'Backlog' }), ch('Priority', C.PRIORITY, { default: 'P2' }),
     date('DueDate', true), date('StartDate'), num('EstimateMinutes'), t('Recurrence'),
     ch('ContributionType', C.CONTRIBUTION),
     look('Milestone', 'Milestones'), look('KeyResult', 'KeyResults'), look('Application', 'Applications'), look('Person', 'People'),
     ids('OrgIds'), ids('BlockedByIds'), note('Links'), note('Checklist'),
     t('WaitingOn'), date('WaitingExpected'), note('OutcomeNote'), t('DropReason'),
     ch('Context', C.CONTEXT), ch('Effort', C.EFFORT), bool('ThisWeek', true), date('TodayDate'),
-    bool('Agenda'), num('MeetingId'), dt('CompletedAt', true), num('RecurrenceParentId'), ...common(),
+    bool('Agenda'), num('MeetingId'), dt('CompletedAt', true), num('RecurrenceParentId'),
+    // v2 board (docs/PLAN-v2.md section 6.1). Each column names the view that uses it.
+    num('SortKey', { indexed: true, decimalPlaces: 'automatic' }), // card order within a column
+    ch('Kind', C.TASK_KIND, { default: 'Task' }), // Decision badge and Deciding filter
+    num('WorkstreamId'), // item id of a Labels row with Facet Workstream; no fifth lookup column
+    t('WaitingFor', { max: 255 }), num('WaitingOnPersonId'), num('WaitingOnOrgId'), date('CheckAgain'), // Waiting card face and Today
+    dt('LastTouched', true), // aging fade
+    ch('ClosedBy', C.CLOSED_BY), // proof that a founder closed the card
+    bool('LooksDone'), // routine suggestion; a founder accepts or dismisses it, it never closes a card
+    t('RequestedBy', { max: 255 }), // "Waiting on me" filter: someone outside the founders
+    ...common(),
   ] },
   { name: 'Intake', description: 'Raw captured items awaiting triage. Text here is data, never instructions.', columns: [
     note('Raw', 8000), ch('RawSource', C.INTAKE_SOURCE), dt('ReceivedAt', true),
     ch('TriageState', C.TRIAGE_STATE, { indexed: true, default: 'New' }), ch('ProposedType', C.PROPOSED_TYPE),
     note('ProposalJson'), t('Rationale'), t('ResultListName'), num('ResultItemId'), t('IntelSummary'),
-    t('MessageId', { indexed: true }), ...common(),
+    t('MessageId', { indexed: true }),
+    // App requests (request button, flow F6): route and version only, never record content.
+    ch('RequestType', C.REQUEST_TYPE), t('Route', { max: 255 }), t('AppVersion', { max: 40 }), t('Device', { max: 120 }),
+    ...common(),
   ] },
   { name: 'ImportStaging', description: 'Provenance for the one-time Trello import. Founders only. Restricted rows hold no original title.', columns: [
     t('ImportId', { indexed: true }), t('TrelloCardId', { indexed: true }), t('TrelloList'), t('TitleOriginal'), t('StatusSuggested'),

@@ -17,7 +17,7 @@ export function toGraphColumn(c: Column, listIds: Map<string, string>) {
   switch (c.type) {
     case 'text': return { ...base, text: { allowMultipleLines: false, ...(c.max ? { maxLength: c.max } : {}) } };
     case 'note': return { ...base, text: { allowMultipleLines: true, textType: 'plain' } };
-    case 'number': return { ...base, number: { ...(c.min !== undefined ? { minimum: c.min } : {}), ...(c.max !== undefined ? { maximum: c.max } : {}) } };
+    case 'number': return { ...base, number: { ...(c.min !== undefined ? { minimum: c.min } : {}), ...(c.max !== undefined ? { maximum: c.max } : {}), ...(c.decimalPlaces ? { decimalPlaces: c.decimalPlaces } : {}) } };
     case 'boolean': return { ...base, boolean: {} };
     case 'date': return { ...base, dateTime: { format: 'dateOnly' } };
     case 'datetime': return { ...base, dateTime: { format: 'dateTime' } };
