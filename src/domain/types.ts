@@ -35,6 +35,23 @@ export interface Task {
   Track?: string[];
   Source?: V<typeof C.SOURCES>;
   ReminderOptIn?: boolean;
+  /** Existing text columns the drawer will edit in phase A. `Checklist` and `Links` hold JSON; `BlockedByIds` and `OrgIds` hold ";12;45;" ids. */
+  Checklist?: string;
+  Links?: string;
+  BlockedByIds?: string;
+  OrgIds?: string;
+  // v2 board (docs/PLAN-v2.md section 6.1)
+  SortKey?: number;
+  Kind?: V<typeof C.TASK_KIND>;
+  WorkstreamId?: number;
+  WaitingFor?: string;
+  WaitingOnPersonId?: number;
+  WaitingOnOrgId?: number;
+  CheckAgain?: string;
+  LastTouched?: string;
+  ClosedBy?: V<typeof C.CLOSED_BY>;
+  LooksDone?: boolean;
+  RequestedBy?: string;
 }
 
 export interface Milestone {

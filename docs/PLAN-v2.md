@@ -125,14 +125,14 @@ Goal: Linear-like speed without a sync engine, and no change is ever lost quietl
 
 ### 5.1 Layers
 
-1. **Server state** (`OpsStore`, existing). Add the item ETag: `RawItem` in `src/graph/codec.ts` currently drops `@odata.etag`; keep it as `_etag` on decoded items.
-2. **Memory store** (new, `src/data/store.ts`): normalised maps of open tasks, Done items from the last 14 days, workstreams, milestones. It replaces the per-view `useQuery` calls in `src/ui/data.ts`; react-query stays for the smaller lists.
+1. **Server state** (`OpsStore`, existing). The item ETag is already kept as `_etag` by `src/graph/codec.ts`, which accepts either `eTag` or `@odata.etag` (smoke test 3 settles which name real Graph uses). `OpsStore.update` takes an `ifMatch` option and returns the new ETag when the response has one; `OpsStore.getItem` reads one item and its ETag; `OpsStore.hasColumn` tells code whether a v2 column exists yet, so code deployed before provisioning does not write a column that is not there.
+2. **Memory store** (new in phase A2, `src/data/memoryStore.ts`; not part of A1, which has no reader for it yet): normalised maps of open tasks, Done items from the last 14 days, workstreams, milestones. It replaces the per-view `useQuery` calls in `src/ui/data.ts`; react-query stays for the smaller lists.
 3. **IndexedDB cache** (new, `src/data/cache.ts`): a copy for fast first paint. Raw `indexedDB`, so no new dependency (`idb`, ISC licence, is an optional convenience).
 4. **Write queue** (new, `src/data/writeQueue.ts`): applies an edit to the memory store at once, then writes to Graph in the background.
 
 ### 5.2 Cache rules (R19)
 
-- Database `ops-cache-v1`; stores `meta`, `tasks`, `workstreams`, `milestones`. Records are keyed by item id and tagged with the signed-in account id.
+- Database `ops-cache-v1` with one record holding the whole snapshot (account id, save time, app version, and the collections), so a save is atomic. `src/data/cache.ts` keeps the storage behind a `CacheStore` interface: unit tests use memory and Playwright covers the real IndexedDB.
 - **Restricted records are never written.** The write path filters `Sensitivity === 'restricted'` before `put`. They may sit in memory for display (the card shows a lock icon) and are re-read from Graph on reload. Request drafts and Intake items are never cached.
 - Cleared on sign-out, on account change, and at start-up when no account is signed in (the MSAL token lives in `sessionStorage`, so closing the tab signs out while IndexedDB would otherwise survive). Expires after 24 hours and on an app version change.
 - First paint reads the cache, then revalidates from Graph; a banner shows "Showing saved data while we refresh" until the first Graph read finishes.
@@ -148,12 +148,12 @@ States per item: `clean`, `pending` (patch merged, waiting 400 ms), `saving`, `f
 4. **Retry with backoff** reuses `GraphClient`: 429, 503 and 504 retried up to 5 times, honouring `Retry-After` (verified as required by Microsoft), otherwise `500 ms * 2^attempt` capped at 30 s plus jitter. On a network error the queue adds its own backoff of 1, 2, 4, 8, 16, 32 and 60 s, retries immediately on the browser `online` event, and after 8 attempts marks the item `failed`.
 5. **Failure is visible, not reverted.** A `failed` card shows a quiet "Not saved. Retry" marker and keeps its on-screen value; the live region announces it; the toolbar shows a count of unsaved cards. Retry is one click.
 6. **Conflict (HTTP 412):** the queue re-reads the item and compares three versions: base (the snapshot at the last known ETag), mine (the pending patch) and theirs (the server). If the changed field sets do not overlap, it merges and retries once. If a field overlaps, it applies theirs on screen, keeps mine aside, and shows a banner in the drawer "Jay changed this card first" with "Keep theirs" and "Use mine". Nothing is overwritten without a click.
-7. **Done is special (R2):** the queue accepts `Status: Done` only from `closeTask()` in `src/domain/closeTask.ts`, which requires a founder actor and always sets `ClosedBy` and `CompletedAt`. A unit test greps `src/` and fails if any other file writes `Status: 'Done'`. No flow or routine has a write path to the lists in any case.
+7. **Done is special (R2):** `closeTask()` in `src/domain/closeTask.ts` is the only code that issues a `FounderClose` token (an object tracked in a `WeakSet`, so a look-alike is refused). `WriteQueue.enqueue` throws on a patch with `Status: 'Done'` unless it carries a token, and `closeTask` always sets `ClosedBy` and `CompletedAt`. The Status lists no longer offer Done (Dropped stays, with its reason rule). This replaces the earlier idea of grepping `src/` for `Status: 'Done'`, which `completeTask` itself would have failed. Until provisioning has added `ClosedBy`, "Mark done" works as before and leaves it out.
 8. **Undo (10 s):** closing a card shows a toast with Undo; undo writes the previous Status and clears `ClosedBy` and `CompletedAt`, itself through the queue with the then-current ETag.
 
 ### 5.4 Card order (R21)
 
-`Tasks.SortKey` is a number. A card dropped between two neighbours gets the midpoint of their keys; at an end it gets the neighbour's key plus or minus 1024. New cards start at the column's maximum plus 1024. When the gap between neighbours falls below `1e-6`, the column is renumbered at spacing 1024 in `$batch` calls of 20 (verified limit), which is rare and shown as a silent background write. A drag therefore writes one item. Whether SharePoint keeps enough decimal precision for a `number` column created with default settings is **provisional**: `provision.ts` creates number columns with `number: {}`, and the smoke test in section 12 checks that `1536.5` round-trips. If not, provisioning sets `decimalPlaces` explicitly.
+`Tasks.SortKey` is a number. A card dropped between two neighbours gets the midpoint of their keys; at an end it gets the neighbour's key plus or minus 1024. New cards start at the column's maximum plus 1024. When the gap between neighbours falls below `1e-6`, the column is renumbered at spacing 1024 in `$batch` calls of 20 (verified limit), which is rare and shown as a silent background write. A drag therefore writes one item. Whether SharePoint keeps enough decimal precision for a fractional `number` is **provisional**: SharePoint stores a number as a double and `decimalPlaces` affects only how it is shown, so `SortKey` is created with `decimalPlaces: 'automatic'` (a new `ColumnSchema` option in `src/schema/lists.ts`, passed through by `src/provision/provision.ts`), and the smoke test in section 12 checks that `1536.5` round-trips through Graph.
 
 ## 6. Schema diff and status migration
 
@@ -380,7 +380,7 @@ Sources read on 2026-11-26. "Updated" is the page's own date.
 | Indexed columns per list | commonly cited as 20 | provisional | not on the pages read; settle with smoke test 1 |
 | Index a column on a populated list | allowed while under the view threshold | provisional | not re-read; smoke test 1 |
 | Number column decimal precision | unknown for default settings | provisional | smoke test 2 |
-| ETag in the PATCH response | unknown whether the response carries the new `@odata.etag` | provisional | smoke test 3 |
+| ETag in the PATCH response | unknown whether the response carries the new ETag, and whether it is named `eTag` or `@odata.etag`; the queue handles both (it reads the item when the response has none) | provisional | smoke test 3 |
 | `If-Match` inside `$batch` | undocumented on the pages read | provisional | plan uses single PATCH |
 | Power Automate standard connectors on Business Basic | The Free licence allows cloud flows with standard connectors only (verified, Microsoft Learn "Types of Power Automate licenses", updated 2026-09-22); Business Basic itself is not named there. Santiago believes the plan includes some Power Automate credits or tokens (2026-11-26); credits are not the same as a connector entitlement, so this stays provisional with lower expected risk | provisional | smoke test 4 (build F6 once) |
 | Power Automate daily request allowance on Business Basic | not found | provisional | flow volume is a handful of runs a day; check the admin centre |

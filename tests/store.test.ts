@@ -13,7 +13,7 @@ describe('OpsStore', () => {
     const t = await store.create<Task>('Tasks', {
       Title: 'Draft plan', DueDate: '2026-12-01', MilestoneLookupId: 7, Track: ['Operations', 'Reimbursement'], ThisWeek: true, EstimateMinutes: 30, Priority: 'P1',
     });
-    expect(t).toMatchObject({ Title: 'Draft plan', DueDate: '2026-12-01', MilestoneLookupId: 7, ThisWeek: true, EstimateMinutes: 30, Status: 'Inbox' });
+    expect(t).toMatchObject({ Title: 'Draft plan', DueDate: '2026-12-01', MilestoneLookupId: 7, ThisWeek: true, EstimateMinutes: 30, Status: 'Backlog', Kind: 'Task' });
     const [back] = await store.items<Task>('Tasks');
     expect(back?.Track).toEqual(['Operations', 'Reimbursement']);
     await store.update('Tasks', back!.id, { Status: 'Next', DueDate: null });

@@ -90,17 +90,28 @@ export function rankTasks(tasks: Task[], today: string): Task[] {
   });
 }
 
-const ACTIVE = new Set(['Next', 'In progress']);
+const ACTIVE = new Set(['Next', 'This week', 'In progress']);
+
+/** In "this week": the v2 status, or the older flag that is read until every record has been migrated. Only the status is written from now on. */
+export const inThisWeek = (t: Pick<Task, 'Status' | 'ThisWeek'>) => t.Status === 'This week' || t.ThisWeek === true;
+
+/**
+ * Statuses a founder may pick by hand in a Status list. Done is reached only through `closeTask`.
+ * Backlog and This week are offered once the lists carry those values (phase A2, after provisioning and the migration).
+ * The current value is always kept so that an existing card still shows its own status.
+ */
+export const PICKABLE_STATUS: readonly Task['Status'][] = ['Proposed', 'Inbox', 'Next', 'In progress', 'Waiting', 'Dropped'];
+export const statusOptions = (current?: Task['Status']): readonly Task['Status'][] => (current && !PICKABLE_STATUS.includes(current) ? [...PICKABLE_STATUS, current] : PICKABLE_STATUS);
 
 /** Today: pinned for today, plus This week or due items that are actionable, capped. */
 export function proposeToday(tasks: Task[], today: string, cap = 7): Task[] {
-  const cands = tasks.filter((t) => !isClosed(t) && (t.TodayDate === today || (ACTIVE.has(t.Status) && (t.ThisWeek || (t.DueDate !== undefined && t.DueDate <= today)))));
+  const cands = tasks.filter((t) => !isClosed(t) && (t.TodayDate === today || (ACTIVE.has(t.Status) && (inThisWeek(t) || (t.DueDate !== undefined && t.DueDate <= today)))));
   return rankTasks(cands, today).slice(0, cap);
 }
 
 export const thisWeek = (tasks: Task[], today: string) => {
   const mon = mondayOf(today), sun = addDays(mon, 6);
-  return tasks.filter((t) => !isClosed(t) && (t.ThisWeek || (t.DueDate !== undefined && t.DueDate >= mon && t.DueDate <= sun)));
+  return tasks.filter((t) => !isClosed(t) && (inThisWeek(t) || (t.DueDate !== undefined && t.DueDate >= mon && t.DueDate <= sun)));
 };
 export const waitingOnOthers = (tasks: Task[]) => tasks.filter((t) => t.Status === 'Waiting');
 export const proposed = (tasks: Task[]) => tasks.filter((t) => t.Status === 'Proposed');

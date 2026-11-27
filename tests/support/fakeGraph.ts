@@ -10,13 +10,15 @@ export interface FakeState {
   lists: FList[];
   drafts: { subject: string; to: string[] }[];
   events: { id: string; subject: string; start: { dateTime: string } }[];
-  requests: { method: string; path: string }[];
+  requests: { method: string; path: string; ifMatch?: string }[];
   now: () => string;
+  /** Whether a PATCH of fields returns the new ETag. Real Graph behaviour is to be confirmed (docs/PLAN-v2.md smoke test 3), so tests cover both. */
+  patchReturnsEtag: boolean;
 }
 export interface Handled { status: number; body: unknown; headers?: Record<string, string> }
 
 export function createFakeGraph(init: Partial<FakeState> = {}) {
-  const state: FakeState = { forbidden: false, throttleNext: 0, pageSize: 200, lists: [], drafts: [], events: [], requests: [], now: () => new Date().toISOString(), ...init };
+  const state: FakeState = { forbidden: false, throttleNext: 0, pageSize: 200, lists: [], drafts: [], events: [], requests: [], now: () => new Date().toISOString(), patchReturnsEtag: true, ...init };
   let seq = 0;
   const err = (status: number, code: string): Handled => ({ status, body: { error: { code, message: code } } });
 
@@ -47,7 +49,7 @@ export function createFakeGraph(init: Partial<FakeState> = {}) {
   function handle(method: string, fullUrl: string, body?: unknown, headers: Record<string, string> = {}): Handled {
     const u = new URL(fullUrl);
     const path = u.pathname.replace(/^\/v1\.0/, '');
-    state.requests.push({ method, path });
+    state.requests.push({ method, path, ifMatch: headers['If-Match'] ?? headers['if-match'] });
     if (state.throttleNext > 0) { state.throttleNext--; return { status: 429, body: { error: { code: 'tooManyRequests' } }, headers: { 'Retry-After': '0' } }; }
     let m: RegExpMatchArray | null;
 
@@ -114,7 +116,7 @@ export function createFakeGraph(init: Partial<FakeState> = {}) {
       item.etagSeq = (item.etagSeq ?? 1) + 1;
       item.modified = state.now();
       item.versions.push({ id: `${item.versions.length + 1}.0`, modified: item.modified, fields: { ...item.fields } });
-      return { status: 200, body: item.fields };
+      return { status: 200, body: state.patchReturnsEtag ? { ...item.fields, '@odata.etag': etagOf(item) } : item.fields };
     }
     if ((m = path.match(/^\/sites\/site-1\/lists\/([^/]+)\/items\/(\d+)$/))) {
       const l = listById(m[1]!); const idx = l?.items.findIndex((i) => i.id === Number(m![2])) ?? -1;

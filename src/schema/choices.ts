@@ -17,7 +17,12 @@ export const TRACKS = [
   'Research and Development',
   'Technical Development',
 ] as const;
-export const TASK_STATUS = ['Proposed', 'Inbox', 'Next', 'In progress', 'Waiting', 'Done', 'Dropped'] as const;
+// v2 board columns are Backlog, This week, In progress, Waiting and Done. Inbox and Next are kept so existing records stay valid until the migration has run.
+export const TASK_STATUS = ['Proposed', 'Inbox', 'Next', 'Backlog', 'This week', 'In progress', 'Waiting', 'Done', 'Dropped'] as const;
+export const TASK_KIND = ['Task', 'Decision'] as const;
+/** Only a founder closes a card, so `ClosedBy` holds a founder name, not a person column. */
+export const CLOSED_BY = ['Santiago', 'Jay'] as const;
+export const REQUEST_TYPE = ['Problem', 'Change', 'Idea'] as const;
 export const PRIORITY = ['P0', 'P1', 'P2', 'P3'] as const;
 export const CONTRIBUTION = ['Milestone', 'Key result', 'Application', 'Fundraising follow-up', 'Relationship', 'Operations'] as const;
 export const CONTEXT = ['deep work', 'call', 'email', 'lab or bench', 'vendor', 'errand', 'review or approval'] as const;
@@ -40,10 +45,10 @@ export const OBJECTIVE_STATUS = ['draft', 'active', 'done', 'dropped'] as const;
 export const CONFIDENCE = ['on track', 'at risk', 'off track'] as const;
 export const FREQUENCY = ['weekly', 'monthly', 'quarterly'] as const;
 export const KPI_SOURCE = ['manual', 'computed'] as const;
-export const INTAKE_SOURCE = ['share sheet', 'email forward', 'meeting', 'quick add', 'Trello import', 'routine'] as const;
+export const INTAKE_SOURCE = ['share sheet', 'email forward', 'meeting', 'quick add', 'Trello import', 'routine', 'app request'] as const;
 export const TRIAGE_STATE = ['New', 'Proposed', 'Accepted', 'Rejected', 'Converted'] as const;
 export const PROPOSED_TYPE = ['task', 'CRM interaction', 'intel', 'application opportunity', 'answer bank update', 'hub knowledge note', 'discard'] as const;
 export const MEETING_KIND = ['Monday check-in', 'Wednesday vendor review', 'Friday checkout', 'ad hoc'] as const;
-export const LABEL_FACET = ['Track', 'Context', 'Effort', 'Relationship type', 'Tag'] as const;
+export const LABEL_FACET = ['Track', 'Context', 'Effort', 'Relationship type', 'Tag', 'Workstream'] as const;
 export const SETTING_SCOPE = ['global', 'Santiago', 'Jay'] as const;
 export const REMINDER_CHANNEL = ['app', 'digest'] as const;
